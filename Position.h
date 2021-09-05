@@ -4,11 +4,9 @@
 #include <vector>
 #include <array>
 #include "stdint.h"
-#include "move.h"
-
-enum Colors { WHITE = 0, BLACK = 1 };
-enum Types { PAWN = 0, KNIGHT = 1, BISHOP = 2, ROOK = 3, QUEEN = 4, KING = 5 };
-
+#include "Move.h"
+#include "Types.h"
+#include "Colors.h"
 
 class Position {
 private:
@@ -32,9 +30,14 @@ public:
 	// Methods
 	void parse_fen(std::string fen);
 	std::vector<Move> move_gen(unsigned int depth);
-	static void display_bitboard(uint64_t bitboard);
+	static void display_bitboard(uint64_t bitboard, std::string title, char piece_c, char empty_c);
 	static void display_bitboard(uint64_t bitboard, std::string title);
-	void display_bitboards();
-	void console_display();
+	static void display_bitboard(uint64_t bitboard);
+	Colors get_turn();
+	void disp_bitboards();
+	void disp_castling();
+	void disp_epsq();
+	void disp_plys();
+	void disp();
 
 };

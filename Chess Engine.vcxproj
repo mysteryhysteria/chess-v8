@@ -142,10 +142,14 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Move.cpp" />
     <ClCompile Include="Position.cpp" />
+    <ClCompile Include="Colors.cpp" />
+    <ClCompile Include="Types.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Colors.h" />
     <ClInclude Include="Move.h" />
     <ClInclude Include="Position.h" />
+    <ClInclude Include="Types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

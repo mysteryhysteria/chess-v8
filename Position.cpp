@@ -1,6 +1,10 @@
 #include <string>
 #include <iostream>
+#include <bitset>
+#include <assert.h>
 #include "Position.h"
+#include "Types.h"
+#include "Colors.h"
 
 void Position::parse_fen(std::string fen) {
 	//TODO: implement a way to backup the values so if a parse error occurs, we can revert the position.
@@ -90,48 +94,54 @@ void Position::parse_fen(std::string fen) {
 	while ((c = fen[char_index++]) == ' '); // Consume spaces
 
 	if (c == '-') {} // again, ignore and move on
-	else {
-		file_c = fen[char_index++];
+	else { // otherwise...
+		// parse the square in algebraic notation
+		file_c = c;
 		rank_c = fen[char_index++];
+		// compute the numeric rank and file
 		file = file_c - 'a';
 		rank = rank_c - '1';
-		if (file >= 8 || rank >= 8) {
+		if (file >= 8 || rank >= 8) { // if either the rank or file is out of bounds...
 			// TODO: Exception case - parsed algebraic notation is not on board!
 			return;
 		}
-		else {
+		else { // otherwise compute the bitboard of the en passant square
 			epsq = 1ULL << ((7 - rank) * 8 + file); // (7 - rank) flips the numbering of the ranks to match our convention. (result * 8) then gets the row offsets. (result + file) then adds the column offsets.
 		}
 	}
 
 	while ((c = fen[char_index++]) == ' '); // Consume spaces
 
-	while ((c = fen[char_index++]) != ' ') { // scan over numeric values
+	do {
 		if (!isdigit(c)) {
 			// TODO: Exception case - not a numeric value!
 			return;
 		}
 		s.append(1, c); // append the digit characters to the string
-	}
-	ply_clock = atoi(s.c_str()); // convert the string to an integer and store
+	} while ((c = fen[char_index++]) != ' '); // get the next character and check it against the space constant
+	ply_clock = std::stoi(s); // convert the string to an integer and store
+	s.clear();
 
 	while ((c = fen[char_index++]) == ' '); // Consume spaces
 
-	while ((c = fen[char_index++]) != ' ') { // scan over numeric values
+	do {
 		if (!isdigit(c)) {
 			// TODO: Exception case - not a numeric value!
 			return;
 		}
 		s.append(1, c); // append the digit characters to the string
-	}
-	ply = atoi(s.c_str()) * 2 - (turn ? 1 : 0); 
+	} while ((c = fen[char_index++]) != '\0'); // get the next character and check it against the end-of-string constant
+	ply = std::stoi(s) * 2 - (turn ? 1 : 0); // calculate the ply from the full turn count and whose move it is
 	
 	//TODO: check to see if the king is in check, and set the in-check bits appropriately
 
 	return;
 }
 
-void Position::display_bitboard(uint64_t bitboard) {
+void Position::display_bitboard(uint64_t bitboard, std::string title, char piece_c, char empty_c) {
+	if (title != "") {
+		std::cout << title << "\n";
+	}
 	unsigned int bit = 0;
 	std::cout << "-------------------";
 	std::cout << "\n";
@@ -140,10 +150,10 @@ void Position::display_bitboard(uint64_t bitboard) {
 		std::cout << ' ';
 		for (int j = 0; j < 8; ++j) {
 			if ((bitboard & (1ULL << bit)) > 0) {
-				std::cout << 'X';
+				std::cout << piece_c;
 			}
 			else {
-				std::cout << ' ';
+				std::cout << empty_c;
 			}
 			std::cout << ' ';
 			++bit;
@@ -156,19 +166,116 @@ void Position::display_bitboard(uint64_t bitboard) {
 }
 
 void Position::display_bitboard(uint64_t bitboard, std::string title) {
-	std::cout << title << "\n";
-	display_bitboard(bitboard);
+	display_bitboard(bitboard, title, 'X', ' ');
 }
 
-void Position::display_bitboards() {
-	std::array<std::string, 2> colors = { "White Pieces", "Black Pieces" };
-	std::array<std::string, 6> types = { "Pawns","Knights","Bishops","Rooks","Queens","Kings" };
+void Position::display_bitboard(uint64_t bitboard) {
+	display_bitboard(bitboard, "");
+}
+
+void Position::disp_bitboards() {
+
+	std::array<std::string, 2> colors = { "White:", "Black:" };
+	std::array<char, 2> color_cs = { 'W', 'B' };
+	std::array<std::string, 6> types = { "Pawns:","Knights:","Bishops:","Rooks:","Queens:","Kings:" };
+	std::array<char, 6> pcs = { 'P', 'N', 'B', 'R', 'Q', 'K' };
+
 	int i = 0;
+	std::cout << "\nPieces by Color\n";
 	for (auto bitboard : this->pieces_by_color) {
-		this->display_bitboard(bitboard, colors[i++]);
+		display_bitboard(bitboard, colors[i], color_cs[i], ' ');
+		++i;
 	}
 	i = 0;
+	std::cout << "\nPieces by Type\n";
 	for (auto bitboard : this->pieces_by_type) {
-		this->display_bitboard(bitboard, types[i++]);
+		display_bitboard(bitboard, types[i], pcs[i], ' ');
+		++i;
 	}
+}
+
+void Position::disp_castling() {
+	std::cout << std::boolalpha;
+	std::cout << "\nCastling\n";
+	std::cout << "White:\n";
+	std::cout << "  Kingside - " << ((flags & 0b0001) > 0) << "\n";
+	std::cout << "  Queenside - " << ((flags & 0b0010) > 0) << "\n";
+	std::cout << "Black:\n";
+	std::cout << "  Kingside - " << ((flags & 0b0100) > 0) << "\n";
+	std::cout << "  Queenside - " << ((flags & 0b1000) > 0) << "\n";
+}
+
+void Position::disp_epsq() {
+	bool available = (bool) epsq;
+	std::string square_an = "";
+	std::cout << std::boolalpha << "\nEn Passant\n";
+
+	if (available) {
+		assert(std::bitset<64>(epsq).count() == 1); // assert that epsq only contains a single 1-bit
+		unsigned int maxbit = 0;
+		while ((epsq >> maxbit + 1) > 0) maxbit++;
+
+		unsigned int file_i = maxbit % 8;
+		unsigned int rank_i = 8 - (maxbit / 8); // Dont worry, it truncates
+		square_an.append(1, 'a' + file_i).append(1, '0' + rank_i);
+	}
+	else {
+		square_an = "None";
+	}
+	std::cout << "  Available? - " << available << "\n";
+	std::cout << "  En Passant Square - " << square_an << "\n";
+}
+
+void Position::disp_plys() {
+	std::cout << "\nPlys\n";
+	std::cout << "  Ply Count - " << ply << "\n";
+	std::cout << "  50 Move Clock - " << ply_clock << "\n";
+	std::cout << "  Turn - " << get_turn() << "\n";
+}
+
+void Position::disp() {
+	uint64_t	bitboard,
+				mask,
+				all = pieces_by_color[WHITE] | pieces_by_color[BLACK];
+	Colors color;
+	Types type;
+	std::string type_c = "PNBRQK";
+
+	std::cout << std::endl << "Position" << std::endl;
+	std::cout << "-------------------" << std::endl;
+
+	for (unsigned int sq = 0; sq < 64; ++sq) {
+		if (sq % 8 == 0) { std::cout << "|"; };
+		mask = 1ULL << sq;
+		if ((all & mask) > 0) { // if there is a piece in this square...
+			for (int i = 0; i < pieces_by_color.size(); ++i) {
+				bitboard = pieces_by_color[i];
+				if ((bitboard & mask) > 0) {
+					color = static_cast<Colors> (i);
+					break;
+				}
+			}
+			for (int i = 0; i < pieces_by_type.size(); ++i) {
+				bitboard = pieces_by_type[i];
+				if ((bitboard & mask) > 0) {
+					type = static_cast<Types> (i);
+					break;
+				}
+			}
+			std::cout << " " << (color == BLACK ? char (tolower(type_c[type])) : char (type_c[type]));
+		}
+		else {
+			std::cout << "  ";
+		}
+		if (sq % 8 == 7) { std::cout << " |" << std::endl; };
+	}
+	std::cout << "-------------------" << std::endl;
+
+	disp_castling();
+	disp_epsq();
+	disp_plys();
+}
+
+Colors Position::get_turn() {
+	return static_cast<Colors>(((ply - 1) % 2));
 }
