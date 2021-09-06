@@ -29,10 +29,10 @@ public:
 
 	// Methods
 	void parse_fen(std::string fen);
-	std::vector<Move> move_gen(unsigned int depth);
-	static void display_bitboard(uint64_t bitboard, std::string title, char piece_c, char empty_c);
-	static void display_bitboard(uint64_t bitboard, std::string title);
-	static void display_bitboard(uint64_t bitboard);
+	std::vector<Move> move_gen();
+	static void disp_bitboard(uint64_t bitboard, std::string title, char piece_c, char empty_c);
+	static void disp_bitboard(uint64_t bitboard, std::string title);
+	static void disp_bitboard(uint64_t bitboard);
 	Colors get_turn();
 	void disp_bitboards();
 	void disp_castling();

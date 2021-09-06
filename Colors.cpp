@@ -12,4 +12,8 @@ std::ostream& operator<<(std::ostream& out, Colors value) {
 	return out << s;
 }
 
+Colors operator!(Colors value) {
+	return static_cast<Colors>(!bool(value));
+}
+
 

@@ -6,6 +6,35 @@
 #include "Types.h"
 #include "Colors.h"
 
+std::map<Types, std::vector<int>> move_directions = {
+	{PAWN, {-8, 8}},
+	{KNIGHT, {-17, -15, -10, -6, 6, 10, 15, 17}},
+	{BISHOP, {-9, -7, 7, 9}},
+	{ROOK,  {-8, -1, 1, 8}},
+	{QUEEN, {-9, -8, -7, -1, 1, 7, 8, 9}},
+	{KING, {-9, -8, -7, -1, 1, 7, 8, 9}}
+};
+
+// 
+std::map<int, uint64_t> move_masks = {
+	{-17, 0x010101010101ffff},
+	{-15, 0x808080808080ffff},
+	{-10, 0x03030303030303ff},
+	{-9, 0x01010101010101ff},
+	{-8, 0x00000000000000ff},
+	{-7, 0x80808080808080ff},
+	{-6, 0xc0c0c0c0c0c0c0ff},
+	{-1, 0x0101010101010101},
+	{1, 0x8080808080808080},
+	{6, 0xff03030303030303},
+	{7, 0xff01010101010101},
+	{8, 0xff00000000000000},
+	{9, 0xff80808080808080},
+	{10, 0xffc0c0c0c0c0c0c0},
+	{15, 0xffff010101010101},
+	{17, 0xffff808080808080}
+};
+
 void Position::parse_fen(std::string fen) {
 	//TODO: implement a way to backup the values so if a parse error occurs, we can revert the position.
 
@@ -138,7 +167,7 @@ void Position::parse_fen(std::string fen) {
 	return;
 }
 
-void Position::display_bitboard(uint64_t bitboard, std::string title, char piece_c, char empty_c) {
+void Position::disp_bitboard(uint64_t bitboard, std::string title, char piece_c, char empty_c) {
 	if (title != "") {
 		std::cout << title << "\n";
 	}
@@ -165,12 +194,12 @@ void Position::display_bitboard(uint64_t bitboard, std::string title, char piece
 	std::cout << '\n';
 }
 
-void Position::display_bitboard(uint64_t bitboard, std::string title) {
-	display_bitboard(bitboard, title, 'X', ' ');
+void Position::disp_bitboard(uint64_t bitboard, std::string title) {
+	disp_bitboard(bitboard, title, 'X', ' ');
 }
 
-void Position::display_bitboard(uint64_t bitboard) {
-	display_bitboard(bitboard, "");
+void Position::disp_bitboard(uint64_t bitboard) {
+	disp_bitboard(bitboard, "");
 }
 
 void Position::disp_bitboards() {
@@ -183,13 +212,13 @@ void Position::disp_bitboards() {
 	int i = 0;
 	std::cout << "\nPieces by Color\n";
 	for (auto bitboard : this->pieces_by_color) {
-		display_bitboard(bitboard, colors[i], color_cs[i], ' ');
+		disp_bitboard(bitboard, colors[i], color_cs[i], ' ');
 		++i;
 	}
 	i = 0;
 	std::cout << "\nPieces by Type\n";
 	for (auto bitboard : this->pieces_by_type) {
-		display_bitboard(bitboard, types[i], pcs[i], ' ');
+		disp_bitboard(bitboard, types[i], pcs[i], ' ');
 		++i;
 	}
 }
@@ -279,3 +308,10 @@ void Position::disp() {
 Colors Position::get_turn() {
 	return static_cast<Colors>(((ply - 1) % 2));
 }
+
+//std::vector<Move> Position::move_gen() {
+//	for (int i = 0; i < pieces_by_type.size(); ++i) {
+//		auto pieces_of_type = pieces_by_type[i];
+//
+//	}
+//}
