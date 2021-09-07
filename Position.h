@@ -22,7 +22,14 @@ private:
 					// 2 bits for in-check status (x1b-W, 1xb-B)
 					// 2 bonus bits!
 
+	std::vector<Move> move_gen_p(uint64_t from);
+	std::vector<Move> move_gen_k(uint64_t from);
+	std::vector<Move> move_gen_sliders(uint64_t from, Types type);
+
 public:
+	// Testing - do not leave here!
+	std::vector<Move> move_gen_generic(uint64_t from, std::vector<int> directions, unsigned int max_distance = -1);
+
 	// Constructors
 	Position(std::string fen) { parse_fen(fen); }
 	Position() : Position( "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" ) {} // default standard starting position for chess, in FEN notation
@@ -34,6 +41,9 @@ public:
 	static void disp_bitboard(uint64_t bitboard, std::string title);
 	static void disp_bitboard(uint64_t bitboard);
 	Colors get_turn();
+	Types get_type(uint64_t square);
+	bool can_Q_castle();
+	bool can_K_castle();
 	void disp_bitboards();
 	void disp_castling();
 	void disp_epsq();

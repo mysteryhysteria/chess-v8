@@ -1,38 +1,41 @@
 #include <string>
 #include <iostream>
 #include <bitset>
+#include <utility>
 #include <assert.h>
+#include "Move.h"
 #include "Position.h"
 #include "Types.h"
 #include "Colors.h"
 
-std::map<Types, std::vector<int>> move_directions = {
-	{PAWN, {-8, 8}},
-	{KNIGHT, {-17, -15, -10, -6, 6, 10, 15, 17}},
-	{BISHOP, {-9, -7, 7, 9}},
-	{ROOK,  {-8, -1, 1, 8}},
-	{QUEEN, {-9, -8, -7, -1, 1, 7, 8, 9}},
-	{KING, {-9, -8, -7, -1, 1, 7, 8, 9}}
+// map from piece types to valid move directions for each piece
+std::vector<int> move_directions[6] = {
+	{-8, 8}, // Pawn
+	{-17, -15, -10, -6, 6, 10, 15, 17}, // Knight
+	{-9, -7, 7, 9}, // Rook
+	{-8, -1, 1, 8}, // Bishop
+	{-9, -8, -7, -1, 1, 7, 8, 9}, // Queen
+	{-9, -8, -7, -1, 1, 7, 8, 9} // King
 };
 
-// 
+// map of move directions to bitmasks for the move generation
 std::map<int, uint64_t> move_masks = {
-	{-17, 0x010101010101ffff},
-	{-15, 0x808080808080ffff},
-	{-10, 0x03030303030303ff},
-	{-9, 0x01010101010101ff},
-	{-8, 0x00000000000000ff},
-	{-7, 0x80808080808080ff},
-	{-6, 0xc0c0c0c0c0c0c0ff},
-	{-1, 0x0101010101010101},
-	{1, 0x8080808080808080},
-	{6, 0xff03030303030303},
-	{7, 0xff01010101010101},
-	{8, 0xff00000000000000},
-	{9, 0xff80808080808080},
-	{10, 0xffc0c0c0c0c0c0c0},
-	{15, 0xffff010101010101},
-	{17, 0xffff808080808080}
+	{-17, ~0x010101010101ffff},
+	{-15, ~0x808080808080ffff},
+	{-10, ~0x03030303030303ff},
+	{-9, ~0x01010101010101ff},
+	{-8, ~0x00000000000000ff},
+	{-7, ~0x80808080808080ff},
+	{-6, ~0xc0c0c0c0c0c0c0ff},
+	{-1, ~0x0101010101010101},
+	{1, ~0x8080808080808080},
+	{6, ~0xff03030303030303},
+	{7, ~0xff01010101010101},
+	{8, ~0xff00000000000000},
+	{9, ~0xff80808080808080},
+	{10, ~0xffc0c0c0c0c0c0c0},
+	{15, ~0xffff010101010101},
+	{17, ~0xffff808080808080}
 };
 
 void Position::parse_fen(std::string fen) {
@@ -202,6 +205,24 @@ void Position::disp_bitboard(uint64_t bitboard) {
 	disp_bitboard(bitboard, "");
 }
 
+bool Position::can_K_castle()
+{
+	uint8_t cast_flag, mask = 0b00000001;
+
+	(get_turn()) ? (cast_flag = ((flags >> 2) & mask)) : (cast_flag = (flags & mask));
+
+	return (bool) cast_flag;
+}
+
+bool Position::can_Q_castle()
+{
+	uint8_t cast_flag, mask = 0b00000010;
+
+	(get_turn()) ? (cast_flag = ((flags >> 2) & mask)) : (cast_flag = (flags & mask));
+
+	return (bool) cast_flag;
+}
+
 void Position::disp_bitboards() {
 
 	std::array<std::string, 2> colors = { "White:", "Black:" };
@@ -242,7 +263,7 @@ void Position::disp_epsq() {
 	if (available) {
 		assert(std::bitset<64>(epsq).count() == 1); // assert that epsq only contains a single 1-bit
 		unsigned int maxbit = 0;
-		while ((epsq >> maxbit + 1) > 0) maxbit++;
+		while ((epsq >> (maxbit + 1)) > 0) maxbit++;
 
 		unsigned int file_i = maxbit % 8;
 		unsigned int rank_i = 8 - (maxbit / 8); // Dont worry, it truncates
@@ -308,6 +329,78 @@ void Position::disp() {
 Colors Position::get_turn() {
 	return static_cast<Colors>(((ply - 1) % 2));
 }
+
+Types Position::get_type(uint64_t square)
+{
+	assert(std::bitset<64>(square).count() == 1);
+	for (int i = 0; i < pieces_by_type.size(); ++i) {
+		auto pieces_of_type = pieces_by_type[i];
+		if (square & pieces_of_type) { return static_cast<Types>(i); }
+	}
+	return NONE;
+}
+
+std::vector<Move> Position::move_gen_generic(uint64_t from, std::vector<int> directions, unsigned int max_distance) {
+	uint64_t move_mask, to;
+	int gen_dist;
+	std::vector<Move> moves;
+	Types from_type = get_type(from);
+
+	assert(from_type != NONE); // make sure that the piece we are generating moves for isnt a none type
+	
+	for (auto dir : directions) {	// loop over each given direction.
+		assert(dir != 0);			// cannot allow a no-direction.
+
+		to = from;						// init the move square to the from square.
+		gen_dist = 0;					// init the distance checked so far.
+		move_mask = move_masks[dir];	// get the correct move mask for this direction.
+
+		// keep incrementing in the specified direction until either 1) the starting position is in the move mask or 2) the gen_distance has reached the max.
+		while (((move_mask & to) != 0) && (gen_dist++ != max_distance)) {
+			
+			// if the direction is negative, we want to perform right-shifting, left-shifting for positive values.
+			(dir < 0) ? (to >>= abs(dir)) : (to <<= dir);
+
+			// the condition evaluates if the "to" square intersects with its own pieces. if so, this move is illegal and no more moves in this direction are legal.
+			if (to & pieces_by_color[get_turn()]) { break; }
+
+			// the condition evaluates if the "to" square intersects with the opponents pieces. if so, this move is a capture and no more moves in this direction are legal.
+			if (to & pieces_by_color[!get_turn()]) {
+				assert(get_type(to) != NONE); // make sure that we arent capturing a none type
+
+				moves.push_back(Move(from, to, get_turn(), from_type, get_type(to)));
+				break;
+			} 
+
+			// if neither previous condition evaluates true, then this move is legal and we can continue in this direction.
+			moves.push_back(Move(from, to, get_turn(), from_type));
+		}
+	}
+	return moves;
+}
+
+std::vector<Move> Position::move_gen_k(uint64_t from)
+{
+	Move to;
+
+	std::vector<Move> std_moves, castle_moves;
+	std_moves = move_gen_sliders(from, KING);
+	if (can_K_castle) {
+		to = move_gen_generic(from, { 2 }, 1)[0];
+	}
+	if (can_Q_castle) {
+		to = move_gen_generic(from, { -2 }, 1)[0];
+	}
+}
+
+std::vector<Move> Position::move_gen_sliders(uint64_t from, Types type) {
+	assert(type != PAWN); // function cannot be used with pawns as it will cause pawns to have a backwards move as well.
+
+	unsigned int max_distance = -1;
+	if (type == KNIGHT) { max_distance = 1; };
+	return move_gen_generic(from, move_directions[type], max_distance);
+}
+
 
 //std::vector<Move> Position::move_gen() {
 //	for (int i = 0; i < pieces_by_type.size(); ++i) {

@@ -29,4 +29,5 @@ public:
 	// for standard positional moves
 	Move(uint64_t from, uint64_t to, Colors color, Types type) : Move(from, to, color, type, Types::NONE) {}
 
+	Move() : Move(0ULL, 0ULL, Colors::WHITE, Types::NONE) {}
 };
