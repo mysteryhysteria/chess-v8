@@ -22,3 +22,18 @@ std::string TypestoString(Types value)
 	return s;
 }
 
+char TypestoChar(Types value) {
+	char c;
+	switch (value) {
+	case(PAWN):		c = 'P';	break;
+	case(KNIGHT):	c = 'N';	break;
+	case(BISHOP):	c = 'B';	break;
+	case(ROOK):		c = 'R';	break;
+	case(QUEEN):	c = 'Q';	break;
+	case(KING):		c = 'K';	break;
+	default:		c = ' ';
+	}
+	return c;
+
+}
+

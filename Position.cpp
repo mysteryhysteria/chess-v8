@@ -7,15 +7,21 @@
 #include "Position.h"
 #include "Types.h"
 #include "Colors.h"
+#include "Utils.h"
 
 // map from piece types to valid move directions for each piece
-std::vector<int> move_directions[6] = {
+const std::vector<std::vector<int>> move_directions = {
 	{-8, 8}, // Pawn
 	{-17, -15, -10, -6, 6, 10, 15, 17}, // Knight
 	{-9, -7, 7, 9}, // Rook
 	{-8, -1, 1, 8}, // Bishop
 	{-9, -8, -7, -1, 1, 7, 8, 9}, // Queen
 	{-9, -8, -7, -1, 1, 7, 8, 9} // King
+};
+
+const std::vector<std::vector<int>> pawn_capt_directions = {
+	{-9, -7}, // White
+	{7, 9} // Black
 };
 
 // map of move directions to bitmasks for the move generation
@@ -205,6 +211,7 @@ void Position::disp_bitboard(uint64_t bitboard) {
 	disp_bitboard(bitboard, "");
 }
 
+// re-implement these so that they actually determine if legal castling can be done
 bool Position::can_K_castle()
 {
 	uint8_t cast_flag, mask = 0b00000001;
@@ -261,7 +268,7 @@ void Position::disp_epsq() {
 	std::cout << std::boolalpha << "\nEn Passant\n";
 
 	if (available) {
-		assert(std::bitset<64>(epsq).count() == 1); // assert that epsq only contains a single 1-bit
+		ASSERT_ONE_SQUARE(epsq); // assert that epsq only contains a single 1-bit
 		unsigned int maxbit = 0;
 		while ((epsq >> (maxbit + 1)) > 0) maxbit++;
 
@@ -298,6 +305,7 @@ void Position::disp() {
 		if (sq % 8 == 0) { std::cout << "|"; };
 		mask = 1ULL << sq;
 		if ((all & mask) > 0) { // if there is a piece in this square...
+			color = WHITE;
 			for (int i = 0; i < pieces_by_color.size(); ++i) {
 				bitboard = pieces_by_color[i];
 				if ((bitboard & mask) > 0) {
@@ -305,6 +313,7 @@ void Position::disp() {
 					break;
 				}
 			}
+			type = NONE;
 			for (int i = 0; i < pieces_by_type.size(); ++i) {
 				bitboard = pieces_by_type[i];
 				if ((bitboard & mask) > 0) {
@@ -332,7 +341,7 @@ Colors Position::get_turn() {
 
 Types Position::get_type(uint64_t square)
 {
-	assert(std::bitset<64>(square).count() == 1);
+	ASSERT_ONE_SQUARE(square);
 	for (int i = 0; i < pieces_by_type.size(); ++i) {
 		auto pieces_of_type = pieces_by_type[i];
 		if (square & pieces_of_type) { return static_cast<Types>(i); }
@@ -340,13 +349,26 @@ Types Position::get_type(uint64_t square)
 	return NONE;
 }
 
-std::vector<Move> Position::move_gen_generic(uint64_t from, std::vector<int> directions, unsigned int max_distance) {
+bool Position::on_pawn_start_rank(uint64_t square) {
+	unsigned int n;
+	!get_turn() ? n = 1 : n = 6;
+	return on_nth_rank(square, n);
+}
+
+bool Position::on_promote_rank(uint64_t square) {
+	unsigned int n;
+	!get_turn() ? n = 7 : n = 0;
+	return on_nth_rank(square, n);
+}
+
+std::vector<Move> Position::move_gen_generic(uint64_t from, std::vector<int> directions, unsigned int max_distance, bool capt_only) {
 	uint64_t move_mask, to;
 	int gen_dist;
 	std::vector<Move> moves;
 	Types from_type = get_type(from);
 
 	assert(from_type != NONE); // make sure that the piece we are generating moves for isnt a none type
+	assert((from & pieces_by_type[from_type]) != 0); // ensure that from is a piece of the correct type
 	
 	for (auto dir : directions) {	// loop over each given direction.
 		assert(dir != 0);			// cannot allow a no-direction.
@@ -367,39 +389,128 @@ std::vector<Move> Position::move_gen_generic(uint64_t from, std::vector<int> dir
 			// the condition evaluates if the "to" square intersects with the opponents pieces. if so, this move is a capture and no more moves in this direction are legal.
 			if (to & pieces_by_color[!get_turn()]) {
 				assert(get_type(to) != NONE); // make sure that we arent capturing a none type
-
 				moves.push_back(Move(from, to, get_turn(), from_type, get_type(to)));
 				break;
 			} 
 
 			// if neither previous condition evaluates true, then this move is legal and we can continue in this direction.
-			moves.push_back(Move(from, to, get_turn(), from_type));
+			if (!capt_only) {
+				moves.push_back(Move(from, to, get_turn(), from_type));
+			}
 		}
 	}
 	return moves;
-}
-
-std::vector<Move> Position::move_gen_k(uint64_t from)
-{
-	Move to;
-
-	std::vector<Move> std_moves, castle_moves;
-	std_moves = move_gen_sliders(from, KING);
-	if (can_K_castle) {
-		to = move_gen_generic(from, { 2 }, 1)[0];
-	}
-	if (can_Q_castle) {
-		to = move_gen_generic(from, { -2 }, 1)[0];
-	}
 }
 
 std::vector<Move> Position::move_gen_sliders(uint64_t from, Types type) {
 	assert(type != PAWN); // function cannot be used with pawns as it will cause pawns to have a backwards move as well.
 
 	unsigned int max_distance = -1;
-	if (type == KNIGHT) { max_distance = 1; };
+	if (type == KNIGHT || type == KING) { max_distance = 1; };
 	return move_gen_generic(from, move_directions[type], max_distance);
 }
+
+std::vector<Move> Position::move_gen_k(uint64_t from)
+{
+	assert((from & pieces_by_type[KING]) != 0); //ensure that this piece is a king
+	std::vector<Move> moves, temp_moves;
+
+	moves = move_gen_sliders(from, KING);
+	/* No castling moves yet until the checks are implemented properly
+	if (can_K_castle()) {
+		temp_moves = move_gen_generic(from, { 2 }, 1);
+		assert(temp_moves.size() == 1);
+
+		// update move to be the more specific move type of castling
+		temp_moves[0].set_move_type(CASTLE).set_special(from >> 4); // changes to a castle move and adds the King's rook square to the special field
+		moves.push_back(temp_moves[0]);
+	}
+	if (can_Q_castle()) {
+		temp_moves = move_gen_generic(from, { -2 }, 1);
+		assert(temp_moves.size() == 1);
+
+		temp_moves[0].set_move_type(CASTLE).set_special(from << 3); // changes to a castle move and adds the Queen's rook square to the special field
+		moves.push_back(temp_moves[0]);
+	}
+	*/
+	return moves;
+}
+
+std::vector<Move> Position::move_gen_p(uint64_t from) {
+	ASSERT_ONE_SQUARE(from);
+	std::vector<Move> moves, temp_moves;
+	Move promote_move;
+	unsigned int max_distance;
+	Colors turn = get_turn();
+
+	// Get pawn push moves
+	(on_pawn_start_rank(from)) ? (max_distance = 2) : (max_distance = 1);
+	moves = move_gen_generic(from, { move_directions[PAWN][turn] }, max_distance);
+
+	// Get standard pawn capture moves
+	temp_moves = move_gen_generic(from, pawn_capt_directions[turn], 1, true);
+	moves.insert(moves.end(), temp_moves.begin(), temp_moves.end());
+
+	// Check all generated moves to see if any are eligible for promotion
+	int old_size = moves.size();
+	for (int i = 0; i < old_size; ++i) {
+		if (on_promote_rank(moves[i].get_to())) {
+			promote_move = moves[i].set_move_type(PROMOTION);
+			for (int j = 1; j < 5; ++j) {
+				promote_move.set_promote_type(static_cast<Types>(i));
+				if (j == 1) {
+					moves[i] = promote_move; // overwrite the found move with the first promotion move
+				}
+				else {
+					moves.push_back(promote_move); // append the remaining promotion moves
+				}
+			}
+		}
+	}
+
+	// En Passant moves
+	if (epsq) {
+		ASSERT_ONE_SQUARE(epsq);
+		if ((from >> 7) == epsq || (from << 9) == epsq) {
+			moves.push_back(Move(from, epsq, from << 1, turn, PAWN, PAWN, NONE, EN_PASSANT));
+		}
+		if ((from >> 9) == epsq || (from << 7) == epsq) {
+			moves.push_back(Move(from, epsq, from >> 1, turn, PAWN, PAWN, NONE, EN_PASSANT));
+		}
+	}
+	return moves;
+}
+
+std::vector<Move> Position::move_gen()
+{
+	Colors turn = get_turn();
+	uint64_t pieces, from;
+	Types type;
+	std::vector<Move> moves, temp_moves;
+
+	for (int i = 0; i < pieces_by_type.size(); ++i) { // for each piece type...
+		pieces = pieces_by_type[i] & pieces_by_color[turn]; // get the pieces of that type and of the right color
+		type = static_cast<Types>(i); // calculate the type from the iteration var
+
+		while ((from = (pieces & (~pieces + 1))) != 0) { // while the from square is not zero (calculates the next from square by isolated the least significant bit)
+			pieces &= (~from); // remove the from square from the set of pieces
+			switch (type) { // based on which type of piece this is...
+				case PAWN: 
+					temp_moves = move_gen_p(from); // generate pawn moves if its a pawn
+					break;
+				case KING:
+					temp_moves = move_gen_k(from); // generate king moves if its a king
+					break;
+				default:
+					temp_moves = move_gen_sliders(from, type); // generate all the other pieces moves if its neither
+			}
+			moves.insert(moves.end(), temp_moves.begin(), temp_moves.end()); // append the found moves to the end of the move list
+		}
+	}
+
+	return moves;
+}
+
 
 
 //std::vector<Move> Position::move_gen() {

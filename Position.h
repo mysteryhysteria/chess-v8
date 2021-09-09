@@ -25,10 +25,10 @@ private:
 	std::vector<Move> move_gen_p(uint64_t from);
 	std::vector<Move> move_gen_k(uint64_t from);
 	std::vector<Move> move_gen_sliders(uint64_t from, Types type);
+	std::vector<Move> move_gen_generic(uint64_t from, std::vector<int> directions, unsigned int max_distance = -1, bool capt_only = false);
 
 public:
 	// Testing - do not leave here!
-	std::vector<Move> move_gen_generic(uint64_t from, std::vector<int> directions, unsigned int max_distance = -1);
 
 	// Constructors
 	Position(std::string fen) { parse_fen(fen); }
@@ -42,6 +42,8 @@ public:
 	static void disp_bitboard(uint64_t bitboard);
 	Colors get_turn();
 	Types get_type(uint64_t square);
+	bool on_pawn_start_rank(uint64_t square);
+	bool on_promote_rank(uint64_t square);
 	bool can_Q_castle();
 	bool can_K_castle();
 	void disp_bitboards();
