@@ -8,6 +8,10 @@
 #include "Types.h"
 #include "Colors.h"
 
+const enum MoveOptions { PLACE = 1, CAPT = 2, SELF_CAPT = 4 };
+
+MoveOptions operator|(MoveOptions lhs, MoveOptions rhs);
+
 class Position {
 private:
 	// index these bitboard arrays with the enums defined above!
@@ -18,14 +22,17 @@ private:
 
 	uint16_t ply; // count of the current ply
 	uint16_t ply_clock; // number of plys that have been played since the last capture or pawn move
-	uint8_t flags;	// 4 bits for castling rights (xxx1b-WK, xx1xb-WQ, x1xxb-BK, 1xxxb-BQ)
-					// 2 bits for in-check status (x1b-W, 1xb-B)
-					// 2 bonus bits!
+	uint8_t flags;	// 4 bits for castling rights (0bxxx1-WK, 0bxx1xb-WQ, 0bx1xxb-BK, 0b1xxxb-BQ)
+					// 1 bit for in-check status (0b1-Check, 0b0-No Check)
+					// 3 bonus bits!
 
 	std::vector<Move> move_gen_p(uint64_t from);
 	std::vector<Move> move_gen_k(uint64_t from);
 	std::vector<Move> move_gen_sliders(uint64_t from, Types type);
-	std::vector<Move> move_gen_generic(uint64_t from, std::vector<int> directions, unsigned int max_distance = -1, bool capt_only = false);
+	std::vector<Move> move_gen_generic(uint64_t from, std::vector<int> directions, unsigned int max_distance = -1, MoveOptions move_opts = (MoveOptions::PLACE | MoveOptions::CAPT));
+	bool attacked_by_piece(Types piece_type, uint64_t from);
+	bool square_covered(uint64_t from);
+	void set_in_check();
 
 public:
 	// Testing - do not leave here!
@@ -44,8 +51,9 @@ public:
 	Types get_type(uint64_t square);
 	bool on_pawn_start_rank(uint64_t square);
 	bool on_promote_rank(uint64_t square);
-	bool can_Q_castle();
-	bool can_K_castle();
+	bool Q_castle_right();
+	bool K_castle_right();
+	bool in_check();
 	void disp_bitboards();
 	void disp_castling();
 	void disp_epsq();

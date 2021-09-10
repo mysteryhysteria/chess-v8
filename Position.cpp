@@ -33,8 +33,10 @@ std::map<int, uint64_t> move_masks = {
 	{-8, ~0x00000000000000ff},
 	{-7, ~0x80808080808080ff},
 	{-6, ~0xc0c0c0c0c0c0c0ff},
+	{-2, ~0x0303030303030303},
 	{-1, ~0x0101010101010101},
 	{1, ~0x8080808080808080},
+	{2, ~0xc0c0c0c0c0c0c0c0},
 	{6, ~0xff03030303030303},
 	{7, ~0xff01010101010101},
 	{8, ~0xff00000000000000},
@@ -43,6 +45,10 @@ std::map<int, uint64_t> move_masks = {
 	{15, ~0xffff010101010101},
 	{17, ~0xffff808080808080}
 };
+
+MoveOptions operator|(MoveOptions lhs, MoveOptions rhs) {
+	return static_cast<MoveOptions> (int (lhs) | int (rhs));
+}
 
 void Position::parse_fen(std::string fen) {
 	//TODO: implement a way to backup the values so if a parse error occurs, we can revert the position.
@@ -212,7 +218,7 @@ void Position::disp_bitboard(uint64_t bitboard) {
 }
 
 // re-implement these so that they actually determine if legal castling can be done
-bool Position::can_K_castle()
+bool Position::K_castle_right()
 {
 	uint8_t cast_flag, mask = 0b00000001;
 
@@ -221,7 +227,7 @@ bool Position::can_K_castle()
 	return (bool) cast_flag;
 }
 
-bool Position::can_Q_castle()
+bool Position::Q_castle_right()
 {
 	uint8_t cast_flag, mask = 0b00000010;
 
@@ -324,7 +330,7 @@ void Position::disp() {
 			std::cout << " " << (color == BLACK ? char (tolower(type_c[type])) : char (type_c[type]));
 		}
 		else {
-			std::cout << "  ";
+		std::cout << "  ";
 		}
 		if (sq % 8 == 7) { std::cout << " |" << std::endl; };
 	}
@@ -361,7 +367,7 @@ bool Position::on_promote_rank(uint64_t square) {
 	return on_nth_rank(square, n);
 }
 
-std::vector<Move> Position::move_gen_generic(uint64_t from, std::vector<int> directions, unsigned int max_distance, bool capt_only) {
+std::vector<Move> Position::move_gen_generic(uint64_t from, std::vector<int> directions, unsigned int max_distance, MoveOptions move_opts) {
 	uint64_t move_mask, to;
 	int gen_dist;
 	std::vector<Move> moves;
@@ -369,7 +375,7 @@ std::vector<Move> Position::move_gen_generic(uint64_t from, std::vector<int> dir
 
 	assert(from_type != NONE); // make sure that the piece we are generating moves for isnt a none type
 	assert((from & pieces_by_type[from_type]) != 0); // ensure that from is a piece of the correct type
-	
+
 	for (auto dir : directions) {	// loop over each given direction.
 		assert(dir != 0);			// cannot allow a no-direction.
 
@@ -379,27 +385,88 @@ std::vector<Move> Position::move_gen_generic(uint64_t from, std::vector<int> dir
 
 		// keep incrementing in the specified direction until either 1) the starting position is in the move mask or 2) the gen_distance has reached the max.
 		while (((move_mask & to) != 0) && (gen_dist++ != max_distance)) {
-			
+
 			// if the direction is negative, we want to perform right-shifting, left-shifting for positive values.
 			(dir < 0) ? (to >>= abs(dir)) : (to <<= dir);
 
 			// the condition evaluates if the "to" square intersects with its own pieces. if so, this move is illegal and no more moves in this direction are legal.
-			if (to & pieces_by_color[get_turn()]) { break; }
+			if (to & pieces_by_color[get_turn()]) {
+				assert(get_type(to) != NONE);
+				if (move_opts & MoveOptions::SELF_CAPT) {
+					moves.push_back(Move(from, to, get_turn(), from_type, get_type(to)));
+				}
+				break;
+			}
 
 			// the condition evaluates if the "to" square intersects with the opponents pieces. if so, this move is a capture and no more moves in this direction are legal.
 			if (to & pieces_by_color[!get_turn()]) {
 				assert(get_type(to) != NONE); // make sure that we arent capturing a none type
-				moves.push_back(Move(from, to, get_turn(), from_type, get_type(to)));
+				if (move_opts & MoveOptions::CAPT) {
+					moves.push_back(Move(from, to, get_turn(), from_type, get_type(to)));
+				}
 				break;
-			} 
+			}
 
 			// if neither previous condition evaluates true, then this move is legal and we can continue in this direction.
-			if (!capt_only) {
+			if (move_opts & MoveOptions::PLACE) {
 				moves.push_back(Move(from, to, get_turn(), from_type));
 			}
 		}
 	}
 	return moves;
+}
+
+bool Position::attacked_by_piece(Types piece_type, uint64_t from) {
+	uint64_t mask, to;
+	unsigned int	gen_dist,
+					max_distance = -1;
+
+	if (piece_type == PAWN || piece_type == KNIGHT || piece_type == KING) { max_distance = 1; }
+
+	if (piece_type == PAWN) { auto directions = pawn_capt_directions[get_turn()]; }
+	else { auto directions = move_directions[piece_type]; }
+
+	for (auto dir : move_directions[piece_type]) {
+		to = from;
+		gen_dist = 0;
+		mask = move_masks[dir];
+		while (((mask & to) != 0) && (gen_dist++ != max_distance)) {
+			(dir < 0) ? (to >>= abs(dir)) : (to <<= dir);
+			if (to & pieces_by_color[!get_turn()]) { // found an opponent's piece
+				if (get_type(to) == piece_type) {
+					return true;
+				}
+			}
+			else if (to & pieces_by_color[get_turn()]) { // found a friendly piece, which blocks enemy pieces!
+				break;
+			}
+			// otherwise continue the search
+		}
+	}
+	return false;
+}
+
+bool Position::square_covered(uint64_t from) {
+	for (int i = 0; i < 6; ++i) {
+		if (attacked_by_piece(static_cast<Types>(i), from)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void Position::set_in_check() {
+	auto king_sq = pieces_by_color[get_turn()] & pieces_by_type[KING];
+	if (square_covered(king_sq)) {
+		flags |= (1 << 4); // set the "in-check" bit.
+	}
+	else {
+		flags &= (~(1 << 4)); // unset the "in-check" bit.
+	}
+}
+
+bool Position::in_check() {
+	return flags & (1 << 4);
 }
 
 std::vector<Move> Position::move_gen_sliders(uint64_t from, Types type) {
@@ -416,23 +483,28 @@ std::vector<Move> Position::move_gen_k(uint64_t from)
 	std::vector<Move> moves, temp_moves;
 
 	moves = move_gen_sliders(from, KING);
-	/* No castling moves yet until the checks are implemented properly
-	if (can_K_castle()) {
-		temp_moves = move_gen_generic(from, { 2 }, 1);
-		assert(temp_moves.size() == 1);
 
-		// update move to be the more specific move type of castling
-		temp_moves[0].set_move_type(CASTLE).set_special(from >> 4); // changes to a castle move and adds the King's rook square to the special field
-		moves.push_back(temp_moves[0]);
-	}
-	if (can_Q_castle()) {
-		temp_moves = move_gen_generic(from, { -2 }, 1);
-		assert(temp_moves.size() == 1);
+	if (!in_check()) { // if not in check...
+		if (K_castle_right()) { // see if we have the right to castle kingside
+			if (!square_covered(from << 1) && !square_covered(from << 2)) { // see if the conditions for castling are met
+				temp_moves = move_gen_generic(from, { 2 }, 1); 
+				assert(temp_moves.size() == 1);
 
-		temp_moves[0].set_move_type(CASTLE).set_special(from << 3); // changes to a castle move and adds the Queen's rook square to the special field
-		moves.push_back(temp_moves[0]);
+				// update move to be the more specific move type of castling
+				temp_moves[0].set_move_type(CASTLE).set_special(from >> 4); // changes to a castle move and adds the King's rook square to the special field
+				moves.push_back(temp_moves[0]);
+			}
+		}
+		if (Q_castle_right()) { // see if we have the right to castle queenside
+			if (!square_covered(from >> 1) && !square_covered(from >> 2)) { // see if the conditions for castling are met
+				temp_moves = move_gen_generic(from, { -2 }, 1);
+				assert(temp_moves.size() == 1);
+
+				temp_moves[0].set_move_type(CASTLE).set_special(from << 3); // changes to a castle move and adds the Queen's rook square to the special field
+				moves.push_back(temp_moves[0]);
+			}
+		}
 	}
-	*/
 	return moves;
 }
 
@@ -445,10 +517,10 @@ std::vector<Move> Position::move_gen_p(uint64_t from) {
 
 	// Get pawn push moves
 	(on_pawn_start_rank(from)) ? (max_distance = 2) : (max_distance = 1);
-	moves = move_gen_generic(from, { move_directions[PAWN][turn] }, max_distance);
+	moves = move_gen_generic(from, { move_directions[PAWN][turn] }, max_distance, MoveOptions::PLACE);
 
 	// Get standard pawn capture moves
-	temp_moves = move_gen_generic(from, pawn_capt_directions[turn], 1, true);
+	temp_moves = move_gen_generic(from, pawn_capt_directions[turn], 1, MoveOptions::CAPT);
 	moves.insert(moves.end(), temp_moves.begin(), temp_moves.end());
 
 	// Check all generated moves to see if any are eligible for promotion
@@ -488,6 +560,8 @@ std::vector<Move> Position::move_gen()
 	Types type;
 	std::vector<Move> moves, temp_moves;
 
+	set_in_check(); // set the check status for the position. Allows all other move generation to refer to a valid in_check bit
+
 	for (int i = 0; i < pieces_by_type.size(); ++i) { // for each piece type...
 		pieces = pieces_by_type[i] & pieces_by_color[turn]; // get the pieces of that type and of the right color
 		type = static_cast<Types>(i); // calculate the type from the iteration var
@@ -507,7 +581,6 @@ std::vector<Move> Position::move_gen()
 			moves.insert(moves.end(), temp_moves.begin(), temp_moves.end()); // append the found moves to the end of the move list
 		}
 	}
-
 	return moves;
 }
 

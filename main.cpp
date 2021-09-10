@@ -10,7 +10,7 @@
 // stores a mapping from piece types to what move directions they have for their standard moves.
 
 int main() {
-	Position P("rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2");
+	Position P("r3k2r/8/8/8/3q4/8/3B4/R3K2R w KQkq - 0 1");
 	P.disp();
 	for (auto move : P.move_gen()) {
 		std::cout << move;
