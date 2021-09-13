@@ -3,6 +3,7 @@
 #include <bitset>
 #include <utility>
 #include <assert.h>
+#include "Square.h"
 #include "Move.h"
 #include "Position.h"
 #include "Types.h"
@@ -44,6 +45,28 @@ std::map<int, uint64_t> move_masks = {
 	{10, ~0xffc0c0c0c0c0c0c0},
 	{15, ~0xffff010101010101},
 	{17, ~0xffff808080808080}
+};
+
+std::array<uint64_t, 8> rank_masks = {
+	0xff00000000000000,
+	0x00ff000000000000,
+	0x0000ff0000000000,
+	0x000000ff00000000,
+	0x00000000ff000000,
+	0x0000000000ff0000,
+	0x000000000000ff00,
+	0x00000000000000ff
+};
+
+std::array<uint64_t, 8> file_masks = {
+	0x0101010101010101,
+	0x0202020202020202,
+	0x0404040404040404,
+	0x0808080808080808,
+	0x1010101010101010,
+	0x2020202020202020,
+	0x4040404040404040,
+	0x8080808080808080
 };
 
 MoveOptions operator|(MoveOptions lhs, MoveOptions rhs) {
@@ -269,17 +292,16 @@ void Position::disp_castling() {
 }
 
 void Position::disp_epsq() {
-	bool available = (bool) epsq;
+	bool available = !epsq.empty();
 	std::string square_an = "";
 	std::cout << std::boolalpha << "\nEn Passant\n";
 
 	if (available) {
 		ASSERT_ONE_SQUARE(epsq); // assert that epsq only contains a single 1-bit
-		unsigned int maxbit = 0;
-		while ((epsq >> (maxbit + 1)) > 0) maxbit++;
-
-		unsigned int file_i = maxbit % 8;
-		unsigned int rank_i = 8 - (maxbit / 8); // Dont worry, it truncates
+		unsigned int index, file_i, rank_i;
+		index = epsq.convert_to_index();
+		file_i = index % 8;
+		rank_i = 8 - (index / 8); // Dont worry, it truncates
 		square_an.append(1, 'a' + file_i).append(1, '0' + rank_i);
 	}
 	else {
@@ -345,30 +367,22 @@ Colors Position::get_turn() {
 	return static_cast<Colors>(((ply - 1) % 2));
 }
 
-Types Position::get_type(uint64_t square)
-{
-	ASSERT_ONE_SQUARE(square);
+Types Position::get_type(Square sq) {
+	auto sq_bb = sq.get_bitboard();
 	for (int i = 0; i < pieces_by_type.size(); ++i) {
 		auto pieces_of_type = pieces_by_type[i];
-		if (square & pieces_of_type) { return static_cast<Types>(i); }
+		if (sq_bb & pieces_of_type) { return static_cast<Types>(i); }
 	}
 	return NONE;
 }
 
-bool Position::on_pawn_start_rank(uint64_t square) {
-	unsigned int n;
-	!get_turn() ? n = 1 : n = 6;
-	return on_nth_rank(square, n);
+bool Position::is_type(Square sq, Types type) {
+	return bool(sq & pieces_by_type[type]);
 }
 
-bool Position::on_promote_rank(uint64_t square) {
-	unsigned int n;
-	!get_turn() ? n = 7 : n = 0;
-	return on_nth_rank(square, n);
-}
-
-std::vector<Move> Position::move_gen_generic(uint64_t from, std::vector<int> directions, unsigned int max_distance, MoveOptions move_opts) {
-	uint64_t move_mask, to;
+std::vector<Move> Position::move_gen_generic(Square from, std::vector<int> directions, unsigned int max_distance, MoveOptions move_opts) {
+	uint64_t move_mask;
+	Square to = from; // init the move square to the from square
 	int gen_dist;
 	std::vector<Move> moves;
 	Types from_type = get_type(from);
@@ -379,12 +393,11 @@ std::vector<Move> Position::move_gen_generic(uint64_t from, std::vector<int> dir
 	for (auto dir : directions) {	// loop over each given direction.
 		assert(dir != 0);			// cannot allow a no-direction.
 
-		to = from;						// init the move square to the from square.
 		gen_dist = 0;					// init the distance checked so far.
 		move_mask = move_masks[dir];	// get the correct move mask for this direction.
 
 		// keep incrementing in the specified direction until either 1) the starting position is in the move mask or 2) the gen_distance has reached the max.
-		while (((move_mask & to) != 0) && (gen_dist++ != max_distance)) {
+		while (((to & move_mask) != 0) && (gen_dist++ != max_distance)) {
 
 			// if the direction is negative, we want to perform right-shifting, left-shifting for positive values.
 			(dir < 0) ? (to >>= abs(dir)) : (to <<= dir);
@@ -412,52 +425,15 @@ std::vector<Move> Position::move_gen_generic(uint64_t from, std::vector<int> dir
 				moves.push_back(Move(from, to, get_turn(), from_type));
 			}
 		}
+
+		to = from; // reset the move square to the from square.
 	}
 	return moves;
 }
 
-bool Position::attacked_by_piece(Types piece_type, uint64_t from) {
-	uint64_t mask, to;
-	unsigned int	gen_dist,
-					max_distance = -1;
-
-	if (piece_type == PAWN || piece_type == KNIGHT || piece_type == KING) { max_distance = 1; }
-
-	if (piece_type == PAWN) { auto directions = pawn_capt_directions[get_turn()]; }
-	else { auto directions = move_directions[piece_type]; }
-
-	for (auto dir : move_directions[piece_type]) {
-		to = from;
-		gen_dist = 0;
-		mask = move_masks[dir];
-		while (((mask & to) != 0) && (gen_dist++ != max_distance)) {
-			(dir < 0) ? (to >>= abs(dir)) : (to <<= dir);
-			if (to & pieces_by_color[!get_turn()]) { // found an opponent's piece
-				if (get_type(to) == piece_type) {
-					return true;
-				}
-			}
-			else if (to & pieces_by_color[get_turn()]) { // found a friendly piece, which blocks enemy pieces!
-				break;
-			}
-			// otherwise continue the search
-		}
-	}
-	return false;
-}
-
-bool Position::square_covered(uint64_t from) {
-	for (int i = 0; i < 6; ++i) {
-		if (attacked_by_piece(static_cast<Types>(i), from)) {
-			return true;
-		}
-	}
-	return false;
-}
-
-void Position::set_in_check() {
-	auto king_sq = pieces_by_color[get_turn()] & pieces_by_type[KING];
-	if (square_covered(king_sq)) {
+void Position::set_in_check(Position position) {
+	auto king_sq = Square(pieces_by_color[get_turn()] & pieces_by_type[KING]);
+	if (king_sq.square_covered(get_turn(), position)) {
 		flags |= (1 << 4); // set the "in-check" bit.
 	}
 	else {
@@ -469,7 +445,15 @@ bool Position::in_check() {
 	return flags & (1 << 4);
 }
 
-std::vector<Move> Position::move_gen_sliders(uint64_t from, Types type) {
+bool Position::is_opponent(Square sq) {
+	return bool (sq & pieces_by_color[!get_turn()]);
+}
+
+bool Position::is_friend(Square sq) {
+	return bool(sq & pieces_by_color[get_turn()]);
+}
+
+std::vector<Move> Position::move_gen_sliders(Square from, Types type) {
 	assert(type != PAWN); // function cannot be used with pawns as it will cause pawns to have a backwards move as well.
 
 	unsigned int max_distance = -1;
@@ -477,7 +461,7 @@ std::vector<Move> Position::move_gen_sliders(uint64_t from, Types type) {
 	return move_gen_generic(from, move_directions[type], max_distance);
 }
 
-std::vector<Move> Position::move_gen_k(uint64_t from)
+std::vector<Move> Position::move_gen_k(Square from)
 {
 	assert((from & pieces_by_type[KING]) != 0); //ensure that this piece is a king
 	std::vector<Move> moves, temp_moves;
@@ -486,7 +470,7 @@ std::vector<Move> Position::move_gen_k(uint64_t from)
 
 	if (!in_check()) { // if not in check...
 		if (K_castle_right()) { // see if we have the right to castle kingside
-			if (!square_covered(from << 1) && !square_covered(from << 2)) { // see if the conditions for castling are met
+			if (!((from << 1).square_covered(get_turn())) && !((from << 2).square_covered(get_turn()))) { // see if the conditions for castling are met
 				temp_moves = move_gen_generic(from, { 2 }, 1); 
 				assert(temp_moves.size() == 1);
 
@@ -496,7 +480,7 @@ std::vector<Move> Position::move_gen_k(uint64_t from)
 			}
 		}
 		if (Q_castle_right()) { // see if we have the right to castle queenside
-			if (!square_covered(from >> 1) && !square_covered(from >> 2)) { // see if the conditions for castling are met
+			if (!((from >> 1).square_covered(get_turn())) && !((from >> 2).square_covered(get_turn()))) { // see if the conditions for castling are met
 				temp_moves = move_gen_generic(from, { -2 }, 1);
 				assert(temp_moves.size() == 1);
 
@@ -508,7 +492,7 @@ std::vector<Move> Position::move_gen_k(uint64_t from)
 	return moves;
 }
 
-std::vector<Move> Position::move_gen_p(uint64_t from) {
+std::vector<Move> Position::move_gen_p(Square from) {
 	ASSERT_ONE_SQUARE(from);
 	std::vector<Move> moves, temp_moves;
 	Move promote_move;
@@ -516,7 +500,7 @@ std::vector<Move> Position::move_gen_p(uint64_t from) {
 	Colors turn = get_turn();
 
 	// Get pawn push moves
-	(on_pawn_start_rank(from)) ? (max_distance = 2) : (max_distance = 1);
+	(from.on_pawn_start_rank(turn)) ? (max_distance = 2) : (max_distance = 1);
 	moves = move_gen_generic(from, { move_directions[PAWN][turn] }, max_distance, MoveOptions::PLACE);
 
 	// Get standard pawn capture moves
@@ -526,7 +510,7 @@ std::vector<Move> Position::move_gen_p(uint64_t from) {
 	// Check all generated moves to see if any are eligible for promotion
 	int old_size = moves.size();
 	for (int i = 0; i < old_size; ++i) {
-		if (on_promote_rank(moves[i].get_to())) {
+		if (moves[i].get_to().on_promote_rank(turn)) {
 			promote_move = moves[i].set_move_type(PROMOTION);
 			for (int j = 1; j < 5; ++j) {
 				promote_move.set_promote_type(static_cast<Types>(i));
@@ -541,8 +525,7 @@ std::vector<Move> Position::move_gen_p(uint64_t from) {
 	}
 
 	// En Passant moves
-	if (epsq) {
-		ASSERT_ONE_SQUARE(epsq);
+	if (!epsq.empty()) {
 		if ((from >> 7) == epsq || (from << 9) == epsq) {
 			moves.push_back(Move(from, epsq, from << 1, turn, PAWN, PAWN, NONE, EN_PASSANT));
 		}
@@ -583,12 +566,3 @@ std::vector<Move> Position::move_gen()
 	}
 	return moves;
 }
-
-
-
-//std::vector<Move> Position::move_gen() {
-//	for (int i = 0; i < pieces_by_type.size(); ++i) {
-//		auto pieces_of_type = pieces_by_type[i];
-//
-//	}
-//}
