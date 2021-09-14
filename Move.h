@@ -1,6 +1,7 @@
 #pragma once
-#include <map>
+
 #include <vector>
+#include "Square.h"
 #include "Colors.h"
 #include "Types.h"
 #include "SpecialMoves.h"
@@ -15,10 +16,18 @@ private:
 public:
 	// Constructors
 	// for general moves
-	Move(Square from, Square to, Square special, Colors color, Types type, Types capt_type, Types promote_type, SpecialMoves move_type) : 
-		from(from), to(to), special(special), color(color), type(type), capt_type(capt_type), promote_type(promote_type), move_type(move_type) {}
+	Move(Square from, Square to, Square special, Colors color, Types type, Types capt_type, Types promote_type, SpecialMoves move_type) {
+		this->from = from;
+		this->to = to;
+		this->special = special;
+		this->color = color;
+		this->type = type;
+		this->capt_type = capt_type;
+		this->promote_type = promote_type;
+		this->move_type = move_type;
+	}
 	// for standard capture moves
-	Move(Square from, Square to, Colors color, Types type, Types capt_type) : Move(from, to, Square(0ULL), color, type, capt_type, Types::NONE, SpecialMoves::STD) {}
+	Move(Square from, Square to, Colors color, Types type, Types capt_type) : Move(from, to, Square(), color, type, capt_type, Types::NONE, SpecialMoves::STD) {}
 	// for standard positional moves
 	Move(Square from, Square to, Colors color, Types type) : Move(from, to, color, type, Types::NONE) {}
 
@@ -39,4 +48,5 @@ public:
 
 };
 
+uint64_t merge_moves(std::vector<Move> moves);
 std::ostream& operator<<(std::ostream& out, Move move);

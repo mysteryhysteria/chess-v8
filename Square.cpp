@@ -1,5 +1,27 @@
 #include "Square.h"
 
+std::array<uint64_t, 8> rank_masks = {
+	0xff00000000000000,
+	0x00ff000000000000,
+	0x0000ff0000000000,
+	0x000000ff00000000,
+	0x00000000ff000000,
+	0x0000000000ff0000,
+	0x000000000000ff00,
+	0x00000000000000ff
+};
+
+std::array<uint64_t, 8> file_masks = {
+	0x0101010101010101,
+	0x0202020202020202,
+	0x0404040404040404,
+	0x0808080808080808,
+	0x1010101010101010,
+	0x2020202020202020,
+	0x4040404040404040,
+	0x8080808080808080
+};
+
 bool Square::on_nth_rank(unsigned int n) {
 	return bool(this->bitboard & rank_masks[n]);
 }
@@ -26,43 +48,14 @@ unsigned int Square::convert_to_index() {
 	return maxbit;
 }
 
-bool Square::attacked_by_piece(Types piece_type, Position position) {
-	auto turn = position.get_turn();
-	uint64_t mask;
-	Square to = *this; // initialize the to square to be the current square
-	unsigned int gen_dist,
-		max_distance = -1;
+std::string Square::p2an() {
+	std::string an;
+	int sq = this->convert_to_index();
+	auto file = sq % 8;
+	auto rank = 7 - ((sq - file) / 8);
 
-	if (piece_type == PAWN || piece_type == KNIGHT || piece_type == KING) { max_distance = 1; }
-
-	if (piece_type == PAWN) { auto directions = pawn_capt_directions[turn]; }
-	else { auto directions = move_directions[piece_type]; }
-
-	for (auto dir : move_directions[piece_type]) {
-		gen_dist = 0;
-		mask = move_masks[dir];
-		while (((to & mask) != 0) && (gen_dist++ != max_distance)) {
-			(dir < 0) ? (to >>= abs(dir)) : (to <<= dir);
-			if (position.is_opponent(to)) { // found an opponent's piece
-				if (position.is_type(to, piece_type)) {
-					return true;
-				}
-			}
-			else if (position.is_friend(to)) { // found a friendly piece, which blocks enemy pieces!
-				break;
-			}
-			// otherwise continue the search
-		}
-		to = *this;
-	}
-	return false;
+	return an.append(1, 'a' + file).append(1, '1' + rank);
 }
 
-bool Square::square_covered(Colors turn, Position position) {
-	for (int i = 0; i < 6; ++i) {
-		if (attacked_by_piece(static_cast<Types>(i), position)) {
-			return true;
-		}
-	}
-	return false;
-}
+uint64_t operator&=(uint64_t lhs, Square rhs) { return lhs &= (rhs.get_bitboard()); };
+uint64_t operator|=(uint64_t lhs, Square rhs) { return lhs |= (rhs.get_bitboard()); };

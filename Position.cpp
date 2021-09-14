@@ -1,17 +1,6 @@
-#include <string>
-#include <iostream>
-#include <bitset>
-#include <utility>
-#include <assert.h>
-#include "Square.h"
-#include "Move.h"
 #include "Position.h"
-#include "Types.h"
-#include "Colors.h"
-#include "Utils.h"
 
-// map from piece types to valid move directions for each piece
-const std::vector<std::vector<int>> move_directions = {
+std::vector<std::vector<int>> move_directions = { // map from piece types to valid move directions for each piece
 	{-8, 8}, // Pawn
 	{-17, -15, -10, -6, 6, 10, 15, 17}, // Knight
 	{-9, -7, 7, 9}, // Rook
@@ -20,13 +9,12 @@ const std::vector<std::vector<int>> move_directions = {
 	{-9, -8, -7, -1, 1, 7, 8, 9} // King
 };
 
-const std::vector<std::vector<int>> pawn_capt_directions = {
+std::vector<std::vector<int>> pawn_capt_directions = {
 	{-9, -7}, // White
 	{7, 9} // Black
 };
 
-// map of move directions to bitmasks for the move generation
-std::map<int, uint64_t> move_masks = {
+std::map<int, uint64_t> move_masks = { // map of move directions to bitmasks for the move generation
 	{-17, ~0x010101010101ffff},
 	{-15, ~0x808080808080ffff},
 	{-10, ~0x03030303030303ff},
@@ -47,28 +35,6 @@ std::map<int, uint64_t> move_masks = {
 	{17, ~0xffff808080808080}
 };
 
-std::array<uint64_t, 8> rank_masks = {
-	0xff00000000000000,
-	0x00ff000000000000,
-	0x0000ff0000000000,
-	0x000000ff00000000,
-	0x00000000ff000000,
-	0x0000000000ff0000,
-	0x000000000000ff00,
-	0x00000000000000ff
-};
-
-std::array<uint64_t, 8> file_masks = {
-	0x0101010101010101,
-	0x0202020202020202,
-	0x0404040404040404,
-	0x0808080808080808,
-	0x1010101010101010,
-	0x2020202020202020,
-	0x4040404040404040,
-	0x8080808080808080
-};
-
 MoveOptions operator|(MoveOptions lhs, MoveOptions rhs) {
 	return static_cast<MoveOptions> (int (lhs) | int (rhs));
 }
@@ -85,8 +51,8 @@ void Position::parse_fen(std::string fen) {
 	Types type;
 
 	// clean slate bitboards
-	for (auto& bitboard : pieces_by_color) { bitboard = 0; }
-	for (auto& bitboard : pieces_by_type) { bitboard = 0; }
+	for (auto& bitboard : pieces_by_color) { bitboard = 0; };
+	for (auto& bitboard : pieces_by_type) { bitboard = 0; };
 	epsq = 0;
 
 	// clean slate flags
@@ -431,9 +397,9 @@ std::vector<Move> Position::move_gen_generic(Square from, std::vector<int> direc
 	return moves;
 }
 
-void Position::set_in_check(Position position) {
+void Position::set_in_check() {
 	auto king_sq = Square(pieces_by_color[get_turn()] & pieces_by_type[KING]);
-	if (king_sq.square_covered(get_turn(), position)) {
+	if (square_covered(king_sq)) {
 		flags |= (1 << 4); // set the "in-check" bit.
 	}
 	else {
@@ -453,6 +419,46 @@ bool Position::is_friend(Square sq) {
 	return bool(sq & pieces_by_color[get_turn()]);
 }
 
+bool Position::attacked_by_piece(Square sq, Types piece_type) {
+	uint64_t mask;
+	Square to = sq; // initialize the to square to be the current square
+	unsigned int gen_dist,
+		max_distance = -1;
+
+	if (piece_type == PAWN || piece_type == KNIGHT || piece_type == KING) { max_distance = 1; }
+
+	if (piece_type == PAWN) { auto directions = pawn_capt_directions[get_turn()]; }
+	else { auto directions = move_directions[piece_type]; }
+
+	for (auto dir : move_directions[piece_type]) {
+		gen_dist = 0;
+		mask = move_masks[dir];
+		while (((to & mask) != 0) && (gen_dist++ != max_distance)) {
+			(dir < 0) ? (to >>= abs(dir)) : (to <<= dir);
+			if (is_opponent(to)) { // found an opponent's piece
+				if (is_type(to, piece_type)) {
+					return true;
+				}
+			}
+			else if (is_friend(to)) { // found a friendly piece, which blocks enemy pieces!
+				break;
+			}
+			// otherwise continue the search
+		}
+		to = sq;
+	}
+	return false;
+}
+
+bool Position::square_covered(Square sq) {
+	for (int i = 0; i < 6; ++i) {
+		if (attacked_by_piece(sq, static_cast<Types>(i))) {
+			return true;
+		}
+	}
+	return false;
+}
+
 std::vector<Move> Position::move_gen_sliders(Square from, Types type) {
 	assert(type != PAWN); // function cannot be used with pawns as it will cause pawns to have a backwards move as well.
 
@@ -470,7 +476,7 @@ std::vector<Move> Position::move_gen_k(Square from)
 
 	if (!in_check()) { // if not in check...
 		if (K_castle_right()) { // see if we have the right to castle kingside
-			if (!((from << 1).square_covered(get_turn())) && !((from << 2).square_covered(get_turn()))) { // see if the conditions for castling are met
+			if (!(square_covered(from << 1)) && !(square_covered(from << 2))) { // see if the conditions for castling are met
 				temp_moves = move_gen_generic(from, { 2 }, 1); 
 				assert(temp_moves.size() == 1);
 
@@ -480,7 +486,7 @@ std::vector<Move> Position::move_gen_k(Square from)
 			}
 		}
 		if (Q_castle_right()) { // see if we have the right to castle queenside
-			if (!((from >> 1).square_covered(get_turn())) && !((from >> 2).square_covered(get_turn()))) { // see if the conditions for castling are met
+			if (!(square_covered(from >> 1)) && !(square_covered(from >> 2))) { // see if the conditions for castling are met
 				temp_moves = move_gen_generic(from, { -2 }, 1);
 				assert(temp_moves.size() == 1);
 

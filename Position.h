@@ -3,7 +3,9 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <map>
 #include "stdint.h"
+#include "Square.h"
 #include "Move.h"
 #include "Types.h"
 #include "Colors.h"
@@ -12,7 +14,6 @@
 const enum MoveOptions { PLACE = 1, CAPT = 2, SELF_CAPT = 4 };
 
 MoveOptions operator|(MoveOptions lhs, MoveOptions rhs);
-class Ray {};
 
 class Position {
 private:
@@ -20,7 +21,7 @@ private:
 	std::array<uint64_t, 2> pieces_by_color; // array of bitboards, [0] for white pieces, [1] for black pieces
 	std::array<uint64_t, 6> pieces_by_type; // array of bitboards, [0] pawns, [1] knights, [2] bishops, [3] rooks, [4] queens, [5] kings
 
-	Square epsq; // bit board of where the en passant square is (if it exists) 
+	Square epsq = Square(0ULL); // bit board of where the en passant square is (if it exists) 
 
 	uint16_t ply; // count of the current ply
 	uint16_t ply_clock; // number of plys that have been played since the last capture or pawn move
@@ -36,13 +37,12 @@ private:
 	std::vector<Move> move_gen_k(Square from);
 	std::vector<Move> move_gen_sliders(Square from, Types type);
 	std::vector<Move> move_gen_generic(Square from, std::vector<int> directions, unsigned int max_distance = -1, MoveOptions move_opts = (MoveOptions::PLACE | MoveOptions::CAPT));
-	void set_in_check();
 
 public:
 	// Testing - do not leave here!
 
 	// Constructors
-	Position(std::string fen) : epsq(Square(0ULL)) { parse_fen(fen); }
+	Position(std::string fen) { parse_fen(fen); }
 	Position() : Position("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") {} // default standard starting position for chess, in FEN notation
 
 	// Methods
@@ -59,6 +59,9 @@ public:
 	bool Q_castle_right();
 	bool K_castle_right();
 	bool in_check();
+	bool square_covered(Square sq);
+	bool attacked_by_piece(Square sq, Types piece_type);
+	void set_in_check();
 	void disp_bitboards();
 	void disp_castling();
 	void disp_epsq();

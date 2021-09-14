@@ -1,8 +1,4 @@
 #include "Move.h"
-#include "SpecialMoves.h"
-#include "Utils.h"
-#include <assert.h>
-#include <iostream>
 
 std::ostream& operator<<(std::ostream& out, Move move)
 {
@@ -11,17 +7,17 @@ std::ostream& operator<<(std::ostream& out, Move move)
 			capt_type = TypestoChar(move.get_capt_type()),
 			promote_type = TypestoChar(move.get_promote_type()),
 			side = ' ';
-	std::string		from = p2an(move.get_from()),
-					to = p2an(move.get_to());
+	std::string		from = move.get_from().p2an(),
+					to = move.get_to().p2an();
 
 	switch (move_type) {
 	case EN_PASSANT:
-		return std::cout << piece_type << '=' << from << " > " << to << " X " << capt_type << '=' << p2an(move.get_special()) << std::endl;
+		return std::cout << piece_type << '=' << from << " > " << to << " X " << capt_type << '=' << move.get_special().p2an() << std::endl;
 	case CASTLE:
-		if (on_nth_file(move.get_to(), 2)) {
+		if (move.get_to().on_nth_file(2)) {
 			side = 'Q';
 		}
-		else if (on_nth_file(move.get_to(), 6)) {
+		else if (move.get_to().on_nth_file(6)) {
 			side = 'K';
 		}
 		return std::cout << piece_type << '=' << from << " > " << to << " : " << side << std::endl;
@@ -37,8 +33,10 @@ std::ostream& operator<<(std::ostream& out, Move move)
 	}
 }
 
-//P=a4 > a5
-//N=b7 X P=a5
-//P=a4 > b5 X P=b4
-//K=e1 > g1 : K
-//P=b7 > b8 ^ Q
+uint64_t merge_moves(std::vector<Move> moves) {
+	uint64_t all_moves = 0ULL;
+	for (auto move : moves) {
+		all_moves |= move.get_to();
+	}
+	return all_moves;
+}

@@ -6,8 +6,8 @@
 std::ostream& operator<<(std::ostream& out, Colors value) {
 	std::string s;
 	switch (value) {
-		case(WHITE):	s = "White";	break;
-		case(BLACK):	s = "Black";	break;
+		case(Colors::WHITE):	s = "White";	break;
+		case(Colors::BLACK):	s = "Black";	break;
 	}
 	return out << s;
 }
