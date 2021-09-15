@@ -13,27 +13,27 @@ std::vector<std::vector<int>> pawn_capt_directions = {
 	{-9, -7}, // White
 	{7, 9} // Black
 };
-
-std::map<int, uint64_t> move_masks = { // map of move directions to bitmasks for the move generation
-	{-17, ~0x010101010101ffff},
-	{-15, ~0x808080808080ffff},
-	{-10, ~0x03030303030303ff},
-	{-9, ~0x01010101010101ff},
-	{-8, ~0x00000000000000ff},
-	{-7, ~0x80808080808080ff},
-	{-6, ~0xc0c0c0c0c0c0c0ff},
-	{-2, ~0x0303030303030303},
-	{-1, ~0x0101010101010101},
-	{1, ~0x8080808080808080},
-	{2, ~0xc0c0c0c0c0c0c0c0},
-	{6, ~0xff03030303030303},
-	{7, ~0xff01010101010101},
-	{8, ~0xff00000000000000},
-	{9, ~0xff80808080808080},
-	{10, ~0xffc0c0c0c0c0c0c0},
-	{15, ~0xffff010101010101},
-	{17, ~0xffff808080808080}
-};
+//
+//std::map<int, Bitboard> move_masks = { // map of move directions to bitmasks for the move generation
+//	{-17, Bitboard(~0x010101010101ffff)},
+//	{-15, Bitboard(~0x808080808080ffff)},
+//	{-10, Bitboard(~0x03030303030303ff)},
+//	{-9,  Bitboard(~0x01010101010101ff)},
+//	{-8,  Bitboard(~0x00000000000000ff)},
+//	{-7,  Bitboard(~0x80808080808080ff)},
+//	{-6,  Bitboard(~0xc0c0c0c0c0c0c0ff)},
+//	{-2,  Bitboard(~0x0303030303030303)},
+//	{-1,  Bitboard(~0x0101010101010101)},
+//	{1,   Bitboard(~0x8080808080808080)},
+//	{2,   Bitboard(~0xc0c0c0c0c0c0c0c0)},
+//	{6,   Bitboard(~0xff03030303030303)},
+//	{7,   Bitboard(~0xff01010101010101)},
+//	{8,   Bitboard(~0xff00000000000000)},
+//	{9,   Bitboard(~0xff80808080808080)},
+//	{10,  Bitboard(~0xffc0c0c0c0c0c0c0)},
+//	{15,  Bitboard(~0xffff010101010101)},
+//	{17,  Bitboard(~0xffff808080808080)}
+//};
 
 MoveOptions operator|(MoveOptions lhs, MoveOptions rhs) {
 	return static_cast<MoveOptions> (int (lhs) | int (rhs));
@@ -46,14 +46,14 @@ void Position::parse_fen(std::string fen) {
 	bool turn;
 	char c, file_c, rank_c;
 	std::string s;
-	uint64_t cur_sq;
+	Square cur_sq = Square(1); // initialize to the first square
 	Colors color;
 	Types type;
 
 	// clean slate bitboards
-	for (auto& bitboard : pieces_by_color) { bitboard = 0; };
-	for (auto& bitboard : pieces_by_type) { bitboard = 0; };
-	epsq = 0;
+	for (auto& bb : pieces_by_color) { bb = Bitboard(); };
+	for (auto& bb : pieces_by_type) { bb = Bitboard(); };
+	epsq = Square();
 
 	// clean slate flags
 	flags = 0;  // Unset the flags to clear the slate
@@ -68,6 +68,7 @@ void Position::parse_fen(std::string fen) {
 				return;
 			}
 			sq_counter += empty_sqs;						// skip the empty squares and do nothing with them
+			cur_sq.next(empty_sqs);
 		}
 		else if (isalpha(c)) {								//if char is alphabetical, then it must be a piece.
 
@@ -85,9 +86,10 @@ void Position::parse_fen(std::string fen) {
 				// TODO: exception case - not a recognized piece!
 				return;
 			}
-			cur_sq = 1ULL << sq_counter;					// generate bitboard of the current square
-			pieces_by_color[color] |= cur_sq;			// mark the square were on with the color of the piece we parsed
-			pieces_by_type[type] |= cur_sq;			// mark the square were on with the piece type we parsed
+
+			pieces_by_color[color].mark_square(cur_sq);		// mark the square were on with the color of the piece we parsed
+			pieces_by_type[type].mark_square(cur_sq);		// mark the square were on with the piece type we parsed
+			cur_sq.next();									// get the next square
 
 			++sq_counter;									// increment the square counter to the next square
 		}
@@ -139,7 +141,7 @@ void Position::parse_fen(std::string fen) {
 			return;
 		}
 		else { // otherwise compute the bitboard of the en passant square
-			epsq = 1ULL << ((7 - rank) * 8 + file); // (7 - rank) flips the numbering of the ranks to match our convention. (result * 8) then gets the row offsets. (result + file) then adds the column offsets.
+			epsq = Square(rank, file); // Sets the en passant square to the computed rank and file
 		}
 	}
 
@@ -171,25 +173,25 @@ void Position::parse_fen(std::string fen) {
 	return;
 }
 
-void Position::disp_bitboard(uint64_t bitboard, std::string title, char piece_c, char empty_c) {
+void Position::disp_bitboard(Bitboard bitboard, std::string title, char piece_c, char empty_c) {
 	if (title != "") {
 		std::cout << title << "\n";
 	}
-	unsigned int bit = 0;
+	Square test_sq = Square().first();
 	std::cout << "-------------------";
 	std::cout << "\n";
 	for (int i = 0; i < 8; ++i) {
 		std::cout << '|';
 		std::cout << ' ';
 		for (int j = 0; j < 8; ++j) {
-			if ((bitboard & (1ULL << bit)) > 0) {
+			if (bitboard.contains(test_sq)) {
 				std::cout << piece_c;
 			}
 			else {
 				std::cout << empty_c;
 			}
 			std::cout << ' ';
-			++bit;
+			test_sq.next();
 		}
 		std::cout << '|';
 		std::cout << '\n';
@@ -198,11 +200,11 @@ void Position::disp_bitboard(uint64_t bitboard, std::string title, char piece_c,
 	std::cout << '\n';
 }
 
-void Position::disp_bitboard(uint64_t bitboard, std::string title) {
+void Position::disp_bitboard(Bitboard bitboard, std::string title) {
 	disp_bitboard(bitboard, title, 'X', ' ');
 }
 
-void Position::disp_bitboard(uint64_t bitboard) {
+void Position::disp_bitboard(Bitboard bitboard) {
 	disp_bitboard(bitboard, "");
 }
 
@@ -285,9 +287,9 @@ void Position::disp_plys() {
 }
 
 void Position::disp() {
-	uint64_t	bitboard,
-				mask,
+	Bitboard	bitboard,
 				all = pieces_by_color[WHITE] | pieces_by_color[BLACK];
+	Square test_sq = Square().first();
 	Colors color;
 	Types type;
 	std::string type_c = "PNBRQK";
@@ -297,20 +299,17 @@ void Position::disp() {
 
 	for (unsigned int sq = 0; sq < 64; ++sq) {
 		if (sq % 8 == 0) { std::cout << "|"; };
-		mask = 1ULL << sq;
-		if ((all & mask) > 0) { // if there is a piece in this square...
+		if (all.contains(test_sq)) { // if there is a piece in this square...
 			color = WHITE;
 			for (int i = 0; i < pieces_by_color.size(); ++i) {
-				bitboard = pieces_by_color[i];
-				if ((bitboard & mask) > 0) {
+				if (pieces_by_color[i].contains(test_sq)) {
 					color = static_cast<Colors> (i);
 					break;
 				}
 			}
 			type = NONE;
 			for (int i = 0; i < pieces_by_type.size(); ++i) {
-				bitboard = pieces_by_type[i];
-				if ((bitboard & mask) > 0) {
+				if (pieces_by_type[i].contains(test_sq)) {
 					type = static_cast<Types> (i);
 					break;
 				}
@@ -321,6 +320,7 @@ void Position::disp() {
 		std::cout << "  ";
 		}
 		if (sq % 8 == 7) { std::cout << " |" << std::endl; };
+		test_sq.next();
 	}
 	std::cout << "-------------------" << std::endl;
 
@@ -334,27 +334,26 @@ Colors Position::get_turn() {
 }
 
 Types Position::get_type(Square sq) {
-	auto sq_bb = sq.get_bitboard();
 	for (int i = 0; i < pieces_by_type.size(); ++i) {
-		auto pieces_of_type = pieces_by_type[i];
-		if (sq_bb & pieces_of_type) { return static_cast<Types>(i); }
+		if (pieces_by_type[i].contains(sq)) { return static_cast<Types>(i); }
 	}
 	return NONE;
 }
 
 bool Position::is_type(Square sq, Types type) {
-	return bool(sq & pieces_by_type[type]);
+	return pieces_by_type[type].contains(sq);
 }
 
 std::vector<Move> Position::move_gen_generic(Square from, std::vector<int> directions, unsigned int max_distance, MoveOptions move_opts) {
-	uint64_t move_mask;
+	Ray search_path = Ray(from, directions[0], max_distance);
+	Bitboard move_mask;
 	Square to = from; // init the move square to the from square
 	int gen_dist;
 	std::vector<Move> moves;
 	Types from_type = get_type(from);
 
 	assert(from_type != NONE); // make sure that the piece we are generating moves for isnt a none type
-	assert((from & pieces_by_type[from_type]) != 0); // ensure that from is a piece of the correct type
+	assert(pieces_by_type[from_type].contains(from)); // ensure that from is a piece of the correct type
 
 	for (auto dir : directions) {	// loop over each given direction.
 		assert(dir != 0);			// cannot allow a no-direction.
@@ -363,13 +362,13 @@ std::vector<Move> Position::move_gen_generic(Square from, std::vector<int> direc
 		move_mask = move_masks[dir];	// get the correct move mask for this direction.
 
 		// keep incrementing in the specified direction until either 1) the starting position is in the move mask or 2) the gen_distance has reached the max.
-		while (((to & move_mask) != 0) && (gen_dist++ != max_distance)) {
+		while ((move_mask.contains(to)) && (gen_dist++ != max_distance)) {
 
 			// if the direction is negative, we want to perform right-shifting, left-shifting for positive values.
 			(dir < 0) ? (to >>= abs(dir)) : (to <<= dir);
 
 			// the condition evaluates if the "to" square intersects with its own pieces. if so, this move is illegal and no more moves in this direction are legal.
-			if (to & pieces_by_color[get_turn()]) {
+			if (pieces_by_color[get_turn()].contains(to)) {
 				assert(get_type(to) != NONE);
 				if (move_opts & MoveOptions::SELF_CAPT) {
 					moves.push_back(Move(from, to, get_turn(), from_type, get_type(to)));
@@ -378,7 +377,7 @@ std::vector<Move> Position::move_gen_generic(Square from, std::vector<int> direc
 			}
 
 			// the condition evaluates if the "to" square intersects with the opponents pieces. if so, this move is a capture and no more moves in this direction are legal.
-			if (to & pieces_by_color[!get_turn()]) {
+			if (pieces_by_color[!get_turn()].contains(to)) {
 				assert(get_type(to) != NONE); // make sure that we arent capturing a none type
 				if (move_opts & MoveOptions::CAPT) {
 					moves.push_back(Move(from, to, get_turn(), from_type, get_type(to)));
@@ -398,7 +397,7 @@ std::vector<Move> Position::move_gen_generic(Square from, std::vector<int> direc
 }
 
 void Position::set_in_check() {
-	auto king_sq = Square(pieces_by_color[get_turn()] & pieces_by_type[KING]);
+	Square king_sq = pieces_by_color[get_turn()] & pieces_by_type[KING];
 	if (square_covered(king_sq)) {
 		flags |= (1 << 4); // set the "in-check" bit.
 	}
@@ -412,15 +411,15 @@ bool Position::in_check() {
 }
 
 bool Position::is_opponent(Square sq) {
-	return bool (sq & pieces_by_color[!get_turn()]);
+	return pieces_by_color[!get_turn()].contains(sq);
 }
 
 bool Position::is_friend(Square sq) {
-	return bool(sq & pieces_by_color[get_turn()]);
+	return pieces_by_color[get_turn()].contains(sq);
 }
 
 bool Position::attacked_by_piece(Square sq, Types piece_type) {
-	uint64_t mask;
+	Bitboard mask;
 	Square to = sq; // initialize the to square to be the current square
 	unsigned int gen_dist,
 		max_distance = -1;
@@ -433,7 +432,7 @@ bool Position::attacked_by_piece(Square sq, Types piece_type) {
 	for (auto dir : move_directions[piece_type]) {
 		gen_dist = 0;
 		mask = move_masks[dir];
-		while (((to & mask) != 0) && (gen_dist++ != max_distance)) {
+		while ((mask.contains(to)) && (gen_dist++ != max_distance)) {
 			(dir < 0) ? (to >>= abs(dir)) : (to <<= dir);
 			if (is_opponent(to)) { // found an opponent's piece
 				if (is_type(to, piece_type)) {
@@ -469,7 +468,7 @@ std::vector<Move> Position::move_gen_sliders(Square from, Types type) {
 
 std::vector<Move> Position::move_gen_k(Square from)
 {
-	assert((from & pieces_by_type[KING]) != 0); //ensure that this piece is a king
+	assert(pieces_by_type[KING].contains(from)); //ensure that this piece is a king
 	std::vector<Move> moves, temp_moves;
 
 	moves = move_gen_sliders(from, KING);
@@ -542,10 +541,10 @@ std::vector<Move> Position::move_gen_p(Square from) {
 	return moves;
 }
 
-std::vector<Move> Position::move_gen()
-{
+std::vector<Move> Position::move_gen() {
 	Colors turn = get_turn();
-	uint64_t pieces, from;
+	Square from;
+	Bitboard pieces;
 	Types type;
 	std::vector<Move> moves, temp_moves;
 
@@ -555,8 +554,8 @@ std::vector<Move> Position::move_gen()
 		pieces = pieces_by_type[i] & pieces_by_color[turn]; // get the pieces of that type and of the right color
 		type = static_cast<Types>(i); // calculate the type from the iteration var
 
-		while ((from = (pieces & (~pieces + 1))) != 0) { // while the from square is not zero (calculates the next from square by isolated the least significant bit)
-			pieces &= (~from); // remove the from square from the set of pieces
+		while (!pieces.empty()) { // while there are pieces left on the board...
+			from = pieces.pop_occupied(); // remove the next occupied square from the set of pieces
 			switch (type) { // based on which type of piece this is...
 				case PAWN: 
 					temp_moves = move_gen_p(from); // generate pawn moves if its a pawn

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -140,23 +140,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Bitboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Move.cpp" />
     <ClCompile Include="Position.cpp" />
     <ClCompile Include="Colors.cpp" />
-    <ClCompile Include="Square.cpp" />
+    <ClCompile Include="Bitboards.cpp" />
+    <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="SpecialMoves.cpp" />
     <ClCompile Include="Types.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bitboard.h" />
+    <ClInclude Include="Bitboards.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="Move.h" />
     <ClInclude Include="Position.h" />
+    <ClInclude Include="Ray.h" />
     <ClInclude Include="SpecialMoves.h" />
-    <ClInclude Include="Square.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>

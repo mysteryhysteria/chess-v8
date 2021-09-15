@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "Square.h"
+#include "Bitboards.h"
 #include "Colors.h"
 #include "Types.h"
 #include "SpecialMoves.h"
@@ -31,7 +31,7 @@ public:
 	// for standard positional moves
 	Move(Square from, Square to, Colors color, Types type) : Move(from, to, color, type, Types::NONE) {}
 
-	Move() : Move(0ULL, 0ULL, Colors::WHITE, Types::NONE) {}
+	Move() : Move(Square(), Square(), Colors::WHITE, Types::NONE) {}
 
 	// general purpose
 	Move& set_special(Square special) { this->special = special; return *this; }
@@ -48,5 +48,5 @@ public:
 
 };
 
-uint64_t merge_moves(std::vector<Move> moves);
+Bitboard merge_moves(std::vector<Move> moves);
 std::ostream& operator<<(std::ostream& out, Move move);

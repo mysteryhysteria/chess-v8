@@ -33,8 +33,8 @@ std::ostream& operator<<(std::ostream& out, Move move)
 	}
 }
 
-uint64_t merge_moves(std::vector<Move> moves) {
-	uint64_t all_moves = 0ULL;
+Bitboard merge_moves(std::vector<Move> moves) {
+	Bitboard all_moves;
 	for (auto move : moves) {
 		all_moves |= move.get_to();
 	}

@@ -5,11 +5,12 @@
 #include <array>
 #include <map>
 #include "stdint.h"
-#include "Square.h"
+#include "Bitboards.h"
 #include "Move.h"
 #include "Types.h"
 #include "Colors.h"
 #include "Utils.h"
+#include "Ray.h"
 
 const enum MoveOptions { PLACE = 1, CAPT = 2, SELF_CAPT = 4 };
 
@@ -18,10 +19,10 @@ MoveOptions operator|(MoveOptions lhs, MoveOptions rhs);
 class Position {
 private:
 	// index these bitboard arrays with the enums defined above!
-	std::array<uint64_t, 2> pieces_by_color; // array of bitboards, [0] for white pieces, [1] for black pieces
-	std::array<uint64_t, 6> pieces_by_type; // array of bitboards, [0] pawns, [1] knights, [2] bishops, [3] rooks, [4] queens, [5] kings
+	std::array<Bitboard, 2> pieces_by_color; // array of bitboards, [0] for white pieces, [1] for black pieces
+	std::array<Bitboard, 6> pieces_by_type; // array of bitboards, [0] pawns, [1] knights, [2] bishops, [3] rooks, [4] queens, [5] kings
 
-	Square epsq = Square(0ULL); // bit board of where the en passant square is (if it exists) 
+	Square epsq; // bit board of where the en passant square is (if it exists) 
 
 	uint16_t ply; // count of the current ply
 	uint16_t ply_clock; // number of plys that have been played since the last capture or pawn move
@@ -29,8 +30,8 @@ private:
 					// 1 bit for in-check status (0b1-Check, 0b0-No Check)
 					// 3 bonus bits!
 
-	std::array<uint64_t, 12> checking_pieces; // array containing squares that are occupied by a piece which is checking the king
-	std::array<uint64_t, 12> pinned_pieces;	// array containing squares that are occupied by pinned pieces
+	std::array<Bitboard, 12> checking_pieces; // array containing squares that are occupied by a piece which is checking the king
+	std::array<Bitboard, 12> pinned_pieces;	// array containing squares that are occupied by pinned pieces
 
 
 	std::vector<Move> move_gen_p(Square from);
@@ -48,9 +49,9 @@ public:
 	// Methods
 	void parse_fen(std::string fen);
 	std::vector<Move> move_gen();
-	static void disp_bitboard(uint64_t bitboard, std::string title, char piece_c, char empty_c);
-	static void disp_bitboard(uint64_t bitboard, std::string title);
-	static void disp_bitboard(uint64_t bitboard);
+	static void disp_bitboard(Bitboard bb, std::string title, char piece_c, char empty_c);
+	static void disp_bitboard(Bitboard bb, std::string title);
+	static void disp_bitboard(Bitboard bb);
 	Colors get_turn();
 	Types get_type(Square sq);
 	bool is_type(Square sq, Types type);
