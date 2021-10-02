@@ -21,38 +21,61 @@ std::map<int, Bitboard> Ray::move_masks = { // map of move directions to bitmask
 		{17,  Bitboard(~0xffff808080808080)}
 };
 
+Square Ray::get_next() {
+	if (direction > 0) {
+		return (this->current << direction);
+	}
+	else if (direction < 0) {
+		return (this->current >> abs(direction));
+	}
+	else { // direction == 0
+		return Square();
+	}
+}
+
+Square Ray::get_prev() {
+	if (direction > 0) {
+		return (this->current >> direction); // no need to check against the move mask as we must have already found this square
+	}
+	else if (direction < 0) {
+		return (this->current << abs(direction));
+	}
+	else { // direction == 0
+		return Square();
+	}
+}
+
+void Ray::update_maxed() { this->maxed = (distance == 0) || (this->current & move_masks[direction]).empty(); }
+
+int Ray::NO_DIR = 0;
+int Ray::NO_MAX = -1;
+
 Ray& Ray::operator++() {
-	Bitboard next;
-    if (!maxed) {
-		if (direction > 0) { next = (this->current << direction) & move_masks[direction]; }
-		else { next = (this->current >> abs(direction)) & move_masks[direction]; }
-		if (!next.empty()) {
-			--distance;
-			this->current = next;
-		}
-		else {
-			maxed = true;
-		}
-    }
-    return *this;
+	if (!maxed) {
+		--distance;
+		this->current = get_next();
+		update_maxed();
+	}
+	return *this;
 }
 
 Ray& Ray::operator--() {
-    if (!maxed && current != base) {
-		if (direction > 0) { this->current = (this->current >> direction) & move_masks[direction]; }
-		else if (direction < 0) { this->current = (this->current << abs(direction)) & move_masks[direction]; }
+	if (this->current != this->base) {
 		++distance;
-	}
-    return *this;
+		this->current = get_prev();
+	}	
+	return *this;
 }
 
 Square Ray::get_base() { return this->base; };
 
 Square Ray::get_current() { return this->current; };
 
-Ray& Ray::reset(int dir) {
+Ray& Ray::reset(int dir, int max_distance) {
     this->current = this->base;
-    if (dir != 0) { this->direction = dir; };
+	this->distance = max_distance;
+	this->direction = dir;
+	update_maxed();
     return *this;
 }
 

@@ -29,7 +29,7 @@ Bitboard::Bitboard() : Bitboard((uint64_t)0) {};
 
 // Bitboard Methods
 Bitboard& Bitboard::mark_square(Square& sq) { return *this |= sq; };
-Bitboard& Bitboard::clear_square(Square& sq) { return *this |= sq; };
+Bitboard& Bitboard::clear_square(Square& sq) { return *this &= ~sq; };
 uint64_t Bitboard::get_bitboard() { return this->bitboard; };
 bool Bitboard::empty() { return this->bitboard == (uint64_t)0; }
 bool Bitboard::contains(Square& sq) { return !(*this & sq).empty(); };
@@ -40,6 +40,8 @@ Square Bitboard::pop_occupied() {
 	*this &= (~next_sq);
 	return next_sq;
 }
+
+int Bitboard::popcount() { return std::bitset<64>(this->get_bitboard()).count(); };
 
 // Bitboard Operator Overloads
 Bitboard& Bitboard::operator|=(Square& sq) { this->bitboard |= sq.get_bitboard(); return *this; };
@@ -126,6 +128,39 @@ Square& Square::previous(unsigned int skip) {
 }
 
 Square& Square::first() { this->bitboard = (uint64_t) 1; return *this; }
+
+int Square::popcount() { return (bitboard == 0) ? 0 : 1; }
+
+int Square::direction_from(Square from)
+{
+	auto i_to = this->convert_to_index();
+	auto i_from = from.convert_to_index();
+
+	auto f_to = i_to % 8;
+	auto r_to = 7 - ((i_to - f_to) / 8);
+	auto f_from = i_from % 8;
+	auto r_from = 7 - ((i_from - f_from) / 8);
+	int df = f_to - f_from;
+	int dr = r_to - r_from;
+	
+	if (df == 0 && dr == 0) { return 0; };
+
+	int sm = fmin(abs(df), abs(dr));
+	int lg = fmax(abs(df), abs(dr));
+
+	if (sm == 0) {
+		df = df / lg;
+		dr = dr / lg;
+	}
+	else {
+		if (lg % sm == 0) {
+			df = df / sm; 
+			dr = dr / sm;
+		}
+	}
+	return dr * 8 + df;
+}
+
 
 uint64_t operator&=(uint64_t lhs, Square rhs) { return lhs &= (rhs.get_bitboard()); };
 uint64_t operator|=(uint64_t lhs, Square rhs) { return lhs |= (rhs.get_bitboard()); };

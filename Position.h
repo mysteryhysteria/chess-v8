@@ -4,6 +4,7 @@
 #include <vector>
 #include <array>
 #include <map>
+#include <algorithm>
 #include "stdint.h"
 #include "Bitboards.h"
 #include "Move.h"
@@ -14,7 +15,18 @@
 
 const enum MoveOptions { PLACE = 1, CAPT = 2, SELF_CAPT = 4 };
 
+const enum CastleSide {KINGSIDE = 0, QUEENSIDE = 1};
+
 MoveOptions operator|(MoveOptions lhs, MoveOptions rhs);
+
+struct perft_moves {
+	int moves;
+	int capts;
+	int eps;
+	int castles;
+	int promos;
+	int checks;
+};
 
 class Position {
 private:
@@ -30,14 +42,17 @@ private:
 					// 1 bit for in-check status (0b1-Check, 0b0-No Check)
 					// 3 bonus bits!
 
-	std::array<Bitboard, 12> checking_pieces; // array containing squares that are occupied by a piece which is checking the king
-	std::array<Bitboard, 12> pinned_pieces;	// array containing squares that are occupied by pinned pieces
+	Bitboard checking_pieces; // bitboard of squares that are occupied by a piece which is checking the king
+	Bitboard spying_pieces;	// bitboard of squares that are occupied by a piece which is "spying on" the king
+	Bitboard pinned_pieces;	// bitboard of squares that are occupied by pinned pieces
+	std::vector<Bitboard> check_vectors; // array of bitboards containing squares between checking pieces and the king
+	std::vector<Bitboard> spy_vectors; // array of bitboards containing squares between spying pieces and the king
 
 
 	std::vector<Move> move_gen_p(Square from);
 	std::vector<Move> move_gen_k(Square from);
 	std::vector<Move> move_gen_sliders(Square from, Types type);
-	std::vector<Move> move_gen_generic(Square from, std::vector<int> directions, unsigned int max_distance = -1, MoveOptions move_opts = (MoveOptions::PLACE | MoveOptions::CAPT));
+	std::vector<Move> move_gen_generic(Square from, std::vector<int> directions, int max_distance = -1, MoveOptions move_opts = (MoveOptions::PLACE | MoveOptions::CAPT));
 
 public:
 	// Testing - do not leave here!
@@ -57,17 +72,23 @@ public:
 	bool is_type(Square sq, Types type);
 	bool is_opponent(Square sq);
 	bool is_friend(Square sq);
+	bool is_castle_legal(CastleSide side);
 	bool Q_castle_right();
 	bool K_castle_right();
-	bool in_check();
+	void set_castle_right(Colors color, CastleSide side, bool set);
+	bool is_in_check();
 	bool square_covered(Square sq);
 	bool attacked_by_piece(Square sq, Types piece_type);
-	void set_in_check();
+	void king_threats();
+	void set_in_check(bool set);
 	void disp_bitboards();
 	void disp_castling();
 	void disp_epsq();
 	void disp_plys();
 	void disp();
+	Position& make_move(Move move);
+	Position& undo();
+	void perft(unsigned int depth, perft_moves& counts);
 
 };
 

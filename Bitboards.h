@@ -25,6 +25,7 @@ public:
 	bool empty();
 	bool contains(Square& sq);
 	Square pop_occupied();
+	int popcount();
 
 	// Operator Overloads
 	Bitboard& operator|=(Square& sq);
@@ -80,6 +81,8 @@ public:
 	Square& next(unsigned int skip = 1);
 	Square& previous(unsigned int skip = 1);
 	Square& first();
+	int popcount();
+	int direction_from(Square from);
 };
 
 uint64_t operator&=(uint64_t lhs, Square rhs);
