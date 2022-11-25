@@ -647,6 +647,10 @@ void Position::perft(unsigned int depth, perft_moves& counts) {
 		counts.moves++;
 		if (is_in_check()) {
 			counts.checks++;
+			std::cout << "CHECK #" << counts.checks << ":" << std::endl;
+			disp_move_history(move_history);
+			std::cout << std::endl;
+			disp();
 		}
 		auto prev_move = move_history.back();
 		switch (prev_move.get_move_type()) {
@@ -964,14 +968,14 @@ std::vector<Move> Position::move_gen_k(Square from)
 			assert(temp_moves.size() == 1);
 
 			// update move to be the more specific move type of castling
-			temp_moves[0].set_move_type(CASTLE).set_special(from >> 4); // changes to a castle move and adds the King's rook square to the special field
+			temp_moves[0].set_move_type(CASTLE).set_special(from << 3); // changes to a castle move and adds the King's rook square to the special field
 			moves.push_back(temp_moves[0]);
 		}
 		if (Q_castle_right() && is_castle_legal(QUEENSIDE)) { // see if we have the right to castle queenside
 			temp_moves = move_gen_generic(from, { -2 }, 1);
 			assert(temp_moves.size() == 1);
 
-			temp_moves[0].set_move_type(CASTLE).set_special(from << 3); // changes to a castle move and adds the Queen's rook square to the special field
+			temp_moves[0].set_move_type(CASTLE).set_special(from >> 4); // changes to a castle move and adds the Queen's rook square to the special field
 			moves.push_back(temp_moves[0]);
 		}
 	}
