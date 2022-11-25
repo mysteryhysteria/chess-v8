@@ -645,12 +645,16 @@ Position& Position::undo() {
 void Position::perft(unsigned int depth, perft_moves& counts) {
 	if (depth == 0) {
 		counts.moves++;
+		std::cout << "Move # " << counts.moves << std::endl;
+		disp_move_history(move_history);
+		std::cout << std::endl;
+		//disp();
 		if (is_in_check()) {
 			counts.checks++;
-			std::cout << "CHECK #" << counts.checks << ":" << std::endl;
-			disp_move_history(move_history);
-			std::cout << std::endl;
-			disp();
+			//std::cout << "CHECK #" << counts.checks << ":" << std::endl;
+			//disp_move_history(move_history);
+			//std::cout << std::endl;
+			//disp();
 		}
 		auto prev_move = move_history.back();
 		switch (prev_move.get_move_type()) {
@@ -662,9 +666,9 @@ void Position::perft(unsigned int depth, perft_moves& counts) {
 			case EN_PASSANT:
 				counts.capts++;
 				counts.eps++;
-				std::cout << "EP #" << counts.eps << ":" << std::endl;
-				disp_move_history(move_history);
-				std::cout << std::endl;
+				//std::cout << "EP #" << counts.eps << ":" << std::endl;
+				//disp_move_history(move_history);
+				//std::cout << std::endl;
 				break;
 			case PROMOTION:
 				counts.promos++;

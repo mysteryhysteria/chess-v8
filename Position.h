@@ -63,6 +63,7 @@ public:
 
 	// Methods
 	void parse_fen(std::string fen);
+	//TODO std::string gen_fen();
 	std::vector<Move> move_gen();
 	static void disp_bitboard(Bitboard bb, std::string title, char piece_c, char empty_c);
 	static void disp_bitboard(Bitboard bb, std::string title);
