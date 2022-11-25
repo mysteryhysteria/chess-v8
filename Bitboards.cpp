@@ -1,25 +1,44 @@
 #include "Bitboards.h"
 
+// All bitboards use a 64-bit integer to represent the board.
+// The LSB corresponds to A8 and the MSB corresponds to H1. 
+// Therefore, the first byte is the 8th rank, the next byte is the 7th rank, etc.
+// The first bit in each byte is in the A-file, the second bit in each byte is in the B-file, etc.
+// 
+// Examples:
+// 
+// These are all 64-bit integers (in hex) which only have a single '1' bit, meaning they represent single squares.
+// 0x0000000000000001 -- A8
+// 0x0000000000000002 -- B8
+// 0x0000000000000004 -- C8
+// 0x0000000000000008 -- D8
+// 0x0000000000000010 -- E8
+// 0x0000000000000020 -- F8
+// 0x0000000000000040 -- G8
+// 0x0000000000000080 -- H8
+// 
+// Each pair of hex digits represents one byte (and therefore one rank). 
+
 std::array<uint64_t, 8> rank_masks = {
-	0xff00000000000000,
-	0x00ff000000000000,
-	0x0000ff0000000000,
-	0x000000ff00000000,
-	0x00000000ff000000,
-	0x0000000000ff0000,
-	0x000000000000ff00,
-	0x00000000000000ff
+	0xff00000000000000, // 1st rank
+	0x00ff000000000000, // 2nd rank
+	0x0000ff0000000000, // 3rd rank
+	0x000000ff00000000, // 4th rank
+	0x00000000ff000000, // 5th rank
+	0x0000000000ff0000, // 6th rank
+	0x000000000000ff00, // 7th rank
+	0x00000000000000ff  // 8th rank
 };
 
 std::array<uint64_t, 8> file_masks = {
-	0x0101010101010101,
-	0x0202020202020202,
-	0x0404040404040404,
-	0x0808080808080808,
-	0x1010101010101010,
-	0x2020202020202020,
-	0x4040404040404040,
-	0x8080808080808080
+	0x0101010101010101, // A file
+	0x0202020202020202, // B file
+	0x0404040404040404, // C file
+	0x0808080808080808, // D file
+	0x1010101010101010, // E file
+	0x2020202020202020, // F file
+	0x4040404040404040, // G file
+	0x8080808080808080  // H file
 };
 
 // Bitboard Constructors
