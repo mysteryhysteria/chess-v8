@@ -45,7 +45,7 @@ Square Ray::get_prev() {
 	}
 }
 
-void Ray::update_maxed() { this->maxed = (distance == 0) || (this->current & move_masks[direction]).empty(); }
+void Ray::update_maxed() { this->maxed = (distance == 0) || (this->current & move_masks[direction]).is_empty(); }
 
 int Ray::NO_DIR = 0;
 int Ray::NO_MAX = -1;

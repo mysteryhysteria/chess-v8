@@ -86,7 +86,8 @@ public:
 	void disp_castling();
 	void disp_epsq();
 	void disp_plys();
-	void disp();
+	void disp(bool show_all);
+	void disp() { disp(false); };
 	Position& make_move(Move move);
 	Position& undo();
 	void perft(unsigned int depth, perft_moves& counts);

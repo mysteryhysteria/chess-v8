@@ -21,8 +21,9 @@ public:
 	// Methods
 	Bitboard& mark_square(Square& sq);
 	Bitboard& clear_square(Square& sq);
+	Bitboard& clear();
 	uint64_t get_bitboard();
-	bool empty();
+	bool is_empty();
 	bool contains(Square& sq);
 	Square pop_occupied();
 	int popcount();
@@ -70,7 +71,7 @@ public:
 
 
 	// Methods
-	bool empty();
+	bool is_empty();
 	uint64_t get_bitboard();
 	bool on_pawn_start_rank(Colors turn);
 	bool on_promote_rank(Colors turn);

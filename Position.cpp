@@ -304,7 +304,7 @@ void Position::disp_castling() {
 }
 
 void Position::disp_epsq() {
-	bool available = !epsq.empty();
+	bool available = !epsq.is_empty();
 	std::string square_an = "";
 	std::cout << std::boolalpha << "\nEn Passant\n";
 
@@ -339,7 +339,7 @@ void Position::set_castle_right(Colors color, CastleSide side, bool set) {
 	}
 }
 
-void Position::disp() {
+void Position::disp(bool show_all) {
 	Bitboard	bitboard,
 				all = pieces_by_color[WHITE] | pieces_by_color[BLACK];
 	Square test_sq = Square().first();
@@ -377,17 +377,19 @@ void Position::disp() {
 	}
 	std::cout << "-------------------" << std::endl;
 
-	disp_bitboard(pinned_pieces, "Pinned Pieces");
-	disp_bitboard(checking_pieces, "Checking Pieces");
-	Bitboard threats;
-	for (auto& vector : check_vectors) { threats |= vector; };
-	disp_bitboard(threats, "Check Vectors");
-	disp_bitboard(spying_pieces, "Spying Pieces");
-	for (auto& vector : spy_vectors) { threats |= vector; };
-	disp_bitboard(threats, "Spy Vectors");
-	disp_castling();
-	disp_epsq();
-	disp_plys();
+	if (show_all) {
+		disp_bitboard(pinned_pieces, "Pinned Pieces");
+		disp_bitboard(checking_pieces, "Checking Pieces");
+		Bitboard threats;
+		for (auto& vector : check_vectors) { threats |= vector; };
+		disp_bitboard(threats, "Check Vectors");
+		disp_bitboard(spying_pieces, "Spying Pieces");
+		for (auto& vector : spy_vectors) { threats |= vector; };
+		disp_bitboard(threats, "Spy Vectors");
+		disp_castling();
+		disp_epsq();
+		disp_plys();
+	}
 }
 
 Position& Position::make_move(Move move) {
@@ -447,6 +449,7 @@ Position& Position::make_move(Move move) {
 				// remove both Q and K castle rights
 				set_castle_right(turn, QUEENSIDE, false);
 				set_castle_right(turn, KINGSIDE, false);
+				
 				// increment ply clock
 				++ply_clock;
 			}
@@ -468,7 +471,7 @@ Position& Position::make_move(Move move) {
 			else if (type == PAWN) {
 				// set ep square
 				if (turn == WHITE) {
-					if (to << 16 == from) {
+					if (from.on_nth_rank(3) && to.on_nth_rank(1)) {
 						epsq = to << 8;
 					}
 					else {
@@ -476,7 +479,7 @@ Position& Position::make_move(Move move) {
 					}
 				}
 				else {
-					if (to >> 16 == from) {
+					if (from.on_nth_rank(6) && to.on_nth_rank(4)) {
 						epsq = to >> 8;
 					}
 					else {
@@ -486,6 +489,11 @@ Position& Position::make_move(Move move) {
 
 				// reset the ply clock to 0
 				ply_clock = 0;
+			}
+			
+			// if this is any piece besides a pawn, clear the ep square
+			if (type != PAWN) {
+				epsq = Square();
 			}
 
 			// remove the moved piece off of its from square
@@ -506,6 +514,7 @@ Position& Position::make_move(Move move) {
 			++ply;
 
 			break;
+
 		case CASTLE:
 			// remove both Q and K castle rights
 			set_castle_right(turn, QUEENSIDE, false);
@@ -617,7 +626,7 @@ Position& Position::make_move(Move move) {
 			pieces_by_type[type].mark_square(to);
 
 			// remove the special piece from its square
-			pieces_by_color[turn].clear_square(special);
+			pieces_by_color[!turn].clear_square(special);
 			pieces_by_type[PAWN].clear_square(special);
 
 			// clear epsq
@@ -645,9 +654,9 @@ Position& Position::undo() {
 void Position::perft(unsigned int depth, perft_moves& counts) {
 	if (depth == 0) {
 		counts.moves++;
-		std::cout << "Move # " << counts.moves << std::endl;
-		disp_move_history(move_history);
-		std::cout << std::endl;
+		//std::cout << "Move # " << counts.moves << std::endl;
+		//disp_move_history(move_history);
+		//std::cout << std::endl;
 		//disp();
 		if (is_in_check()) {
 			counts.checks++;
@@ -774,13 +783,20 @@ bool Position::square_covered(Square sq) {
 
 void Position::king_threats() {
 	auto king_sq = (pieces_by_type[KING] & pieces_by_color[get_turn()]).pop_occupied();
-	assert(!king_sq.empty());
+	assert(!king_sq.is_empty());
 
 	Ray search_path = Ray(king_sq);
 	Square to, temp_pin;
 	Bitboard temp_attack_vector;
 	int max_distance;
 	std::vector<int> directions;
+
+	// Reset all threat bitboards / vectors of bitboards
+	checking_pieces.clear();
+	spying_pieces.clear();
+	pinned_pieces.clear();
+	check_vectors.clear();
+	spy_vectors.clear();
 
 	for (int i = 0; i < 6; ++i) {
 		auto piece_type = static_cast<Types>(i);
@@ -810,7 +826,7 @@ void Position::king_threats() {
 				to = (++search_path).get_current();
 				temp_attack_vector.mark_square(to);
 				if (pieces_by_color[get_turn()].contains(to)) {
-					if (temp_pin.empty()) {
+					if (temp_pin.is_empty()) {
 						temp_pin = to;
 					}
 					else {
@@ -819,7 +835,7 @@ void Position::king_threats() {
 				}
 				else if (pieces_by_color[!get_turn()].contains(to)) {
 					if (pieces_by_type[piece_type].contains(to)) {
-						if (temp_pin.empty()) {
+						if (temp_pin.is_empty()) {
 							checking_pieces.mark_square(to);
 							check_vectors.push_back(temp_attack_vector);
 						}
@@ -904,10 +920,10 @@ std::vector<Move> Position::move_gen_sliders(Square from, Types type) {
 				}
 			}
 
-			assert(!attack_vector.empty()); // The attack vector cannot be empty if this piece is pinned.
+			assert(!attack_vector.is_empty()); // The attack vector cannot be empty if this piece is pinned.
 
 			piece_dirs = move_directions[type]; // Start with the full set of move directions for this piece.
-			while (!attack_vector.empty()) { // while the attack vector is not empty...
+			while (!attack_vector.is_empty()) { // while the attack vector is not empty...
 				test_sq = attack_vector.pop_occupied(); // pop the next occupied square
 				test_dir = test_sq.direction_from(from); // compute the basic direction from the pinned piece to the square being tested.
 				auto matched_dir = std::find(piece_dirs.begin(), piece_dirs.end(), test_dir); // search the move directions of this piece for the computed direction
@@ -936,7 +952,7 @@ std::vector<Move> Position::move_gen_sliders(Square from, Types type) {
 		}
 		else { // if the piece is not pinned...
 			attack_vector = check_vectors[0]; // get the attack vector of the checking piece
-			while (!attack_vector.empty()) { // while the attack vector is not empty...
+			while (!attack_vector.is_empty()) { // while the attack vector is not empty...
 				test_sq = attack_vector.pop_occupied(); // get the next occupied square
 				test_dir = test_sq.direction_from(from); // compute the direction from this piece to the test square.
 				auto matched_dir = std::find(piece_dirs.begin(), piece_dirs.end(), test_dir); // search this pieces directions for the computed direction
@@ -961,7 +977,7 @@ std::vector<Move> Position::move_gen_k(Square from)
 
 	temp_moves = move_gen_generic(from, move_directions[KING], 1);	// Get king's psuedolegal moves
 	for (auto& temp_move : temp_moves) {							// for each psuedolegal move...
-		if (!square_covered(temp_move.get_to())) {					// if the move is to an undefended square...
+		if (!square_covered(temp_move.get_to())) {					// if the move is to an unattacked square...
 			moves.push_back(temp_move);								// add it to the legal move list
 		}
 	}
@@ -1011,7 +1027,7 @@ std::vector<Move> Position::move_gen_p(Square from) {
 		if (pl_moves[i].get_to().on_promote_rank(turn)) {
 			promote_move = pl_moves[i].set_move_type(PROMOTION);
 			for (int j = 1; j < 5; ++j) {
-				promote_move.set_promote_type(static_cast<Types>(i));
+				promote_move.set_promote_type(static_cast<Types>(j));
 				if (j == 1) {
 					pl_moves[i] = promote_move; // overwrite the found move with the first promotion move
 				}
@@ -1023,20 +1039,20 @@ std::vector<Move> Position::move_gen_p(Square from) {
 	}
 
 	// En Passant moves
-	if (!epsq.empty()) {
+	if (!epsq.is_empty()) {
 		if (turn == WHITE) {
-			if ((from >> 7) == epsq && ~from.on_nth_file(7)) {
+			if ((from >> 7) == epsq && !from.on_nth_file(7)) {
 				pl_moves.push_back(Move(from, epsq, from << 1, turn, PAWN, PAWN, NONE, EN_PASSANT));
 			}
-			if ((from >> 9) == epsq && ~from.on_nth_file(0)) {
+			if ((from >> 9) == epsq && !from.on_nth_file(0)) {
 				pl_moves.push_back(Move(from, epsq, from >> 1, turn, PAWN, PAWN, NONE, EN_PASSANT));
 			}
 		}
 		else {
-			if ((from << 7) == epsq && ~from.on_nth_file(0)) {
+			if ((from << 7) == epsq && !from.on_nth_file(0)) {
 				pl_moves.push_back(Move(from, epsq, from >> 1, turn, PAWN, PAWN, NONE, EN_PASSANT));
 			}
-			if ((from << 9) == epsq && ~from.on_nth_file(7)) {
+			if ((from << 9) == epsq && !from.on_nth_file(7)) {
 				pl_moves.push_back(Move(from, epsq, from << 1, turn, PAWN, PAWN, NONE, EN_PASSANT));
 			}
 		}
@@ -1081,7 +1097,7 @@ std::vector<Move> Position::move_gen() {
 			pieces = pieces_by_type[i] & pieces_by_color[turn]; // get the pieces of that type and of the right color
 			type = static_cast<Types>(i); // calculate the type from the iteration var
 
-			while (!pieces.empty()) { // while there are pieces left on the board...
+			while (!pieces.is_empty()) { // while there are pieces left on the board...
 				from = pieces.pop_occupied(); // remove the next occupied square from the set of pieces
 				switch (type) { // based on which type of piece this is...
 				case PAWN:

@@ -49,9 +49,10 @@ Bitboard::Bitboard() : Bitboard((uint64_t)0) {};
 // Bitboard Methods
 Bitboard& Bitboard::mark_square(Square& sq) { return *this |= sq; };
 Bitboard& Bitboard::clear_square(Square& sq) { return *this &= ~sq; };
+Bitboard& Bitboard::clear() { this->bitboard = (uint64_t)0; return *this; }
 uint64_t Bitboard::get_bitboard() { return this->bitboard; };
-bool Bitboard::empty() { return this->bitboard == (uint64_t)0; }
-bool Bitboard::contains(Square& sq) { return !(*this & sq).empty(); };
+bool Bitboard::is_empty() { return this->bitboard == (uint64_t)0; }
+bool Bitboard::contains(Square& sq) { return !(*this & sq).is_empty(); };
 
 Square Bitboard::pop_occupied() {
 	auto bb = this->bitboard;
@@ -99,7 +100,7 @@ bool Square::operator==(const uint64_t& rhs) { return *this == Square(rhs); };
 
 // Square Methods
 
-bool Square::empty() { return this->bitboard == (uint64_t) 0; };
+bool Square::is_empty() { return this->bitboard == (uint64_t) 0; };
 
 uint64_t Square::get_bitboard() { return this->bitboard; };
 
