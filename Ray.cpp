@@ -26,7 +26,7 @@ Square Ray::get_next() {
 		return (this->current << direction);
 	}
 	else if (direction < 0) {
-		return (this->current >> abs(direction));
+		return (this->current >> -direction);
 	}
 	else { // direction == 0
 		return Square();
@@ -38,7 +38,7 @@ Square Ray::get_prev() {
 		return (this->current >> direction); // no need to check against the move mask as we must have already found this square
 	}
 	else if (direction < 0) {
-		return (this->current << abs(direction));
+		return (this->current << -direction);
 	}
 	else { // direction == 0
 		return Square();

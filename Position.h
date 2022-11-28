@@ -13,6 +13,8 @@
 #include "Utils.h"
 #include "Ray.h"
 
+// TODO: change methods which have a "void" return type to instead return the Position object which they are called on if they mutate the state of the Position object.
+
 const enum MoveOptions { PLACE = 1, CAPT = 2, SELF_CAPT = 4 };
 
 const enum CastleSide {KINGSIDE = 0, QUEENSIDE = 1};
@@ -54,9 +56,13 @@ private:
 	std::vector<Move> move_gen_sliders(Square from, Types type);
 	std::vector<Move> move_gen_generic(Square from, std::vector<int> directions, int max_distance = -1, MoveOptions move_opts = (MoveOptions::PLACE | MoveOptions::CAPT));
 
-public:
-	// Testing - do not leave here!
+	// Implementing a simpler movegen algorithm in hopes that it will be more correct, and to aid in debugging. These methods are to support that effort.
+	std::vector<Move> BASIC_pl_move_gen();
+	std::vector<Move> BASIC_pl_std_move_gen(Square from);
+	std::vector<Move> BASIC_pl_pawn_move_gen(Square from);
+	std::vector<Move> BASIC_pl_castle_move_gen(Square from);
 
+public:
 	// Constructors
 	Position(std::string fen) { parse_fen(fen); }
 	Position() : Position("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") {} // default standard starting position for chess, in FEN notation
@@ -71,6 +77,7 @@ public:
 	Colors get_turn();
 	Types get_type(Square sq);
 	bool is_type(Square sq, Types type);
+	bool is_open(Square sq);
 	bool is_opponent(Square sq);
 	bool is_friend(Square sq);
 	bool is_castle_legal(CastleSide side);
@@ -91,6 +98,10 @@ public:
 	Position& make_move(Move move);
 	Position& undo();
 	void perft(unsigned int depth, perft_moves& counts);
+
+	// Implementing a simpler movegen algorithm in hopes that it will be more correct, and to aid in debugging. These methods are to support that effort.
+	std::vector<Move> BASIC_move_gen();
+	void BASIC_king_threats(); // the basic one will only calculate if the king is in check.
 
 };
 

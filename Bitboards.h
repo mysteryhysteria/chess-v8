@@ -22,7 +22,7 @@ public:
 	Bitboard& mark_square(Square& sq);
 	Bitboard& clear_square(Square& sq);
 	Bitboard& clear();
-	uint64_t get_bitboard();
+	uint64_t get_u64();
 	bool is_empty();
 	bool contains(Square& sq);
 	Square pop_occupied();
@@ -37,6 +37,7 @@ public:
 	Bitboard operator|(Square& sq);
 	Bitboard operator&(Bitboard& bb);
 	Bitboard operator|(Bitboard& bb);
+	Bitboard operator~();
 	
 };
 
@@ -72,7 +73,7 @@ public:
 
 	// Methods
 	bool is_empty();
-	uint64_t get_bitboard();
+	uint64_t get_u64();
 	bool on_pawn_start_rank(Colors turn);
 	bool on_promote_rank(Colors turn);
 	bool on_nth_rank(unsigned int n);

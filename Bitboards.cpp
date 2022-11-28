@@ -43,14 +43,14 @@ std::array<uint64_t, 8> file_masks = {
 
 // Bitboard Constructors
 Bitboard::Bitboard(uint64_t bb) : bitboard(bb) {};
-Bitboard::Bitboard(Square sq) : Bitboard(sq.get_bitboard()) {};
+Bitboard::Bitboard(Square sq) : Bitboard(sq.get_u64()) {};
 Bitboard::Bitboard() : Bitboard((uint64_t)0) {};
 
 // Bitboard Methods
 Bitboard& Bitboard::mark_square(Square& sq) { return *this |= sq; };
 Bitboard& Bitboard::clear_square(Square& sq) { return *this &= ~sq; };
 Bitboard& Bitboard::clear() { this->bitboard = (uint64_t)0; return *this; }
-uint64_t Bitboard::get_bitboard() { return this->bitboard; };
+uint64_t Bitboard::get_u64() { return this->bitboard; };
 bool Bitboard::is_empty() { return this->bitboard == (uint64_t)0; }
 bool Bitboard::contains(Square& sq) { return !(*this & sq).is_empty(); };
 
@@ -61,21 +61,22 @@ Square Bitboard::pop_occupied() {
 	return next_sq;
 }
 
-int Bitboard::popcount() { return std::bitset<64>(this->get_bitboard()).count(); };
+int Bitboard::popcount() { return std::bitset<64>(this->get_u64()).count(); };
 
 // Bitboard Operator Overloads
-Bitboard& Bitboard::operator|=(Square& sq) { this->bitboard |= sq.get_bitboard(); return *this; };
-Bitboard& Bitboard::operator&=(Square& sq) { this->bitboard &= sq.get_bitboard(); return *this; };
-Bitboard& Bitboard::operator|=(Bitboard bb) { this->bitboard |= bb.get_bitboard(); return *this; };
-Bitboard& Bitboard::operator&=(Bitboard bb) { this->bitboard &= bb.get_bitboard(); return *this; };
-Bitboard Bitboard::operator&(Square& sq) { return Bitboard(this->bitboard & sq.get_bitboard()); };
-Bitboard Bitboard::operator|(Square& sq) { return Bitboard(this->bitboard | sq.get_bitboard()); };
-Bitboard Bitboard::operator&(Bitboard& bb) { return Bitboard(this->bitboard & bb.get_bitboard()); };
-Bitboard Bitboard::operator|(Bitboard& bb) { return Bitboard(this->bitboard | bb.get_bitboard()); };
+Bitboard& Bitboard::operator|=(Square& sq) { this->bitboard |= sq.get_u64(); return *this; };
+Bitboard& Bitboard::operator&=(Square& sq) { this->bitboard &= sq.get_u64(); return *this; };
+Bitboard& Bitboard::operator|=(Bitboard bb) { this->bitboard |= bb.get_u64(); return *this; };
+Bitboard& Bitboard::operator&=(Bitboard bb) { this->bitboard &= bb.get_u64(); return *this; };
+Bitboard Bitboard::operator&(Square& sq) { return Bitboard(this->bitboard & sq.get_u64()); };
+Bitboard Bitboard::operator|(Square& sq) { return Bitboard(this->bitboard | sq.get_u64()); };
+Bitboard Bitboard::operator&(Bitboard& bb) { return Bitboard(this->bitboard & bb.get_u64()); };
+Bitboard Bitboard::operator|(Bitboard& bb) { return Bitboard(this->bitboard | bb.get_u64()); };
+Bitboard Bitboard::operator~() { return Bitboard(~(this->bitboard)); };
 
 // Square Constructors
 Square::Square(uint64_t sq) : bitboard(sq) { if (sq != 0) { ASSERT_ONE_SQUARE(*this); } };
-Square::Square(Bitboard bb) : Square(bb.get_bitboard()) {};
+Square::Square(Bitboard bb) : Square(bb.get_u64()) {};
 Square::Square(int sq) : Square((uint64_t) sq) {};
 Square::Square(unsigned int index) : Square((uint64_t)(1ULL << index)) {};
 Square::Square(unsigned int rank, unsigned int file) : Square((unsigned int)((7 - rank) * 8 + file)) {};
@@ -84,8 +85,8 @@ Square::Square() : Square((uint64_t) 0) {};
 // Square Operator overloads
 Bitboard Square::operator&(const Square& rhs) { return Bitboard(this->bitboard & rhs.bitboard); };
 Bitboard Square::operator|(const Square& rhs) { return Bitboard(this->bitboard | rhs.bitboard); };
-Bitboard Square::operator&(Bitboard& rhs) { return Bitboard(this->bitboard & rhs.get_bitboard()); };
-Bitboard Square::operator|(Bitboard& rhs) { return Bitboard(this->bitboard | rhs.get_bitboard()); };
+Bitboard Square::operator&(Bitboard& rhs) { return Bitboard(this->bitboard & rhs.get_u64()); };
+Bitboard Square::operator|(Bitboard& rhs) { return Bitboard(this->bitboard | rhs.get_u64()); };
 Bitboard Square::operator~() { return Bitboard(~(this->bitboard)); };
 Square& Square::operator>>=(const unsigned int n) { this->bitboard >>= n; return *this; };
 Square& Square::operator<<=(const unsigned int n) { this->bitboard <<= n; return *this; };
@@ -102,7 +103,7 @@ bool Square::operator==(const uint64_t& rhs) { return *this == Square(rhs); };
 
 bool Square::is_empty() { return this->bitboard == (uint64_t) 0; };
 
-uint64_t Square::get_bitboard() { return this->bitboard; };
+uint64_t Square::get_u64() { return this->bitboard; };
 
 bool Square::on_nth_rank(unsigned int n) {
 	return bool(this->bitboard & rank_masks[n]);
@@ -182,5 +183,5 @@ int Square::direction_from(Square from)
 }
 
 
-uint64_t operator&=(uint64_t lhs, Square rhs) { return lhs &= (rhs.get_bitboard()); };
-uint64_t operator|=(uint64_t lhs, Square rhs) { return lhs |= (rhs.get_bitboard()); };
+uint64_t operator&=(uint64_t lhs, Square rhs) { return lhs &= (rhs.get_u64()); };
+uint64_t operator|=(uint64_t lhs, Square rhs) { return lhs |= (rhs.get_u64()); };

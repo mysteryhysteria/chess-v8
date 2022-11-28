@@ -22,7 +22,7 @@ std::vector<std::vector<int>> pawn_capt_directions = {
 	{-9, -7}, // White
 	{7, 9} // Black
 };
-//
+
 //std::map<int, Bitboard> move_masks = { // map of move directions to bitmasks for the move generation
 //	{-17, Bitboard(~0x010101010101ffff)},
 //	{-15, Bitboard(~0x808080808080ffff)},
@@ -31,10 +31,8 @@ std::vector<std::vector<int>> pawn_capt_directions = {
 //	{-8,  Bitboard(~0x00000000000000ff)},
 //	{-7,  Bitboard(~0x80808080808080ff)},
 //	{-6,  Bitboard(~0xc0c0c0c0c0c0c0ff)},
-//	{-2,  Bitboard(~0x0303030303030303)},
 //	{-1,  Bitboard(~0x0101010101010101)},
 //	{1,   Bitboard(~0x8080808080808080)},
-//	{2,   Bitboard(~0xc0c0c0c0c0c0c0c0)},
 //	{6,   Bitboard(~0xff03030303030303)},
 //	{7,   Bitboard(~0xff01010101010101)},
 //	{8,   Bitboard(~0xff00000000000000)},
@@ -713,6 +711,11 @@ bool Position::is_type(Square sq, Types type) {
 	return pieces_by_type[type].contains(sq);
 }
 
+bool Position::is_open(Square sq)
+{
+	return ((~(pieces_by_color[0] | pieces_by_color[1])) & sq).is_empty();
+}
+
 void Position::set_in_check(bool set) {
 	if (set) {
 		flags |= (1 << 4); // set the "in-check" bit.
@@ -1116,4 +1119,135 @@ std::vector<Move> Position::move_gen() {
 	return moves;
 }
 
+std::vector<Move> Position::BASIC_pl_move_gen()
+{
+	return std::vector<Move>();
+}
+
+std::vector<Move> Position::BASIC_pl_std_move_gen(Square from)
+{
+	std::vector<Move> moves = {};
+	Types type = get_type(from);
+	Square to;
+	Ray search = Ray(from);
+	auto dirs = move_directions[type];
+	int max_distance;
+	if (type == KNIGHT || type == KING) { max_distance = 1; }
+	else { max_distance = Ray::NO_MAX; }
+
+	assert(type != Types::PAWN); // Pawns will not work with this code.
+	assert(type != Types::NONE); // must select a piece
+	
+	for (auto dir : dirs) {
+		search.reset(dir, max_distance);
+		while (!search.end()) {
+			search++;
+			to = search.get_current();
+
+			// determine what is on the test square and do something about it.
+			if (is_open(to)) {
+				moves.push_back(Move(from, to, get_turn(), type));
+			}
+			else {
+				if (is_opponent(to)) {
+					moves.push_back(Move(from, to, get_turn(), type, get_type(to)));
+					break; // searching this ray is done
+				}
+				else if (is_friend(to)) {
+					break; // searching this ray is done
+				}
+				else { // if the square is not open, not a friend, nor an opponent, then something has gone wrong.
+					assert(false);
+				}
+			}
+			
+		}
+	}
+	
+	return moves;
+}
+
+std::vector<Move> Position::BASIC_pl_pawn_move_gen(Square from)
+{
+	std::vector<Move> moves = {};
+	Move move;
+	Types type = get_type(from);
+	Square to, special;
+	Ray search = Ray(from);
+	int max_distance;
+	Colors turn = get_turn();
+	auto dir = move_directions[type][turn];
+	auto capt_dirs = pawn_capt_directions[turn];
+
+	assert(type != Types::NONE); // Must select a piece
+	assert(type == PAWN); // Only pawns will work with this code.
+
+	// create lambda to check for promotions
+	// TODO: understand how lambdas work and their syntax
+	auto convert_promotions = [&](Colors turn, Square to, Move move, std::vector<Move> moves) -> void {
+		if ((turn == Colors::WHITE && to.on_nth_rank(7)) || (turn == Colors::BLACK && to.on_nth_rank(0))) {
+			for (int i = 0; i < 6; ++i) {
+				move.set_move_type(SpecialMoves::PROMOTION);
+				move.set_promote_type(static_cast<Types> (i));
+				moves.push_back(move);
+			}
+		}
+		else {
+			moves.push_back(move);
+		}
+	};
+
+	// check pawn push moves
+	if (turn == Colors::WHITE && from.on_nth_rank(1)) { max_distance = 2; }
+	else if (turn == Colors::BLACK && from.on_nth_rank(6)) { max_distance = 2; }
+	else { max_distance = 1; }
+	search.reset(dir, max_distance);
+	while (!search.end()) {
+		search++;
+		to = search.get_current();
+
+		// determine what is on the test square and do something about it.
+		if (is_open(to)) {
+			move = Move(from, to, turn, type);
+		}
+		else {
+			break; // occupied squares are not available for pawn pushes
+		}
+	}
+
+	// check pawn capture moves
+	for (auto dir : capt_dirs) {
+		search.reset(dir, 1);
+		if (!search.end()) {
+			search++;
+			to = search.get_current();
+
+			if (is_opponent(to)) { // std capture move
+				move = Move(from, to, turn, type, get_type(to));
+			}
+			else if (to == epsq) { // e.p. capture move
+				if (turn == Colors::WHITE) { special = to << 8; }
+				else if (turn == Colors::BLACK) {	special = to >> 8; }
+				else { assert(false); }
+				move = Move(from, to, special, turn, type, Types::PAWN, Types::NONE, SpecialMoves::EN_PASSANT);
+			}
+		}
+	}
+
+	return std::vector<Move>();
+}
+
+std::vector<Move> Position::BASIC_pl_castle_move_gen(Square from)
+{
+	return std::vector<Move>();
+}
+
+std::vector<Move> Position::BASIC_move_gen()
+{
+	return std::vector<Move>();
+}
+
+void Position::BASIC_king_threats()
+{
+}
 
