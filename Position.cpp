@@ -12,8 +12,8 @@ void disp_move_history(std::vector<Move> move_history) {
 std::vector<std::vector<int>> move_directions = { // map from piece types to valid move directions for each piece
 	{-8, 8}, // Pawn
 	{-17, -15, -10, -6, 6, 10, 15, 17}, // Knight
-	{-9, -7, 7, 9}, // Rook
-	{-8, -1, 1, 8}, // Bishop
+	{-9, -7, 7, 9}, // Bishop
+	{-8, -1, 1, 8}, // Rook
 	{-9, -8, -7, -1, 1, 7, 8, 9}, // Queen
 	{-9, -8, -7, -1, 1, 7, 8, 9} // King
 };
