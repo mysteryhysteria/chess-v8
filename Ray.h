@@ -1,6 +1,8 @@
 #pragma once
 #include "Bitboards.h"
 
+// TODO: Reimplement the Ray to use iterators (more idiomatic).
+
 class Ray {
 private:
 	static std::map<int, Bitboard> move_masks;

@@ -696,6 +696,11 @@ void Position::perft(unsigned int depth, perft_moves& counts) {
 	}
 }
 
+Bitboard Position::get_occupied()
+{
+	return pieces_by_color[Colors::WHITE] | pieces_by_color[Colors::BLACK];
+}
+
 Colors Position::get_turn() {
 	return static_cast<Colors>(((ply - 1) % 2));
 }
@@ -1119,13 +1124,11 @@ std::vector<Move> Position::move_gen() {
 	return moves;
 }
 
-std::vector<Move> Position::BASIC_pl_move_gen()
-{
+std::vector<Move> Position::BASIC_pl_move_gen() {
 	return std::vector<Move>();
 }
 
-std::vector<Move> Position::BASIC_pl_std_move_gen(Square from)
-{
+std::vector<Move> Position::BASIC_pl_std_move_gen(Square from) {
 	std::vector<Move> moves = {};
 	Types type = get_type(from);
 	Square to;
@@ -1141,7 +1144,7 @@ std::vector<Move> Position::BASIC_pl_std_move_gen(Square from)
 	for (auto dir : dirs) {
 		search.reset(dir, max_distance);
 		while (!search.end()) {
-			search++;
+			++search;
 			to = search.get_current();
 
 			// determine what is on the test square and do something about it.
@@ -1167,8 +1170,7 @@ std::vector<Move> Position::BASIC_pl_std_move_gen(Square from)
 	return moves;
 }
 
-std::vector<Move> Position::BASIC_pl_pawn_move_gen(Square from)
-{
+std::vector<Move> Position::BASIC_pl_pawn_move_gen(Square from) {
 	std::vector<Move> moves = {};
 	Move move;
 	Types type = get_type(from);
@@ -1182,9 +1184,9 @@ std::vector<Move> Position::BASIC_pl_pawn_move_gen(Square from)
 	assert(type != Types::NONE); // Must select a piece
 	assert(type == PAWN); // Only pawns will work with this code.
 
-	// create lambda to check for promotions
-	// TODO: understand how lambdas work and their syntax
-	auto convert_promotions = [&](Colors turn, Square to, Move move, std::vector<Move> moves) -> void {
+	// This lambda takes the calculated move and determines if it is eligible for promotion. 
+	// It then decides to either store the set of promotions or just the plain move.
+	auto save_moves = [&]() -> void {
 		if ((turn == Colors::WHITE && to.on_nth_rank(7)) || (turn == Colors::BLACK && to.on_nth_rank(0))) {
 			for (int i = 0; i < 6; ++i) {
 				move.set_move_type(SpecialMoves::PROMOTION);
@@ -1203,12 +1205,13 @@ std::vector<Move> Position::BASIC_pl_pawn_move_gen(Square from)
 	else { max_distance = 1; }
 	search.reset(dir, max_distance);
 	while (!search.end()) {
-		search++;
+		++search;
 		to = search.get_current();
 
 		// determine what is on the test square and do something about it.
 		if (is_open(to)) {
 			move = Move(from, to, turn, type);
+			save_moves();
 		}
 		else {
 			break; // occupied squares are not available for pawn pushes
@@ -1219,35 +1222,75 @@ std::vector<Move> Position::BASIC_pl_pawn_move_gen(Square from)
 	for (auto dir : capt_dirs) {
 		search.reset(dir, 1);
 		if (!search.end()) {
-			search++;
+			++search;
 			to = search.get_current();
 
 			if (is_opponent(to)) { // std capture move
 				move = Move(from, to, turn, type, get_type(to));
+				save_moves();
 			}
 			else if (to == epsq) { // e.p. capture move
 				if (turn == Colors::WHITE) { special = to << 8; }
 				else if (turn == Colors::BLACK) {	special = to >> 8; }
 				else { assert(false); }
 				move = Move(from, to, special, turn, type, Types::PAWN, Types::NONE, SpecialMoves::EN_PASSANT);
+				moves.push_back(move); // Dont need to call save_moves() here since an en passant could never be a promotion.
+			}
+		}
+	}
+	return moves;
+}
+
+std::vector<Move> Position::BASIC_pl_castle_move_gen(Square from) {
+	
+	if (is_in_check()) {
+		return std::vector<Move>();
+	}
+
+	Move move;
+	std::vector<Move> moves;
+	Colors turn = get_turn();
+	Bitboard between_q, between_k;
+	Square sq_k;
+	bool q_right, k_right;
+
+	if (turn == Colors::BLACK) {
+		between_q = Bitboard(0x000000000000000e);
+		between_k = Bitboard(0x0000000000000060);
+		sq_k      = Square  (0x0000000000000010ULL); // ULL needed to avoid calling the Square(int sq) constructor
+	}
+	else {
+		between_q = Bitboard(0x0e00000000000000);
+		between_k = Bitboard(0x6000000000000000);
+		sq_k      = Square  (0x1000000000000000ULL); // ULL needed to avoid calling the Square(int sq) constructor
+	}
+
+	// Check queenside first
+	if (Q_castle_right()) { // do we have the right to castle?
+		if ((get_occupied() & between_q).is_empty()) { // are the squares between the king and rook empty?
+			if (!square_covered(sq_k >> 1) && !square_covered(sq_k >> 2)) { // are the squares the king moves through attacked?
+				move = Move(sq_k, sq_k >> 2, sq_k >> 4, turn, Types::KING, Types::NONE, Types::NONE, SpecialMoves::CASTLE);
+				moves.push_back(move);
 			}
 		}
 	}
 
+	// Check kingside second
+	if (K_castle_right()) { // do we have the right to castle?
+		if ((get_occupied() & between_k).is_empty()) { // are the squares between the king and rook empty?
+			if (!square_covered(sq_k << 1) && !square_covered(sq_k << 2)) { // are the squares the king moves through attacked?
+				move = Move(sq_k, sq_k << 2, sq_k << 3, turn, Types::KING, Types::NONE, Types::NONE, SpecialMoves::CASTLE);
+				moves.push_back(move);
+			}
+		}
+	}
+	return moves;
+}
+
+std::vector<Move> Position::BASIC_move_gen() {
 	return std::vector<Move>();
 }
 
-std::vector<Move> Position::BASIC_pl_castle_move_gen(Square from)
-{
-	return std::vector<Move>();
-}
-
-std::vector<Move> Position::BASIC_move_gen()
-{
-	return std::vector<Move>();
-}
-
-void Position::BASIC_king_threats()
-{
+void Position::BASIC_king_threats() {
 }
 

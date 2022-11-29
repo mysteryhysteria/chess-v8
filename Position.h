@@ -40,7 +40,7 @@ private:
 
 	uint16_t ply; // count of the current ply
 	uint16_t ply_clock; // number of plys that have been played since the last capture or pawn move
-	uint8_t flags;	// 4 bits for castling rights (0bxxx1-WK, 0bxx1xb-WQ, 0bx1xxb-BK, 0b1xxxb-BQ)
+	uint8_t flags;	// 4 bits for castling rights (0bxxx1-WK, 0bxx1x-WQ, 0bx1xx-BK, 0b1xxx-BQ)
 					// 1 bit for in-check status (0b1-Check, 0b0-No Check)
 					// 3 bonus bits!
 
@@ -98,6 +98,7 @@ public:
 	Position& make_move(Move move);
 	Position& undo();
 	void perft(unsigned int depth, perft_moves& counts);
+	Bitboard get_occupied();
 
 	// Implementing a simpler movegen algorithm in hopes that it will be more correct, and to aid in debugging. These methods are to support that effort.
 	std::vector<Move> BASIC_move_gen();
