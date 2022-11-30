@@ -1125,7 +1125,31 @@ std::vector<Move> Position::move_gen() {
 }
 
 std::vector<Move> Position::BASIC_pl_move_gen() {
-	return std::vector<Move>();
+	Bitboard pieces = pieces_by_color[get_turn()];
+	Square cur_piece;
+	Types type;
+	std::vector<Move> moves = {}, temp_moves;
+
+	while (!pieces.is_empty()) {
+		cur_piece = pieces.pop_occupied();
+		type = get_type(cur_piece);
+		assert(type != Types::NONE);
+
+		if (type == Types::PAWN) { // cant call the std_move_gen with pawns
+			temp_moves = BASIC_pl_pawn_move_gen(cur_piece);
+			moves.insert(moves.end(), temp_moves.begin(), temp_moves.end());
+		}
+		else {
+			temp_moves = BASIC_pl_std_move_gen(cur_piece);
+			moves.insert(moves.end(), temp_moves.begin(), temp_moves.end());
+		}
+
+		if (type == Types::KING) { // castling moves are in addition to all other std moves
+			temp_moves = BASIC_pl_castle_move_gen(cur_piece);
+			moves.insert(moves.end(), temp_moves.begin(), temp_moves.end());
+		}
+	}
+	return moves;
 }
 
 std::vector<Move> Position::BASIC_pl_std_move_gen(Square from) {
@@ -1288,9 +1312,49 @@ std::vector<Move> Position::BASIC_pl_castle_move_gen(Square from) {
 }
 
 std::vector<Move> Position::BASIC_move_gen() {
-	return std::vector<Move>();
+	std::vector<Move> moves;
+	Square king_sq = pieces_by_color[get_turn()] & pieces_by_type[Types::KING];
+
+	moves = BASIC_pl_move_gen(); // Get all the pseudo-legal moves in the position.
+
+	// lambda function for filtering illegal moves.
+	auto illegal_move = [&](Move& pl_move) -> bool {
+		Position next = make_move(pl_move);
+		std::vector<Move> counter_moves = next.BASIC_pl_move_gen();
+		bool is_illegal = false;
+		for (auto counter_move : counter_moves) {
+			if (counter_move.get_to() == king_sq) {
+				is_illegal = true;
+				break;
+			}
+		}
+		next.undo();
+		return is_illegal;
+	};
+
+	moves.erase(std::remove_if(moves.begin(), moves.end(), illegal_move), moves.end());
+
+	return moves;
 }
 
 void Position::BASIC_king_threats() {
+	// HAS to come before the ply increment, otherwise get_turn() will get the wrong color and the opponents king.
+	Square king_sq = pieces_by_color[get_turn()] & pieces_by_type[Types::KING];
+
+	++ply; // this simulates a no-move for the current player and makes the move generator provide the opponent's "moves" in the position.
+	std::vector<Move> attacks = BASIC_move_gen();
+	bool in_check = false; // assume not in check to start
+
+	// check each move for the opponent to see if they "capture" the king
+	for (auto& attack : attacks) {
+		if (attack.get_to() == king_sq) {
+			in_check = true;
+			break;
+		}
+	}
+
+	set_in_check(in_check);
+	--ply;
+	return;
 }
 
