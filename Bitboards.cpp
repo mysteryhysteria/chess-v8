@@ -126,9 +126,13 @@ bool Square::on_promote_rank(Colors turn) {
 }
 
 unsigned int Square::convert_to_index() {
-	unsigned int maxbit = 0;
-	while ((*this >> (maxbit + 1)) != 0) maxbit++;
-	return maxbit;
+	unsigned int index = 0;
+	uint64_t bb = this->bitboard >> 1;
+	while (bb != 0) { 
+		bb = bb >> 1;
+		++index; 
+	}
+	return index;
 }
 
 std::string Square::p2an() {
