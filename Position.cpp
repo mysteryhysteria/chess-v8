@@ -408,6 +408,9 @@ Position& Position::make_move(Move move) {
 			// update castling permissions if a rook is captured off of its starting square
 			// and update the ply clock
 
+			// TODO: rewrite this since castling rights can only be taken away, there is no need to do such rigorous checks.
+			// You can instead just test if the right is still available, then if the king moved, or the rook moved, take it away.
+
 			// if this is a capture move
 			if (pieces_by_color[!turn].contains(from)) {
 				// if captured piece is rook
@@ -638,7 +641,6 @@ Position& Position::make_move(Move move) {
 			break;
 	}
 
-	king_threats();
 	return *this;
 }
 
@@ -650,6 +652,18 @@ Position& Position::undo() {
 }
 
 void Position::perft(unsigned int depth, perft_moves& counts) {
+	this->perft_core(depth, counts);
+	std::cout << "Perft, depth " << depth << ": " << std::endl;
+	std::cout << "Move count: " << counts.moves << std::endl;
+	std::cout << "Capture count: " << counts.capts << std::endl;
+	std::cout << "En Passant count: " << counts.eps << std::endl;
+	std::cout << "Castles count: " << counts.castles << std::endl;
+	std::cout << "Promotions count: " << counts.promos << std::endl;
+	std::cout << "Checks count: " << counts.checks << std::endl << std::endl;
+	counts = { 0, 0, 0, 0, 0, 0 };
+}
+
+void Position::perft_core(unsigned int depth, perft_moves& counts) {
 	if (depth == 0) {
 		counts.moves++;
 		//std::cout << "Move # " << counts.moves << std::endl;
@@ -690,7 +704,71 @@ void Position::perft(unsigned int depth, perft_moves& counts) {
 		//this->disp();
 		for (auto& move : this->move_gen()) {
 			//std::cout << move;
-			this->make_move(move).perft(depth-1, counts);
+			this->make_move(move);
+			this->king_threats();
+			this->perft_core(depth-1, counts);
+			this->undo();
+		}
+	}
+}
+
+void Position::BASIC_perft(unsigned int depth, perft_moves& counts) {
+	this->BASIC_perft_core(depth, counts);
+	std::cout << "Basic Perft, depth " << depth << ": " << std::endl;
+	std::cout << "Move count: " << counts.moves << std::endl;
+	std::cout << "Capture count: " << counts.capts << std::endl;
+	std::cout << "En Passant count: " << counts.eps << std::endl;
+	std::cout << "Castles count: " << counts.castles << std::endl;
+	std::cout << "Promotions count: " << counts.promos << std::endl;
+	std::cout << "Checks count: " << counts.checks << std::endl << std::endl;
+	counts = { 0, 0, 0, 0, 0, 0 };
+}
+
+void Position::BASIC_perft_core(unsigned int depth, perft_moves& counts) {
+	if (depth == 0) {
+		counts.moves++;
+		//std::cout << "Move # " << counts.moves << std::endl;
+		//disp_move_history(move_history);
+		//std::cout << std::endl;
+		//disp();
+		if (is_in_check()) {
+			counts.checks++;
+			//std::cout << "CHECK #" << counts.checks << ":" << std::endl;
+			//disp_move_history(move_history);
+			//std::cout << std::endl;
+			//disp();
+		}
+		auto prev_move = move_history.back();
+		switch (prev_move.get_move_type()) {
+		case STD:
+			if (prev_move.get_capt_type() != NONE) {
+				counts.capts++;
+			}
+			break;
+		case EN_PASSANT:
+			counts.capts++;
+			counts.eps++;
+			//std::cout << "EP #" << counts.eps << ":" << std::endl;
+			//disp_move_history(move_history);
+			//std::cout << std::endl;
+			break;
+		case PROMOTION:
+			counts.promos++;
+			break;
+		case CASTLE:
+			counts.castles++;
+			break;
+		}
+	}
+	else {
+		int sum = 0;
+		//this->disp();
+		for (auto& move : this->BASIC_move_gen()) {
+			//std::cout << move;
+			this->make_move(move);
+			this->check_integrity();
+			this->BASIC_king_threats();
+			this->BASIC_perft_core(depth - 1, counts);
 			this->undo();
 		}
 	}
@@ -699,6 +777,71 @@ void Position::perft(unsigned int depth, perft_moves& counts) {
 Bitboard Position::get_occupied()
 {
 	return pieces_by_color[Colors::WHITE] | pieces_by_color[Colors::BLACK];
+}
+
+void Position::check_integrity() {
+	// Piece sets must have the same pieces in them.
+	assert((pieces_by_color[Colors::WHITE] | pieces_by_color[Colors::BLACK]) ==	(pieces_by_type[Types::PAWN] | pieces_by_type[Types::KNIGHT] | pieces_by_type[Types::BISHOP] | pieces_by_type[Types::ROOK] | pieces_by_type[Types::QUEEN] | pieces_by_type[Types::KING]));
+
+	// Pieces by color should not intersect with each other
+	assert(pieces_by_color[Colors::WHITE] & pieces_by_color[Colors::BLACK] == 0ULL);
+
+	// Pieces of different types should not intersect with each other
+	assert((pieces_by_type[Types::PAWN]   & pieces_by_type[Types::KNIGHT]) == 0ULL);
+	assert((pieces_by_type[Types::PAWN]   & pieces_by_type[Types::BISHOP]) == 0ULL);
+	assert((pieces_by_type[Types::PAWN]   & pieces_by_type[Types::ROOK]  ) == 0ULL);
+	assert((pieces_by_type[Types::PAWN]   & pieces_by_type[Types::QUEEN] ) == 0ULL);
+	assert((pieces_by_type[Types::PAWN]   & pieces_by_type[Types::KING]  ) == 0ULL);
+	assert((pieces_by_type[Types::KNIGHT] & pieces_by_type[Types::BISHOP]) == 0ULL);
+	assert((pieces_by_type[Types::KNIGHT] & pieces_by_type[Types::ROOK]  ) == 0ULL);
+	assert((pieces_by_type[Types::KNIGHT] & pieces_by_type[Types::QUEEN] ) == 0ULL);
+	assert((pieces_by_type[Types::KNIGHT] & pieces_by_type[Types::KING]  ) == 0ULL);
+	assert((pieces_by_type[Types::BISHOP] & pieces_by_type[Types::ROOK]  ) == 0ULL);
+	assert((pieces_by_type[Types::BISHOP] & pieces_by_type[Types::QUEEN] ) == 0ULL);
+	assert((pieces_by_type[Types::BISHOP] & pieces_by_type[Types::KING]  ) == 0ULL);
+	assert((pieces_by_type[Types::ROOK]   & pieces_by_type[Types::QUEEN] ) == 0ULL);
+	assert((pieces_by_type[Types::ROOK]   & pieces_by_type[Types::KING]  ) == 0ULL);
+	assert((pieces_by_type[Types::QUEEN]  & pieces_by_type[Types::KING]  ) == 0ULL);
+
+	// Pawns should never be on 1st or 8th rank
+	uint64_t first_and_eighth  = 0xff000000000000ffULL;
+	assert((pieces_by_type[Types::PAWN] & first_and_eighth) == 0ULL);
+
+	// Never more than 8 pawns of each color
+	assert((pieces_by_color[Colors::WHITE] & pieces_by_type[Types::PAWN]).popcount() <= 8);
+	assert((pieces_by_color[Colors::BLACK] & pieces_by_type[Types::PAWN]).popcount() <= 8);
+
+	// Never more than 16 pieces of each color
+	assert(pieces_by_color[Colors::WHITE].popcount() <= 16);
+	assert(pieces_by_color[Colors::BLACK].popcount() <= 16);
+
+	// There must always be exactly 1 king of each color
+	assert((pieces_by_color[Colors::WHITE] & pieces_by_type[Types::KING]).popcount() == 1);
+	assert((pieces_by_color[Colors::BLACK] & pieces_by_type[Types::KING]).popcount() == 1);
+
+	// The e.p. square must be on the 3rd or 6th rank (depending on whose turn)
+	uint64_t third = 0x0000ff0000000000ULL;
+	uint64_t sixth = 0x0000000000ff0000ULL;
+
+	if (!epsq.is_empty()) {
+		if (get_turn() == Colors::WHITE) {
+			assert((epsq.get_u64() & sixth) == 0ULL);
+		}
+		else if (get_turn() == Colors::BLACK) {
+			assert((epsq.get_u64() & third) == 0ULL);
+		}
+		else {
+			assert(false);
+		}
+	}
+
+	// The epsq must be a single square
+	ASSERT_ONE_SQUARE(epsq);
+
+	// ply_clock must be no greater than ply
+	assert(ply_clock <= ply);
+
+	return;
 }
 
 Colors Position::get_turn() {
@@ -718,7 +861,7 @@ bool Position::is_type(Square sq, Types type) {
 
 bool Position::is_open(Square sq)
 {
-	return ((~(pieces_by_color[0] | pieces_by_color[1])) & sq).is_empty();
+	return ((pieces_by_color[Colors::WHITE] | pieces_by_color[Colors::BLACK]) & sq).is_empty();
 }
 
 void Position::set_in_check(bool set) {
@@ -1313,13 +1456,17 @@ std::vector<Move> Position::BASIC_pl_castle_move_gen(Square from) {
 
 std::vector<Move> Position::BASIC_move_gen() {
 	std::vector<Move> moves;
+	
 	Square king_sq = pieces_by_color[get_turn()] & pieces_by_type[Types::KING];
+	assert(get_type(king_sq) == Types::KING);
+	assert(pieces_by_color[get_turn()].contains(king_sq));
 
 	moves = BASIC_pl_move_gen(); // Get all the pseudo-legal moves in the position.
 
 	// lambda function for filtering illegal moves.
 	auto illegal_move = [&](Move& pl_move) -> bool {
-		Position next = make_move(pl_move);
+		Position next = this->make_move(pl_move);
+		next.check_integrity();
 		std::vector<Move> counter_moves = next.BASIC_pl_move_gen();
 		bool is_illegal = false;
 		for (auto counter_move : counter_moves) {
@@ -1328,7 +1475,8 @@ std::vector<Move> Position::BASIC_move_gen() {
 				break;
 			}
 		}
-		next.undo();
+		this->undo();
+		this->check_integrity();
 		return is_illegal;
 	};
 
@@ -1342,6 +1490,7 @@ void Position::BASIC_king_threats() {
 	Square king_sq = pieces_by_color[get_turn()] & pieces_by_type[Types::KING];
 
 	++ply; // this simulates a no-move for the current player and makes the move generator provide the opponent's "moves" in the position.
+	check_integrity();
 	std::vector<Move> attacks = BASIC_move_gen();
 	bool in_check = false; // assume not in check to start
 
@@ -1355,6 +1504,7 @@ void Position::BASIC_king_threats() {
 
 	set_in_check(in_check);
 	--ply;
+	check_integrity();
 	return;
 }
 

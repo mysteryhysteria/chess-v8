@@ -98,7 +98,11 @@ public:
 	Position& make_move(Move move);
 	Position& undo();
 	void perft(unsigned int depth, perft_moves& counts);
+	void perft_core(unsigned int depth, perft_moves& counts);
+	void BASIC_perft(unsigned int depth, perft_moves& counts);
+	void BASIC_perft_core(unsigned int depth, perft_moves& counts);
 	Bitboard get_occupied();
+	void check_integrity();
 
 	// Implementing a simpler movegen algorithm in hopes that it will be more correct, and to aid in debugging. These methods are to support that effort.
 	std::vector<Move> BASIC_move_gen();
