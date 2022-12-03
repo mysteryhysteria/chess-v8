@@ -22,6 +22,7 @@ public:
 	Bitboard& mark_square(Square& sq);
 	Bitboard& clear_square(Square& sq);
 	Bitboard& clear();
+	Bitboard& mirror_v();
 	uint64_t get_u64();
 	bool is_empty();
 	bool contains(Square& sq);

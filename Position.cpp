@@ -844,6 +844,45 @@ void Position::check_integrity() {
 	return;
 }
 
+Position& Position::mirror_position() {
+
+	// Flip the pieces by color bitboards
+	for (auto& bb : pieces_by_color) {
+		bb.mirror_v();
+	}
+
+	// Flip the pieces by type bitboards
+	for (auto& bb : pieces_by_type) {
+		bb.mirror_v();
+	}
+
+	// swap the colors around
+	std::swap(pieces_by_color[Colors::WHITE], pieces_by_color[Colors::BLACK]);
+
+	// swap castle rights
+	uint64_t new_flags =
+		((flags & 0b00000011) << 2) |
+		((flags & 0b00001100) >> 2);
+
+	flags = ((flags & 0b11110000) | new_flags);
+
+	// flip the epsq to the other side of the board
+	if (get_turn() == Colors::WHITE) {
+		epsq = epsq >> 24;
+	}
+	else if (get_turn() == Colors::BLACK) {
+		epsq = epsq << 24;
+	}
+	else {
+		assert(false);
+	}
+
+	// increment the ply to make it the opponents turn
+	++ply;
+
+	return *this;
+}
+
 Colors Position::get_turn() {
 	return static_cast<Colors>(((ply - 1) % 2));
 }

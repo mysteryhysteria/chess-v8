@@ -1,0 +1,73 @@
+From Black's view:
+
+Position
+-------------------
+| r       k     r |
+| p p p b b p p p |
+|     n     q   P |
+|   P     p       |
+|       p n       |
+| B N     P N P   |
+| P   P P Q P B   |
+| R       K     R |
+-------------------
+Basic Perft, depth 1:
+Move count: 48
+Capture count: 8
+En Passant count: 0
+Castles count: 2
+Promotions count: 0
+Checks count: 0
+
+Basic Perft, depth 2:
+Move count: 2043
+Capture count: 351
+En Passant count: 1
+Castles count: 91
+Promotions count: 0
+Checks count: 3
+
+Basic Perft, depth 3:
+Move count: 98250
+Capture count: 17089
+En Passant count: 0
+Castles count: 3167
+Promotions count: 0
+Checks count: 1160
+
+From White's view:
+
+Position
+-------------------
+| r       k     r |
+| p   p p q p b   |
+| b n     p n p   |
+|       P N       |
+|   p     P       |
+|     N     Q   p |
+| P P P B B P P P |
+| R       K     R |
+-------------------
+Basic Perft, depth 1:
+Move count: 48
+Capture count: 8
+En Passant count: 0
+Castles count: 2
+Promotions count: 0
+Checks count: 0
+
+Basic Perft, depth 2:
+Move count: 2042
+Capture count: 350
+En Passant count: 0
+Castles count: 91
+Promotions count: 0
+Checks count: 3
+
+Basic Perft, depth 3:
+Move count: 98244
+Capture count: 17124
+En Passant count: 45
+Castles count: 3165
+Promotions count: 0
+Checks count: 1160

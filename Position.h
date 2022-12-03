@@ -103,6 +103,7 @@ public:
 	void BASIC_perft_core(unsigned int depth, perft_moves& counts);
 	Bitboard get_occupied();
 	void check_integrity();
+	Position& mirror_position();
 
 	// Implementing a simpler movegen algorithm in hopes that it will be more correct, and to aid in debugging. These methods are to support that effort.
 	std::vector<Move> BASIC_move_gen();

@@ -50,6 +50,19 @@ Bitboard::Bitboard() : Bitboard((uint64_t)0) {};
 Bitboard& Bitboard::mark_square(Square& sq) { return *this |= sq; };
 Bitboard& Bitboard::clear_square(Square& sq) { return *this &= ~sq; };
 Bitboard& Bitboard::clear() { this->bitboard = (uint64_t)0; return *this; }
+Bitboard& Bitboard::mirror_v() {
+	this->bitboard =
+		((bitboard & (uint64_t)0x00000000000000ff) << 56) |
+		((bitboard & (uint64_t)0x000000000000ff00) << 40) |
+		((bitboard & (uint64_t)0x0000000000ff0000) << 24) |
+		((bitboard & (uint64_t)0x00000000ff000000) <<  8) |
+		((bitboard & (uint64_t)0x000000ff00000000) >>  8) |
+		((bitboard & (uint64_t)0x0000ff0000000000) >> 24) |
+		((bitboard & (uint64_t)0x00ff000000000000) >> 40) |
+		((bitboard & (uint64_t)0xff00000000000000) >> 56);
+
+	return *this;
+}
 uint64_t Bitboard::get_u64() { return this->bitboard; };
 bool Bitboard::is_empty() { return this->bitboard == (uint64_t)0; }
 bool Bitboard::contains(Square& sq) { return !(*this & sq).is_empty(); };
