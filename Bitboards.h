@@ -3,9 +3,28 @@
 #include <bitset>
 #include <map>
 #include <array>
+#include <optional>
 #include "stdint.h"
 #include "Colors.h"
 #include "Utils.h"
+
+#define SQ(algebraic_notation) an2idx("#algebraic_notation").value()
+
+inline std::optional<int> an2idx(std::string an) {
+	auto idx = std::optional<int>(std::nullopt);
+	if (an.size() != 2) { return idx; };
+	an[0] = std::tolower(an[0]); // allows the function to accept uppercase letters for the file.
+	if (an[0] < 'a' || an[0] > 'h') { return idx; };
+	if (an[1] < '1' || an[1] > '8') { return idx; };
+
+	// get rank number from 0-8
+	auto rank = 8 - (an[1] - '8');
+	// get file number from 0-8
+	auto file = an[0] - 'a';
+	idx = rank * 8 + file;
+	return idx;
+}
+
 class Square;
 
 class Bitboard {
