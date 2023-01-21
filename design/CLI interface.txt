@@ -1,0 +1,83 @@
+CLI syntax in Backus-Naur form:
+
+<cli-command> ::= <command-name> <whitespace> <argument-list>
+<command-name> ::= <identifier>
+<argument-list> ::= <required-argument-list> <optional-argument-list>
+<required-argument-list> ::= <argument> <whitespace> <required-argument-list> | ""
+<optional-argument-list> ::= <argument-name> <whitespace> <argument> <whitespace> <optional-argument-list> | ""
+<argument> ::= <text> | <quoted-text>
+<argument-name> ::= <long-name> | <short-name>
+<long-name> ::= "--" <identifier>
+<short-name> ::= "-" <alpha-text>
+
+
+<whitespace> ::= <whitespace-char> <whitespace> | <whitespace-char>
+<identifier> ::= <letter> <text> | <letter>
+<quoted-text> ::= '"' <text-char> <text-with-ws> <text-char> '"'
+<text-with-ws> ::= <text-and-ws-char> <text-with-ws> | <text-and-ws-char> 
+<text> ::= <text-char> <text> | <text-char>
+<text-and-ws-char> ::= <text-char> | <whitespace-char>
+<text-char> ::= <letter> | <digit> | "_" | "-" | "/" | "\"
+<alpha-text> ::= <letter> <alpha-text> | <letter>
+<letter> ::= [a-zA-Z]
+<digit> ::= [0-9]
+<whitespace-char> ::= [\s\t]
+
+Examples:
+	perft 1 --position "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" --view
+	perft 1 -p "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" -v
+	perft 1 -p "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+	perft 1 --view
+	perft 1
+
+	view "/results.txt" --filter-pieces b --filter-squares a5 --filter-moves capt --sort --no-summary
+	view "/results.txt" -fp b -fs a5 -fm capt -s -ns
+	view "/results.txt"
+
+Commands:
+
+perft
+	<output_file_path>
+	[{--position | -p} <FEN>]
+	[{--depth | -d} <depth>]
+	[{--view | -v}]
+
+view -> [<summary>]
+	<input_file_path>
+	[{--filter-pieces | -fp} <(p)awn|k(n)ight|(b)ishop|(r)ook|(q)ueen|(k)ing>]
+	[{--filter-squares | -fs} <algebraic_notation>]
+	[{--filter-moves | -fm} < (s)tandard | c(a)pture | (e)n_passant | (p)romotion[-{ k(n)ight | (b)ishop | (r)ook | (q)ueen }] | (c)astle[-{ (q)ueen | (k)ing }] | c(h)eck >]
+	[{--special | -sp} <checkmate|stalemate|discovery|doublecheck>]
+	[{--sort | -s}]
+	[{--no-summary | -ns}]
+	
+	
+Parser State Diagram
+
+start
+	-> parse_command
+	
+parse_command
+	-> fail
+	-> execute
+	-> parse_arg
+	-> parse_arg_name
+
+parse_arg_name
+	-> fail
+	-> parse_arg
+
+parse_arg
+	-> fail
+	-> execute
+	-> parse_arg
+	-> parse_arg_name
+
+execute
+	-> parse_command
+
+fail
+	-> end
+	-> parse_command
+	
+end
