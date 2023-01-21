@@ -113,10 +113,11 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,8 +141,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cli_parser.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Move.cpp" />
+    <ClCompile Include="perft.cpp" />
     <ClCompile Include="Position.cpp" />
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="Bitboards.cpp" />
@@ -152,8 +155,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bitboards.h" />
+    <ClInclude Include="cli_parser.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="Move.h" />
+    <ClInclude Include="perft.h" />
     <ClInclude Include="Position.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="SpecialMoves.h" />

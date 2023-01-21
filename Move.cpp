@@ -12,7 +12,7 @@ std::ostream& operator<<(std::ostream& out, Move move)
 
 	switch (move_type) {
 	case EN_PASSANT:
-		return std::cout << piece_type << '=' << from << " > " << to << " X " << capt_type << '=' << move.get_special().p2an() << std::endl;
+		return out << piece_type << '=' << from << " > " << to << " X " << capt_type << '=' << move.get_special().p2an();
 	case CASTLE:
 		if (move.get_to().on_nth_file(2)) {
 			side = 'Q';
@@ -20,15 +20,15 @@ std::ostream& operator<<(std::ostream& out, Move move)
 		else if (move.get_to().on_nth_file(6)) {
 			side = 'K';
 		}
-		return std::cout << piece_type << '=' << from << " > " << to << " : " << side << std::endl;
+		return out << piece_type << '=' << from << " > " << to << " : " << side;
 	case PROMOTION:
-		return std::cout << piece_type << '=' << from << " > " << to << " ^ " << promote_type << std::endl;
+		return out << piece_type << '=' << from << " > " << to << " ^ " << promote_type;
 	default:
 		if (move.get_capt_type() == NONE) {
-			return std::cout << piece_type << '=' << from << " > " << to << std::endl;
+			return out << piece_type << '=' << from << " > " << to;
 		}
 		else {
-			return std::cout << piece_type << '=' << from << " X " << capt_type << '=' << to << std::endl;
+			return out << piece_type << '=' << from << " X " << capt_type << '=' << to;
 		}
 	}
 }

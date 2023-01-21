@@ -5,6 +5,8 @@
 #include <array>
 #include <map>
 #include <algorithm>
+#include <iostream>
+#include <fstream>
 #include "stdint.h"
 #include "Bitboards.h"
 #include "Move.h"
@@ -21,14 +23,7 @@ const enum CastleSide {KINGSIDE = 0, QUEENSIDE = 1};
 
 MoveOptions operator|(MoveOptions lhs, MoveOptions rhs);
 
-struct perft_moves {
-	int moves;
-	int capts;
-	int eps;
-	int castles;
-	int promos;
-	int checks;
-};
+const std::string STARTING_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 class Position {
 private:
@@ -97,10 +92,8 @@ public:
 	void disp() { disp(false); };
 	Position& make_move(Move move);
 	Position& undo();
-	void perft(unsigned int depth, perft_moves& counts);
-	void perft_core(unsigned int depth, perft_moves& counts);
-	void BASIC_perft(unsigned int depth, perft_moves& counts);
-	void BASIC_perft_core(unsigned int depth, perft_moves& counts);
+	//void perft(unsigned int depth, perft_moves& counts);
+	//void perft_core(unsigned int depth, perft_moves& counts);
 	Bitboard get_occupied();
 	void check_integrity();
 	Position& mirror_position();

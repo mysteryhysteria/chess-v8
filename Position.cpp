@@ -1,14 +1,5 @@
 #include "Position.h"
 
-std::vector<Position> pos_history = {}; // vector of past positions in the order they were played.
-std::vector<Move> move_history = {}; // vector of the past moves in the order they were played.
-
-void disp_move_history(std::vector<Move> move_history) {
-	for (auto& move: move_history) {
-		std::cout << move;
-	}
-}
-
 std::vector<std::vector<int>> move_directions = { // map from piece types to valid move directions for each piece
 	{-8, 8}, // Pawn
 	{-17, -15, -10, -6, 6, 10, 15, 17}, // Knight
@@ -400,9 +391,6 @@ Position& Position::make_move(Move move) {
 	Square to = move.get_to();
 	Square special = move.get_special();
 
-	pos_history.push_back(*this);
-	move_history.push_back(move);
-
 	switch (move_type) {
 		case STD:
 			// update castling permissions if a rook is captured off of its starting square
@@ -644,135 +632,66 @@ Position& Position::make_move(Move move) {
 	return *this;
 }
 
-Position& Position::undo() {
-	*this = pos_history.back();
-	pos_history.pop_back();
-	move_history.pop_back();
-	return *this;
-}
-
-void Position::perft(unsigned int depth, perft_moves& counts) {
-	this->perft_core(depth, counts);
-	std::cout << "Perft, depth " << depth << ": " << std::endl;
-	std::cout << "Move count: " << counts.moves << std::endl;
-	std::cout << "Capture count: " << counts.capts << std::endl;
-	std::cout << "En Passant count: " << counts.eps << std::endl;
-	std::cout << "Castles count: " << counts.castles << std::endl;
-	std::cout << "Promotions count: " << counts.promos << std::endl;
-	std::cout << "Checks count: " << counts.checks << std::endl << std::endl;
-	counts = { 0, 0, 0, 0, 0, 0 };
-}
-
-void Position::perft_core(unsigned int depth, perft_moves& counts) {
-	if (depth == 0) {
-		counts.moves++;
-		//std::cout << "Move # " << counts.moves << std::endl;
-		//disp_move_history(move_history);
-		//std::cout << std::endl;
-		//disp();
-		if (is_in_check()) {
-			counts.checks++;
-			//std::cout << "CHECK #" << counts.checks << ":" << std::endl;
-			//disp_move_history(move_history);
-			//std::cout << std::endl;
-			//disp();
-		}
-		auto prev_move = move_history.back();
-		switch (prev_move.get_move_type()) {
-			case STD:
-				if (prev_move.get_capt_type() != NONE) {
-					counts.capts++;
-				}
-				break;
-			case EN_PASSANT:
-				counts.capts++;
-				counts.eps++;
-				//std::cout << "EP #" << counts.eps << ":" << std::endl;
-				//disp_move_history(move_history);
-				//std::cout << std::endl;
-				break;
-			case PROMOTION:
-				counts.promos++;
-				break;
-			case CASTLE:
-				counts.castles++;
-				break;
-		}
-	}
-	else {
-		int sum = 0;
-		//this->disp();
-		for (auto& move : this->move_gen()) {
-			//std::cout << move;
-			this->make_move(move);
-			this->king_threats();
-			this->perft_core(depth-1, counts);
-			this->undo();
-		}
-	}
-}
-
-void Position::BASIC_perft(unsigned int depth, perft_moves& counts) {
-	this->BASIC_perft_core(depth, counts);
-	std::cout << "Basic Perft, depth " << depth << ": " << std::endl;
-	std::cout << "Move count: " << counts.moves << std::endl;
-	std::cout << "Capture count: " << counts.capts << std::endl;
-	std::cout << "En Passant count: " << counts.eps << std::endl;
-	std::cout << "Castles count: " << counts.castles << std::endl;
-	std::cout << "Promotions count: " << counts.promos << std::endl;
-	std::cout << "Checks count: " << counts.checks << std::endl << std::endl;
-	counts = { 0, 0, 0, 0, 0, 0 };
-}
-
-void Position::BASIC_perft_core(unsigned int depth, perft_moves& counts) {
-	if (depth == 0) {
-		counts.moves++;
-		//std::cout << "Move # " << counts.moves << std::endl;
-		//disp_move_history(move_history);
-		//std::cout << std::endl;
-		//disp();
-		if (is_in_check()) {
-			counts.checks++;
-			//std::cout << "CHECK #" << counts.checks << ":" << std::endl;
-			//disp_move_history(move_history);
-			//std::cout << std::endl;
-			//disp();
-		}
-		auto prev_move = move_history.back();
-		switch (prev_move.get_move_type()) {
-		case STD:
-			if (prev_move.get_capt_type() != NONE) {
-				counts.capts++;
-			}
-			break;
-		case EN_PASSANT:
-			counts.capts++;
-			counts.eps++;
-			//std::cout << "EP #" << counts.eps << ":" << std::endl;
-			//disp_move_history(move_history);
-			//std::cout << std::endl;
-			break;
-		case PROMOTION:
-			counts.promos++;
-			break;
-		case CASTLE:
-			counts.castles++;
-			break;
-		}
-	}
-	else {
-		int sum = 0;
-		//this->disp();
-		for (auto& move : this->BASIC_move_gen()) {
-			//std::cout << move;
-			this->make_move(move);
-			this->check_integrity();
-			this->BASIC_king_threats();
-			this->BASIC_perft_core(depth - 1, counts);
-			this->undo();
-		}
-	}
-}
+//void Position::perft(unsigned int depth, perft_moves& counts) {
+//	this->perft_core(depth, counts);
+//	std::cout << "Perft, depth " << depth << ": " << std::endl;
+//	std::cout << "Move count: " << counts.moves << std::endl;
+//	std::cout << "Capture count: " << counts.capts << std::endl;
+//	std::cout << "En Passant count: " << counts.eps << std::endl;
+//	std::cout << "Castles count: " << counts.castles << std::endl;
+//	std::cout << "Promotions count: " << counts.promos << std::endl;
+//	std::cout << "Checks count: " << counts.checks << std::endl << std::endl;
+//	counts = { 0, 0, 0, 0, 0, 0 };
+//}
+//
+//void Position::perft_core(unsigned int depth, perft_moves& counts) {
+//	if (depth == 0) {
+//		counts.moves++;
+//		//std::cout << "Move # " << counts.moves << std::endl;
+//		//disp_move_history(move_history);
+//		//std::cout << std::endl;
+//		//disp();
+//		if (is_in_check()) {
+//			counts.checks++;
+//			//std::cout << "CHECK #" << counts.checks << ":" << std::endl;
+//			//disp_move_history(move_history);
+//			//std::cout << std::endl;
+//			//disp();
+//		}
+//		auto prev_move = move_history.back();
+//		switch (prev_move.get_move_type()) {
+//			case STD:
+//				if (prev_move.get_capt_type() != NONE) {
+//					counts.capts++;
+//				}
+//				break;
+//			case EN_PASSANT:
+//				counts.capts++;
+//				counts.eps++;
+//				//std::cout << "EP #" << counts.eps << ":" << std::endl;
+//				//disp_move_history(move_history);
+//				//std::cout << std::endl;
+//				break;
+//			case PROMOTION:
+//				counts.promos++;
+//				break;
+//			case CASTLE:
+//				counts.castles++;
+//				break;
+//		}
+//	}
+//	else {
+//		int sum = 0;
+//		//this->disp();
+//		for (auto& move : this->move_gen()) {
+//			//std::cout << move;
+//			this->make_move(move);
+//			this->king_threats();
+//			this->perft_core(depth-1, counts);
+//			this->undo();
+//		}
+//	}
+//}
 
 Bitboard Position::get_occupied()
 {
@@ -781,31 +700,31 @@ Bitboard Position::get_occupied()
 
 void Position::check_integrity() {
 	// Piece sets must have the same pieces in them.
-	assert((pieces_by_color[Colors::WHITE] | pieces_by_color[Colors::BLACK]) ==	(pieces_by_type[Types::PAWN] | pieces_by_type[Types::KNIGHT] | pieces_by_type[Types::BISHOP] | pieces_by_type[Types::ROOK] | pieces_by_type[Types::QUEEN] | pieces_by_type[Types::KING]));
+	assert(((pieces_by_color[Colors::WHITE] | pieces_by_color[Colors::BLACK])).get_u64() ==	((pieces_by_type[Types::PAWN] | pieces_by_type[Types::KNIGHT] | pieces_by_type[Types::BISHOP] | pieces_by_type[Types::ROOK] | pieces_by_type[Types::QUEEN] | pieces_by_type[Types::KING])).get_u64());
 
 	// Pieces by color should not intersect with each other
-	assert(pieces_by_color[Colors::WHITE] & pieces_by_color[Colors::BLACK] == 0ULL);
+	assert((pieces_by_color[Colors::WHITE] & pieces_by_color[Colors::BLACK]).get_u64() == 0ULL);
 
 	// Pieces of different types should not intersect with each other
-	assert((pieces_by_type[Types::PAWN]   & pieces_by_type[Types::KNIGHT]) == 0ULL);
-	assert((pieces_by_type[Types::PAWN]   & pieces_by_type[Types::BISHOP]) == 0ULL);
-	assert((pieces_by_type[Types::PAWN]   & pieces_by_type[Types::ROOK]  ) == 0ULL);
-	assert((pieces_by_type[Types::PAWN]   & pieces_by_type[Types::QUEEN] ) == 0ULL);
-	assert((pieces_by_type[Types::PAWN]   & pieces_by_type[Types::KING]  ) == 0ULL);
-	assert((pieces_by_type[Types::KNIGHT] & pieces_by_type[Types::BISHOP]) == 0ULL);
-	assert((pieces_by_type[Types::KNIGHT] & pieces_by_type[Types::ROOK]  ) == 0ULL);
-	assert((pieces_by_type[Types::KNIGHT] & pieces_by_type[Types::QUEEN] ) == 0ULL);
-	assert((pieces_by_type[Types::KNIGHT] & pieces_by_type[Types::KING]  ) == 0ULL);
-	assert((pieces_by_type[Types::BISHOP] & pieces_by_type[Types::ROOK]  ) == 0ULL);
-	assert((pieces_by_type[Types::BISHOP] & pieces_by_type[Types::QUEEN] ) == 0ULL);
-	assert((pieces_by_type[Types::BISHOP] & pieces_by_type[Types::KING]  ) == 0ULL);
-	assert((pieces_by_type[Types::ROOK]   & pieces_by_type[Types::QUEEN] ) == 0ULL);
-	assert((pieces_by_type[Types::ROOK]   & pieces_by_type[Types::KING]  ) == 0ULL);
-	assert((pieces_by_type[Types::QUEEN]  & pieces_by_type[Types::KING]  ) == 0ULL);
+	assert(((pieces_by_type[Types::PAWN]   & pieces_by_type[Types::KNIGHT])).get_u64() == 0ULL);
+	assert(((pieces_by_type[Types::PAWN]   & pieces_by_type[Types::BISHOP])).get_u64() == 0ULL);
+	assert(((pieces_by_type[Types::PAWN]   & pieces_by_type[Types::ROOK]  )).get_u64() == 0ULL);
+	assert(((pieces_by_type[Types::PAWN]   & pieces_by_type[Types::QUEEN] )).get_u64() == 0ULL);
+	assert(((pieces_by_type[Types::PAWN]   & pieces_by_type[Types::KING]  )).get_u64() == 0ULL);
+	assert(((pieces_by_type[Types::KNIGHT] & pieces_by_type[Types::BISHOP])).get_u64() == 0ULL);
+	assert(((pieces_by_type[Types::KNIGHT] & pieces_by_type[Types::ROOK]  )).get_u64() == 0ULL);
+	assert(((pieces_by_type[Types::KNIGHT] & pieces_by_type[Types::QUEEN] )).get_u64() == 0ULL);
+	assert(((pieces_by_type[Types::KNIGHT] & pieces_by_type[Types::KING]  )).get_u64() == 0ULL);
+	assert(((pieces_by_type[Types::BISHOP] & pieces_by_type[Types::ROOK]  )).get_u64() == 0ULL);
+	assert(((pieces_by_type[Types::BISHOP] & pieces_by_type[Types::QUEEN] )).get_u64() == 0ULL);
+	assert(((pieces_by_type[Types::BISHOP] & pieces_by_type[Types::KING]  )).get_u64() == 0ULL);
+	assert(((pieces_by_type[Types::ROOK]   & pieces_by_type[Types::QUEEN] )).get_u64() == 0ULL);
+	assert(((pieces_by_type[Types::ROOK]   & pieces_by_type[Types::KING]  )).get_u64() == 0ULL);
+	assert(((pieces_by_type[Types::QUEEN]  & pieces_by_type[Types::KING]  )).get_u64() == 0ULL);
 
 	// Pawns should never be on 1st or 8th rank
-	uint64_t first_and_eighth  = 0xff000000000000ffULL;
-	assert((pieces_by_type[Types::PAWN] & first_and_eighth) == 0ULL);
+	Bitboard first_and_eighth  = Bitboard(0xff000000000000ffULL);
+	assert(((pieces_by_type[Types::PAWN] & first_and_eighth)).get_u64() == 0ULL);
 
 	// Never more than 8 pawns of each color
 	assert((pieces_by_color[Colors::WHITE] & pieces_by_type[Types::PAWN]).popcount() <= 8);
