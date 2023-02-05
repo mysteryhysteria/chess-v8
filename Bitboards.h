@@ -8,8 +8,6 @@
 #include "Colors.h"
 #include "Utils.h"
 
-#define SQ(algebraic_notation) an2idx("#algebraic_notation").value()
-
 inline std::optional<int> an2idx(std::string an) {
 	auto idx = std::optional<int>(std::nullopt);
 	if (an.size() != 2) { return idx; };
@@ -23,6 +21,18 @@ inline std::optional<int> an2idx(std::string an) {
 	auto file = an[0] - 'a';
 	idx = rank * 8 + file;
 	return idx;
+}
+
+inline std::optional<std::string> idx2an(int i) {
+	if (i < 0 || i >= 64) { return std::make_optional<std::string>(); };
+	int file = i % 8;
+	int rank = 7 - ((i - file) / 8);
+
+	std::string an = std::string();
+	an.push_back('a' + file);
+	an.push_back('1' + rank);
+
+	return std::make_optional(an);
 }
 
 class Square;

@@ -400,7 +400,7 @@ Position& Position::make_move(Move move) {
 			// You can instead just test if the right is still available, then if the king moved, or the rook moved, take it away.
 
 			// if this is a capture move
-			if (pieces_by_color[!turn].contains(from)) {
+			if (pieces_by_color[!turn].contains(to)) {
 				// if captured piece is rook
 				if (pieces_by_type[ROOK].contains(to)) {
 					// if whites turn
@@ -743,19 +743,19 @@ void Position::check_integrity() {
 	uint64_t sixth = 0x0000000000ff0000ULL;
 
 	if (!epsq.is_empty()) {
+		// The epsq must be a single square
+		ASSERT_ONE_SQUARE(epsq);
 		if (get_turn() == Colors::WHITE) {
-			assert((epsq.get_u64() & sixth) == 0ULL);
+			assert((epsq.get_u64() & sixth) == epsq.get_u64());
 		}
 		else if (get_turn() == Colors::BLACK) {
-			assert((epsq.get_u64() & third) == 0ULL);
+			assert((epsq.get_u64() & third) == epsq.get_u64());
 		}
 		else {
 			assert(false);
 		}
 	}
 
-	// The epsq must be a single square
-	ASSERT_ONE_SQUARE(epsq);
 
 	// ply_clock must be no greater than ply
 	assert(ply_clock <= ply);
@@ -1423,20 +1423,18 @@ std::vector<Move> Position::BASIC_move_gen() {
 
 	// lambda function for filtering illegal moves.
 	auto illegal_move = [&](Move& pl_move) -> bool {
-		Position next = this->make_move(pl_move);
-		next.check_integrity();
+		Position next = Position(*this);
+		next.make_move(pl_move);
+		//next.check_integrity();
 		std::vector<Move> counter_moves = next.BASIC_pl_move_gen();
-		bool is_illegal = false;
 		for (auto counter_move : counter_moves) {
 			if (counter_move.get_to() == king_sq) {
-				is_illegal = true;
-				break;
+				return true;
 			}
 		}
-		this->undo();
-		this->check_integrity();
-		return is_illegal;
+		return false;
 	};
+
 
 	moves.erase(std::remove_if(moves.begin(), moves.end(), illegal_move), moves.end());
 
@@ -1448,7 +1446,6 @@ void Position::BASIC_king_threats() {
 	Square king_sq = pieces_by_color[get_turn()] & pieces_by_type[Types::KING];
 
 	++ply; // this simulates a no-move for the current player and makes the move generator provide the opponent's "moves" in the position.
-	check_integrity();
 	std::vector<Move> attacks = BASIC_move_gen();
 	bool in_check = false; // assume not in check to start
 
@@ -1464,5 +1461,20 @@ void Position::BASIC_king_threats() {
 	--ply;
 	check_integrity();
 	return;
+}
+
+bool Position::is_position_illegal()
+{
+	Square king_sq = pieces_by_color[!get_turn()] & pieces_by_type[Types::KING];
+	
+	std::vector<Move> attacks = BASIC_move_gen();
+
+	// check each move for the opponent to see if they "capture" the king
+	for (auto& attack : attacks) {
+		if (attack.get_to() == king_sq) {
+			return true;
+		}
+	}
+	return false;
 }
 

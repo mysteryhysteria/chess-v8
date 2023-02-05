@@ -101,6 +101,7 @@ public:
 	// Implementing a simpler movegen algorithm in hopes that it will be more correct, and to aid in debugging. These methods are to support that effort.
 	std::vector<Move> BASIC_move_gen();
 	void BASIC_king_threats(); // the basic one will only calculate if the king is in check.
+	bool is_position_illegal(); // calculates whether the opponent's king can be captured from this position, which implies the last move was illegal.
 
 };
 

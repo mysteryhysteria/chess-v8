@@ -1,4 +1,9 @@
 #pragma once
+#include <iostream>
+#include "Position.h"
+#include "perft.h"
+#include "Bitboards.h"
+#include <chrono>
 
 // each array index is mapped to a square on the board and stores how many leaf nodes
 // end on that particular square.
@@ -18,7 +23,7 @@ private:
 	int stalemates;
 	int discoveries;
 	int double_checks;
-	position_counts position;
+	position_counts positions;
 
 public:
 	PerftCounts() { this->clear(); };
@@ -33,7 +38,9 @@ public:
 	inline void mate() { this->checkmates++; };
 	inline void discover() { this->discoveries++; };
 	inline void dblcheck() { this->double_checks++; };
-	inline void add_position(std::string an) { this->position[an2idx(an).value()]++; };
+	inline void add_position(std::string an) { this->positions[an2idx(an).value()]++; };
+	inline void add_position(unsigned int idx) { this->positions[idx]++; };
+	inline void add_position(Square sq) { add_position(sq.convert_to_index()); }
 	inline void clear() {
 		moves = 0;
 		captures = 0;
@@ -45,10 +52,10 @@ public:
 		stalemates = 0;
 		discoveries = 0;
 		double_checks = 0;
-		position.fill(0);
+		positions.fill(0);
 	}
 
-	std::ostream& operator<<(std::ostream& out);
+	friend std::ostream& operator<<(std::ostream& out, PerftCounts counts);
 };
 
 //class SearchTreeNode {
@@ -79,27 +86,43 @@ public:
 class Perft {
 private:
 	PerftCounts counts;
-	Position start_pos;
+	Position cur_pos;
 	unsigned int max_depth;
+	bool show_positions;
+	double runtime;
 	std::vector<Position> pos_history; // vector of past positions in the order they were played.
 	std::vector<Move> move_history; // vector of the past moves in the order they were played.
 
 	void perft_core(unsigned int depth);
 public:
-	Perft() :
-		counts(),
-		start_pos(Position()),
-		max_depth(1)
-	{};
-	Perft(Position start_pos, int max_depth = 1) :
-		start_pos(Position(start_pos)),
-		max_depth(max_depth)
-	{};
+	Perft(int max_depth = 1, bool show_positions = false) :
+		cur_pos(Position()),
+		max_depth(max_depth),
+		show_positions(show_positions)
+	{
+		counts = PerftCounts();
+	};
+	Perft(Position start_pos, int max_depth = 1, bool show_positions = false) :
+		cur_pos(start_pos),
+		max_depth(max_depth),
+		show_positions(show_positions)
+	{
+		counts = PerftCounts();
+	};
+	Perft(std::string fen, int max_depth = 1, bool show_positions = false) :
+		cur_pos(Position(fen)),
+		max_depth(max_depth),
+		show_positions(show_positions)
+	{
+		counts = PerftCounts();
+	};
 
-	std::ostream& operator<<(std::ostream& out);
 	void show_line(std::vector<Move> move_history, std::ostream& out);
-	void perft();
+	void run();
+	void make_move(Move move);
 	void undo_move();
+
+	friend std::ostream& operator<<(std::ostream& out, Perft perft);
 };
 
 
