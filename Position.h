@@ -80,8 +80,8 @@ public:
 	bool K_castle_right();
 	void set_castle_right(Colors color, CastleSide side, bool set);
 	bool is_in_check();
-	bool square_covered(Square sq);
-	bool attacked_by_piece(Square sq, Types piece_type);
+	bool square_covered(Square sq, Colors attacker);
+	bool attacked_by_piece(Square sq, Types piece_type, Colors attacker);
 	void king_threats();
 	void set_in_check(bool set);
 	void disp_bitboards();

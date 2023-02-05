@@ -232,7 +232,7 @@ bool Position::is_castle_legal(CastleSide side) {
 
 	// test the safe squares for safeness
 	for (auto& safe_sq : be_safe) {
-		if (square_covered(safe_sq)) {
+		if (square_covered(safe_sq, !get_turn())) {
 			return false;
 		}
 	}
@@ -844,7 +844,7 @@ bool Position::is_friend(Square sq) {
 }
 
 // Consider deleting and integrating into square covered
-bool Position::attacked_by_piece(Square sq, Types piece_type) {
+bool Position::attacked_by_piece(Square sq, Types piece_type, Colors attacker) {
 	Ray search_path = Ray(sq);
 	Square to;
 	int max_distance = Ray::NO_MAX;
@@ -852,7 +852,7 @@ bool Position::attacked_by_piece(Square sq, Types piece_type) {
 
 	if (piece_type == PAWN || piece_type == KNIGHT || piece_type == KING) { 
 		if (piece_type == PAWN) {
-			directions = pawn_capt_directions[get_turn()];
+			directions = pawn_capt_directions[attacker];
 		}
 		else {
 			directions = move_directions[piece_type];
@@ -881,9 +881,9 @@ bool Position::attacked_by_piece(Square sq, Types piece_type) {
 	return false;
 }
 
-bool Position::square_covered(Square sq) {
+bool Position::square_covered(Square sq, Colors attacker) {
 	for (int i = 0; i < 6; ++i) {
-		if (attacked_by_piece(sq, static_cast<Types>(i))) {
+		if (attacked_by_piece(sq, static_cast<Types>(i), attacker)) {
 			return true;
 		}
 	}
@@ -1086,7 +1086,7 @@ std::vector<Move> Position::move_gen_k(Square from)
 
 	temp_moves = move_gen_generic(from, move_directions[KING], 1);	// Get king's psuedolegal moves
 	for (auto& temp_move : temp_moves) {							// for each psuedolegal move...
-		if (!square_covered(temp_move.get_to())) {					// if the move is to an unattacked square...
+		if (!square_covered(temp_move.get_to(), !get_turn())) {					// if the move is to an unattacked square...
 			moves.push_back(temp_move);								// add it to the legal move list
 		}
 	}
@@ -1393,7 +1393,7 @@ std::vector<Move> Position::BASIC_pl_castle_move_gen(Square from) {
 	// Check queenside first
 	if (Q_castle_right()) { // do we have the right to castle?
 		if ((get_occupied() & between_q).is_empty()) { // are the squares between the king and rook empty?
-			if (!square_covered(sq_k >> 1) && !square_covered(sq_k >> 2)) { // are the squares the king moves through attacked?
+			if (!square_covered(sq_k >> 1, !turn) && !square_covered(sq_k >> 2, !turn)) { // are the squares the king moves through attacked?
 				move = Move(sq_k, sq_k >> 2, sq_k >> 4, turn, Types::KING, Types::NONE, Types::NONE, SpecialMoves::CASTLE);
 				moves.push_back(move);
 			}
@@ -1403,7 +1403,7 @@ std::vector<Move> Position::BASIC_pl_castle_move_gen(Square from) {
 	// Check kingside second
 	if (K_castle_right()) { // do we have the right to castle?
 		if ((get_occupied() & between_k).is_empty()) { // are the squares between the king and rook empty?
-			if (!square_covered(sq_k << 1) && !square_covered(sq_k << 2)) { // are the squares the king moves through attacked?
+			if (!square_covered(sq_k << 1, !turn) && !square_covered(sq_k << 2, !turn)) { // are the squares the king moves through attacked?
 				move = Move(sq_k, sq_k << 2, sq_k << 3, turn, Types::KING, Types::NONE, Types::NONE, SpecialMoves::CASTLE);
 				moves.push_back(move);
 			}
