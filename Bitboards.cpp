@@ -140,9 +140,13 @@ bool Square::on_promote_rank(Colors turn) {
 	else if (turn == Colors::BLACK) {
 		return this->on_nth_rank(0);
 	}
+	else {
+		return false;
+	}
 }
 
 unsigned int Square::convert_to_index() {
+	ASSERT_ONE_SQUARE(*this);
 	unsigned int index = 0;
 	uint64_t bb = this->bitboard >> 1;
 	while (bb != 0) { 
