@@ -134,8 +134,12 @@ bool Square::on_pawn_start_rank(Colors turn) {
 
 bool Square::on_promote_rank(Colors turn) {
 	unsigned int n;
-	!(turn) ? n = 7 : n = 0;
-	return this->on_nth_rank(n);
+	if (turn == Colors::WHITE) {
+		return this->on_nth_rank(7);
+	}
+	else if (turn == Colors::BLACK) {
+		return this->on_nth_rank(0);
+	}
 }
 
 unsigned int Square::convert_to_index() {
