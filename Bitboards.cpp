@@ -47,8 +47,8 @@ Bitboard::Bitboard(Square sq) : Bitboard(sq.get_u64()) {};
 Bitboard::Bitboard() : Bitboard((uint64_t)0) {};
 
 // Bitboard Methods
-Bitboard& Bitboard::mark_square(Square& sq) { return *this |= sq; };
-Bitboard& Bitboard::clear_square(Square& sq) { return *this &= ~sq; };
+Bitboard& Bitboard::mark_square(Square sq) { return *this |= sq; };
+Bitboard& Bitboard::clear_square(Square sq) { return *this &= ~sq; };
 Bitboard& Bitboard::clear() { this->bitboard = (uint64_t)0; return *this; }
 Bitboard& Bitboard::mirror_v() {
 	this->bitboard =
@@ -65,7 +65,7 @@ Bitboard& Bitboard::mirror_v() {
 }
 uint64_t Bitboard::get_u64() { return this->bitboard; };
 bool Bitboard::is_empty() { return this->bitboard == (uint64_t)0; }
-bool Bitboard::contains(Square& sq) { return !(*this & sq).is_empty(); };
+bool Bitboard::contains(Square sq) { return !(*this & sq).is_empty(); };
 
 Square Bitboard::pop_occupied() {
 	auto bb = this->bitboard;
@@ -77,14 +77,14 @@ Square Bitboard::pop_occupied() {
 int Bitboard::popcount() { return std::bitset<64>(this->get_u64()).count(); };
 
 // Bitboard Operator Overloads
-Bitboard& Bitboard::operator|=(Square& sq) { this->bitboard |= sq.get_u64(); return *this; };
-Bitboard& Bitboard::operator&=(Square& sq) { this->bitboard &= sq.get_u64(); return *this; };
+Bitboard& Bitboard::operator|=(Square sq) { this->bitboard |= sq.get_u64(); return *this; };
+Bitboard& Bitboard::operator&=(Square sq) { this->bitboard &= sq.get_u64(); return *this; };
 Bitboard& Bitboard::operator|=(Bitboard bb) { this->bitboard |= bb.get_u64(); return *this; };
 Bitboard& Bitboard::operator&=(Bitboard bb) { this->bitboard &= bb.get_u64(); return *this; };
-Bitboard Bitboard::operator&(Square& sq) { return Bitboard(this->bitboard & sq.get_u64()); };
-Bitboard Bitboard::operator|(Square& sq) { return Bitboard(this->bitboard | sq.get_u64()); };
-Bitboard Bitboard::operator&(Bitboard& bb) { return Bitboard(this->bitboard & bb.get_u64()); };
-Bitboard Bitboard::operator|(Bitboard& bb) { return Bitboard(this->bitboard | bb.get_u64()); };
+Bitboard Bitboard::operator&(Square sq) { return Bitboard(this->bitboard & sq.get_u64()); };
+Bitboard Bitboard::operator|(Square sq) { return Bitboard(this->bitboard | sq.get_u64()); };
+Bitboard Bitboard::operator&(Bitboard bb) { return Bitboard(this->bitboard & bb.get_u64()); };
+Bitboard Bitboard::operator|(Bitboard bb) { return Bitboard(this->bitboard | bb.get_u64()); };
 Bitboard Bitboard::operator~() { return Bitboard(~(this->bitboard)); };
 
 // Square Constructors
@@ -96,10 +96,10 @@ Square::Square(unsigned int rank, unsigned int file) : Square((unsigned int)((7 
 Square::Square() : Square((uint64_t) 0) {};
 
 // Square Operator overloads
-Bitboard Square::operator&(const Square& rhs) { return Bitboard(this->bitboard & rhs.bitboard); };
-Bitboard Square::operator|(const Square& rhs) { return Bitboard(this->bitboard | rhs.bitboard); };
-Bitboard Square::operator&(Bitboard& rhs) { return Bitboard(this->bitboard & rhs.get_u64()); };
-Bitboard Square::operator|(Bitboard& rhs) { return Bitboard(this->bitboard | rhs.get_u64()); };
+Bitboard Square::operator&(const Square rhs) { return Bitboard(this->bitboard & rhs.bitboard); };
+Bitboard Square::operator|(const Square rhs) { return Bitboard(this->bitboard | rhs.bitboard); };
+Bitboard Square::operator&(Bitboard rhs) { return Bitboard(this->bitboard & rhs.get_u64()); };
+Bitboard Square::operator|(Bitboard rhs) { return Bitboard(this->bitboard | rhs.get_u64()); };
 Bitboard Square::operator~() { return Bitboard(~(this->bitboard)); };
 Square& Square::operator>>=(const unsigned int n) { this->bitboard >>= n; return *this; };
 Square& Square::operator<<=(const unsigned int n) { this->bitboard <<= n; return *this; };
@@ -107,10 +107,10 @@ Square& Square::operator+=(const unsigned int n) { return *this <<= n; };
 Square& Square::operator-=(const unsigned int n) { return *this >>= n; };
 Square Square::operator>>(const unsigned int n) { return Square(this->bitboard >> n); };
 Square Square::operator<<(const unsigned int n) { return Square(this->bitboard << n); };
-bool Square::operator!=(const Square& rhs) { return bool(this->bitboard != rhs.bitboard); };
-bool Square::operator!=(const uint64_t& rhs) { return *this != Square(rhs); };
-bool Square::operator==(const Square& rhs) { return bool(this->bitboard == rhs.bitboard); };
-bool Square::operator==(const uint64_t& rhs) { return *this == Square(rhs); };
+bool Square::operator!=(const Square rhs) { return bool(this->bitboard != rhs.bitboard); };
+bool Square::operator!=(const uint64_t rhs) { return *this != Square(rhs); };
+bool Square::operator==(const Square rhs) { return bool(this->bitboard == rhs.bitboard); };
+bool Square::operator==(const uint64_t rhs) { return *this == Square(rhs); };
 
 // Square Methods
 

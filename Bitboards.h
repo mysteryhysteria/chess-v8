@@ -48,25 +48,25 @@ public:
 	explicit Bitboard();
 
 	// Methods
-	Bitboard& mark_square(Square& sq);
-	Bitboard& clear_square(Square& sq);
+	Bitboard& mark_square(Square sq);
+	Bitboard& clear_square(Square sq);
 	Bitboard& clear();
 	Bitboard& mirror_v();
 	uint64_t get_u64();
 	bool is_empty();
-	bool contains(Square& sq);
+	bool contains(Square sq);
 	Square pop_occupied();
 	int popcount();
 
 	// Operator Overloads
-	Bitboard& operator|=(Square& sq);
-	Bitboard& operator&=(Square& sq);
+	Bitboard& operator|=(Square sq);
+	Bitboard& operator&=(Square sq);
 	Bitboard& operator|=(Bitboard bb);
 	Bitboard& operator&=(Bitboard bb);
-	Bitboard operator&(Square& sq);
-	Bitboard operator|(Square& sq);
-	Bitboard operator&(Bitboard& bb);
-	Bitboard operator|(Bitboard& bb);
+	Bitboard operator&(Square sq);
+	Bitboard operator|(Square sq);
+	Bitboard operator&(Bitboard bb);
+	Bitboard operator|(Bitboard bb);
 	Bitboard operator~();
 	
 };
@@ -84,10 +84,10 @@ public:
 	explicit Square();
 
 	// Operator overloads
-	Bitboard operator&(const Square& rhs);
-	Bitboard operator|(const Square& rhs);
-	Bitboard operator&(Bitboard& rhs);
-	Bitboard operator|(Bitboard& rhs);
+	Bitboard operator&(const Square rhs);
+	Bitboard operator|(const Square rhs);
+	Bitboard operator&(Bitboard rhs);
+	Bitboard operator|(Bitboard rhs);
 	Bitboard operator~();
 	Square& operator>>=(const unsigned int n);
 	Square& operator<<=(const unsigned int n);
@@ -95,10 +95,10 @@ public:
 	Square& operator-=(const unsigned int n);
 	Square operator>>(const unsigned int n);
 	Square operator<<(const unsigned int n);
-	bool operator!=(const Square& rhs);
-	bool operator!=(const uint64_t& rhs);
-	bool operator==(const Square& rhs);
-	bool operator==(const uint64_t& rhs);
+	bool operator!=(const Square rhs);
+	bool operator!=(const uint64_t rhs);
+	bool operator==(const Square rhs);
+	bool operator==(const uint64_t rhs);
 
 
 	// Methods
