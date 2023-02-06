@@ -16,7 +16,7 @@ inline std::optional<int> an2idx(std::string an) {
 	if (an[1] < '1' || an[1] > '8') { return idx; };
 
 	// get rank number from 0-8
-	auto rank = 8 - (an[1] - '8');
+	auto rank = 8 - (an[1] - '0');
 	// get file number from 0-8
 	auto file = an[0] - 'a';
 	idx = rank * 8 + file;
@@ -24,7 +24,7 @@ inline std::optional<int> an2idx(std::string an) {
 }
 
 inline std::optional<std::string> idx2an(int i) {
-	if (i < 0 || i >= 64) { return std::make_optional<std::string>(); };
+	if (i < 0 || i >= 64) { return std::optional<std::string>(std::nullopt); };
 	int file = i % 8;
 	int rank = 7 - ((i - file) / 8);
 

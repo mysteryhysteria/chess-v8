@@ -104,6 +104,3 @@ public:
 	bool is_position_illegal(); // calculates whether the opponent's king can be captured from this position, which implies the last move was illegal.
 
 };
-
-
-

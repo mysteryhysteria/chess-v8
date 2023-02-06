@@ -166,7 +166,7 @@ void Position::parse_fen(std::string fen) {
 	} while ((c = fen[char_index++]) != '\0'); // get the next character and check it against the end-of-string constant
 	ply = std::stoi(s) * 2 - (turn ? 1 : 0); // calculate the ply from the full turn count and whose move it is
 	
-	king_threats();
+	BASIC_king_threats();
 
 	return;
 }
@@ -798,7 +798,7 @@ Position& Position::mirror_position() {
 
 	// increment the ply to make it the opponents turn
 	++ply;
-
+	check_integrity();
 	return *this;
 }
 
@@ -843,7 +843,7 @@ bool Position::is_friend(Square sq) {
 	return pieces_by_color[get_turn()].contains(sq);
 }
 
-// Consider deleting and integrating into square covered
+// TODO Consider deleting and integrating into square covered
 bool Position::attacked_by_piece(Square sq, Types piece_type, Colors attacker) {
 	Ray search_path = Ray(sq);
 	Square to;
@@ -852,7 +852,12 @@ bool Position::attacked_by_piece(Square sq, Types piece_type, Colors attacker) {
 
 	if (piece_type == PAWN || piece_type == KNIGHT || piece_type == KING) { 
 		if (piece_type == PAWN) {
-			directions = pawn_capt_directions[attacker];
+			// the pawn capture directions need to be from the perspective of the defending player, since we are searching for 
+			// attackers from the perspective of the square that is under attack.
+			// Another way to think about it:
+			// If I placed one of my pawns on this square, could it capture a pawn? if so, then that other pawn
+			// could also capture me, which means it attacks this square.
+			directions = pawn_capt_directions[!attacker];
 		}
 		else {
 			directions = move_directions[piece_type];
@@ -867,12 +872,12 @@ bool Position::attacked_by_piece(Square sq, Types piece_type, Colors attacker) {
 		search_path.reset(dir, max_distance);
 		while (!search_path.end()) {
 			to = (++search_path).get_current();
-			if (is_opponent(to)) { // found an opponent's piece
-				if (is_type(to, piece_type)) {
+			if (pieces_by_color[attacker].contains(to)) { // found an opponent's piece
+				if (is_type(to, piece_type)) { //
 					return true;
 				}
 			}
-			else if (is_friend(to)) { // found a friendly piece, which blocks enemy pieces!
+			else if (pieces_by_color[!attacker].contains(to)) { // found a friendly piece, which blocks enemy pieces!
 				break;
 			}
 			// otherwise continue the search
