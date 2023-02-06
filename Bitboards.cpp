@@ -69,9 +69,9 @@ bool Bitboard::contains(Square sq) { return !(*this & sq).is_empty(); };
 
 Square Bitboard::pop_occupied() {
 	auto bb = this->bitboard;
-	auto next_sq = Square(bb & (~bb + 1));
-	*this &= (~next_sq);
-	return next_sq;
+	uint64_t next_sq = bb & (~bb + 1);
+	this->bitboard &= (~next_sq);
+	return Square(next_sq);
 }
 
 int Bitboard::popcount() { return std::bitset<64>(this->get_u64()).count(); };
