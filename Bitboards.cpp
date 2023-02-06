@@ -149,12 +149,7 @@ unsigned int Square::convert_to_index() {
 }
 
 std::string Square::p2an() {
-	std::string an;
-	int sq = this->convert_to_index();
-	auto file = sq % 8;
-	auto rank = 7 - ((sq - file) / 8);
-
-	return an.append(1, 'a' + file).append(1, '1' + rank);
+	return idx2an(this->convert_to_index()).value();
 }
 
 Square& Square::next(unsigned int skip) {
