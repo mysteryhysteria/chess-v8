@@ -1449,22 +1449,7 @@ std::vector<Move> Position::BASIC_move_gen() {
 void Position::BASIC_king_threats() {
 	// HAS to come before the ply increment, otherwise get_turn() will get the wrong color and the opponents king.
 	Square king_sq = pieces_by_color[get_turn()] & pieces_by_type[Types::KING];
-
-	++ply; // this simulates a no-move for the current player and makes the move generator provide the opponent's "moves" in the position.
-	std::vector<Move> attacks = BASIC_move_gen();
-	bool in_check = false; // assume not in check to start
-
-	// check each move for the opponent to see if they "capture" the king
-	for (auto& attack : attacks) {
-		if (attack.get_to() == king_sq) {
-			in_check = true;
-			break;
-		}
-	}
-
-	set_in_check(in_check);
-	--ply;
-	check_integrity();
+	set_in_check(square_covered(king_sq, !get_turn()));
 	return;
 }
 
