@@ -1,5 +1,6 @@
 #include "Position.h"
 
+// TODO: move to header file
 const std::vector<std::vector<Directions>> move_directions = { // map from piece types to valid move directions for each piece
 	{Directions::N,	  Directions::S}, // Pawns
 	{Directions::NNE, Directions::ENE, Directions::ESE, Directions::SSE, Directions::SSW, Directions::WSW, Directions::WNW, Directions::NNW }, // Knight
@@ -9,7 +10,8 @@ const std::vector<std::vector<Directions>> move_directions = { // map from piece
 	{Directions::N,   Directions::NE,  Directions::E,   Directions::SE,  Directions::S,   Directions::SW,  Directions::W,   Directions::NW } // King
 };
 
-std::vector<std::vector<Directions>> pawn_capt_directions = {
+// TODO: move to header file
+const std::vector<std::vector<Directions>> pawn_capt_directions = {
 	{Directions::WHITE_PAWN_CAPTURE_WEST, Directions::WHITE_PAWN_CAPTURE_EAST}, // White
 	{Directions::BLACK_PAWN_CAPTURE_WEST, Directions::BLACK_PAWN_CAPTURE_EAST} // Black
 };
@@ -384,254 +386,281 @@ Position& Position::make_move(Move move) {
 	auto move_type = move.get_move_type();
 	Colors turn = get_turn();
 	Types type = move.get_type();
+	assert(type != Types::NONE); // gotta have something to move
+
 	Types capt_type = move.get_capt_type();
+	assert(capt_type != Types::KING); // no capturing kings
+
 	Types promote_type = move.get_promote_type();
+	assert(promote_type != Types::KING && promote_type != Types::PAWN); // no promoting to kings or pawns
+
 	Square from = move.get_from();
 	Square to = move.get_to();
 	Square special = move.get_special();
 
-	switch (move_type) {
-		case STD:
-			// update castling permissions if a rook is captured off of its starting square
-			// and update the ply clock
+	// compute some values for move integrity checking
+	bool capture_move;
+	int friendly_piece_count_before = pieces_by_color[turn].popcount();
+	int enemy_piece_count_before = pieces_by_color[!turn].popcount();
+	int rook_piece_count_before = pieces_by_type[Types::ROOK].popcount();
+	int knight_piece_count_before = pieces_by_type[Types::KNIGHT].popcount();
+	int queen_piece_count_before = pieces_by_type[Types::QUEEN].popcount();
+	int king_piece_count_before = pieces_by_type[Types::KING].popcount();
+	int pawn_piece_count_before = pieces_by_type[Types::PAWN].popcount();
+	int bishop_piece_count_before = pieces_by_type[Types::BISHOP].popcount();
+	uint64_t covered_squares_before = get_occupied().get_u64();
 
-			// TODO: rewrite this since castling rights can only be taken away, there is no need to do such rigorous checks.
-			// You can instead just test if the right is still available, then if the king moved, or the rook moved, take it away.
+	// Update the En Passant square state
+	epsq = Square(); // clear the ep square by default
+	Directions double_push_dir, single_push_dir;
 
-			// if this is a capture move
-			if (pieces_by_color[!turn].contains(to)) {
-				// if captured piece is rook
-				if (pieces_by_type[ROOK].contains(to)) {
-					// if whites turn
-					if (turn == WHITE) {
-						// if to square is h8
-						if (to.on_nth_file(7) && to.on_nth_rank(7)) {
-							// remove K castle right
-							set_castling_right(!turn, KINGSIDE, false);
-							assert(get_castling_right(!turn, KINGSIDE) == false);
-						}
-						// else if to square is a8
-						else if (to.on_nth_file(0) && to.on_nth_rank(7)) {
-							// remove Q castle right
-							set_castling_right(!turn, QUEENSIDE, false);
-							assert(get_castling_right(!turn, QUEENSIDE) == false);
-						}
-					}
-					// else if blacks turn:
-					else {
-						// if to square is h1:
-						if (to.on_nth_file(7) && to.on_nth_rank(0)) {
-							// remove K castle right
-							set_castling_right(!turn, KINGSIDE, false);
-							assert(get_castling_right(!turn, KINGSIDE) == false);
-						}
-							// else if to square is a1:
-						else if (to.on_nth_file(0) && to.on_nth_rank(0)) {
-							// remove Q castle right
-							set_castling_right(!turn, QUEENSIDE, false);
-							assert(get_castling_right(!turn, QUEENSIDE) == false);
-						}
-					}
-				}
-				// reset ply clock
-				ply_clock = 0;
-			}
-
-			if (type == KING) {
-				// remove both Q and K castle rights
-				set_castling_right(turn, QUEENSIDE, false);
-				set_castling_right(turn, KINGSIDE, false);
-				
-				// increment ply clock
-				++ply_clock;
-			}
-			else if (type == ROOK) {
-				// if its the Queenside rook...
-				if (from.on_nth_file(0)) {
-					// remove the Q castle rights
-					set_castling_right(turn, QUEENSIDE, false);
-				}
-				// else if its the Kingside rook...
-				else if (from.on_nth_file(7)) {
-					// remove the K castle rights
-					set_castling_right(turn, KINGSIDE, false);
-				}
-				// increment ply clock
-				++ply_clock;
-			}
-			// if this is a pawn move...
-			else if (type == PAWN) {
-				// set ep square
-				if (turn == WHITE) {
-					if (from.on_nth_rank(1) && to.on_nth_rank(3)) {
-						epsq = to << 8;
-					}
-					else {
-						epsq = Square();
-					}
-				}
-				else {
-					if (from.on_nth_rank(6) && to.on_nth_rank(4)) {
-						epsq = to >> 8;
-					}
-					else {
-						epsq = Square();
-					}
-				}
-
-				// reset the ply clock to 0
-				ply_clock = 0;
-			}
-			
-			// if this is any piece besides a pawn, clear the ep square
-			if (type != PAWN) {
-				epsq = Square();
-			}
-
-			// remove the moved piece off of its from square
-			pieces_by_color[turn].clear_square(from);
-			pieces_by_type[type].clear_square(from);
-
-			// remove the captured piece from the to square
-			if (capt_type >= 0) {
-				pieces_by_color[!turn].clear_square(to);
-				pieces_by_type[capt_type].clear_square(to);
-			}
-
-			// add the moved piece to its to square
-			pieces_by_color[turn].mark_square(to);
-			pieces_by_type[type].mark_square(to);
-			
-			// increment the ply
-			++ply;
-
-			break;
-
-		case CASTLE:
-			// remove both Q and K castle rights
-			set_castling_right(turn, QUEENSIDE, false);
-			set_castling_right(turn, KINGSIDE, false);
-
-			// clear epsq
-			epsq = Square();
-
-			// remove the moved piece off of its from square
-			pieces_by_color[turn].clear_square(from);
-			pieces_by_type[type].clear_square(from);
-
-			// add the moved piece to its to square
-			pieces_by_color[turn].mark_square(to);
-			pieces_by_type[type].mark_square(to);
-
-			// remove the special piece off of its from square
-			pieces_by_color[turn].clear_square(special);
-			pieces_by_type[ROOK].clear_square(special);
-
-			// if the to square is on the c file...
-			if (to.on_nth_file(2)) {
-				//	   add the special piece to special << 3
-				auto special_to = special << 3;
-				pieces_by_color[turn].mark_square(special_to);
-				pieces_by_type[ROOK].mark_square(special_to);
-			}
-			// else if the to square is on the g file...
-			else if (to.on_nth_file(6)) {
-				//     add the special piece to special >> 2
-				auto special_to = special >> 2;
-				pieces_by_color[turn].mark_square(special_to);
-				pieces_by_type[ROOK].mark_square(special_to);
-			}
-
-			// increment the ply clock
-			++ply_clock;
-
-			// increment the ply
-			++ply;
-
-			break;
-		case PROMOTION:
-
-			// if this is a capture move
-			if (pieces_by_color[!turn].contains(from)) {
-				// if captured piece is rook
-				if (pieces_by_type[ROOK].contains(to)) {
-					// if whites turn
-					if (turn == WHITE) {
-						// if to square is h8
-						if (to.on_nth_file(7) && to.on_nth_rank(7)) {
-							// remove K castle right
-							set_castling_right(!turn, KINGSIDE, false);
-						}
-						// else if to square is a8
-						else if (to.on_nth_file(0) && to.on_nth_rank(7)) {
-							// remove Q castle right
-							set_castling_right(!turn, QUEENSIDE, false);
-						}
-					}
-					// else if blacks turn:
-					else {
-						// if to square is h1:
-						if (to.on_nth_file(7) && to.on_nth_rank(0)) {
-							// remove K castle right
-							set_castling_right(!turn, KINGSIDE, false);
-						}
-						// else if to square is a1:
-						else if (to.on_nth_file(0) && to.on_nth_rank(0)) {
-							// remove Q castle right
-							set_castling_right(!turn, QUEENSIDE, false);
-						}
-					}
-				}
-			}
-
-			// remove the moved piece off of its from square
-			pieces_by_color[turn].clear_square(from);
-			pieces_by_type[type].clear_square(from);
-
-			// remove the captured piece from the to square
-			if (capt_type >= 0) {
-				pieces_by_color[!turn].clear_square(to);
-				pieces_by_type[capt_type].clear_square(to);
-			}
-
-			// add the moved piece to its to square
-			pieces_by_color[turn].mark_square(to);
-			pieces_by_type[promote_type].mark_square(to);
-
-			// clear epsq
-			epsq = Square();
-
-			// reset the ply clock to 0
-			ply_clock = 0;
-
-			// increment the ply
-			++ply;
-
-			break;
-		case EN_PASSANT:
-			// remove the moved piece off of its from square
-			pieces_by_color[turn].clear_square(from);
-			pieces_by_type[type].clear_square(from);
-
-			// add the moved piece to its to square
-			pieces_by_color[turn].mark_square(to);
-			pieces_by_type[type].mark_square(to);
-
-			// remove the special piece from its square
-			pieces_by_color[!turn].clear_square(special);
-			pieces_by_type[PAWN].clear_square(special);
-
-			// clear epsq
-			epsq = Square();
-
-			// reset the ply clock to 0
-			ply_clock = 0;
-
-			// increment the ply
-			++ply;
-			break;
+	switch (turn) {
+	case Colors::WHITE:
+		double_push_dir = Directions::WHITE_PAWN_DOUBLE_PUSH;
+		single_push_dir = Directions::WHITE_PAWN_PUSH;
+		break;
+	case Colors::BLACK:
+		double_push_dir = Directions::BLACK_PAWN_DOUBLE_PUSH;
+		single_push_dir = Directions::BLACK_PAWN_PUSH;
+		break;
 	}
 
+	if (type == PAWN && from.on_pawn_start_rank(turn) && from + double_push_dir == to) {
+		epsq = from + single_push_dir;
+	}
+
+	// update the castling rights
+	if (flags & CASTLING_RIGHTS_MASK != 0) { //Check if any castling rights remain
+
+		// test assumptions. For castling to be available, the king and rook must be in their starting positions.
+		if (flags & WHITE_QUEENSIDE_CASTLING_RIGHTS_MASK) {
+			assert(pieces_by_type[Types::ROOK].contains(WHITE_QUEENSIDE_ROOK_STARTING_SQUARE));
+			assert(pieces_by_type[Types::KING].contains(WHITE_KING_STARTING_SQUARE));
+			assert(pieces_by_color[Colors::WHITE].contains(WHITE_QUEENSIDE_ROOK_STARTING_SQUARE));
+			assert(pieces_by_color[Colors::WHITE].contains(WHITE_KING_STARTING_SQUARE));
+		}
+		if (flags & WHITE_KINGSIDE_CASTLING_RIGHTS_MASK) {
+			assert(pieces_by_type[Types::ROOK].contains(WHITE_KINGSIDE_ROOK_STARTING_SQUARE));
+			assert(pieces_by_type[Types::KING].contains(WHITE_KING_STARTING_SQUARE));
+			assert(pieces_by_color[Colors::WHITE].contains(WHITE_KINGSIDE_ROOK_STARTING_SQUARE));
+			assert(pieces_by_color[Colors::WHITE].contains(WHITE_KING_STARTING_SQUARE));
+		}
+		if (flags & BLACK_QUEENSIDE_CASTLING_RIGHTS_MASK) {
+			assert(pieces_by_type[Types::ROOK].contains(BLACK_QUEENSIDE_ROOK_STARTING_SQUARE));
+			assert(pieces_by_type[Types::KING].contains(BLACK_KING_STARTING_SQUARE));
+			assert(pieces_by_color[Colors::BLACK].contains(BLACK_QUEENSIDE_ROOK_STARTING_SQUARE));
+			assert(pieces_by_color[Colors::BLACK].contains(BLACK_KING_STARTING_SQUARE));
+		}
+		if (flags & BLACK_KINGSIDE_CASTLING_RIGHTS_MASK) {
+			assert(pieces_by_type[Types::ROOK].contains(BLACK_KINGSIDE_ROOK_STARTING_SQUARE));
+			assert(pieces_by_type[Types::KING].contains(BLACK_KING_STARTING_SQUARE));
+			assert(pieces_by_color[Colors::BLACK].contains(BLACK_KINGSIDE_ROOK_STARTING_SQUARE));
+			assert(pieces_by_color[Colors::BLACK].contains(BLACK_KING_STARTING_SQUARE));
+		}
+		
+		// Test for King and Rook moves, as they may remove castling rights
+		if (type == Types::KING) { // includes both normal moves and castling
+			this->set_castling_right(turn, CastleSide::KINGSIDE, false);
+			this->set_castling_right(turn, CastleSide::QUEENSIDE, false);
+		}
+		else if (type == Types::ROOK) { // rook moves
+			if (from.on_nth_file(0)) { // if this is the a-file rook (either a1 or a8)
+				this->set_castling_right(turn, CastleSide::QUEENSIDE, false);
+			}
+			else if (from.on_nth_file(7)) { // if this is the h-file rook (either h1 or h8)
+				this->set_castling_right(turn, CastleSide::KINGSIDE, false);
+			}
+		}
+
+		if (capt_type == Types::ROOK) {
+			if (to.on_nth_file(0)) {
+				this->set_castling_right(!turn, CastleSide::QUEENSIDE, false);
+			}
+			else if (to.on_nth_file(7)) {
+				this->set_castling_right(!turn, CastleSide::KINGSIDE, false);
+			}
+		}
+	}
+
+
+	// update the pieces bitboards
+	switch (move_type) {
+	case SpecialMoves::STD:
+		// remove moved piece from old square
+		pieces_by_type[type].clear_square(from);
+		pieces_by_color[turn].clear_square(from);
+
+		// remove captured piece from new square
+		if (capt_type != Types::NONE) {
+			capture_move = true;
+			pieces_by_type[capt_type].clear_square(to);
+			pieces_by_color[!turn].clear_square(to);
+		}
+
+		// place moved piece onto new square
+		pieces_by_type[type].mark_square(to);
+		pieces_by_color[turn].mark_square(to);
+		
+		// assertions
+		int friendly_piece_count_after = pieces_by_color[turn].popcount();
+		int enemy_piece_count_after = pieces_by_color[!turn].popcount();
+		int rook_piece_count_after = pieces_by_type[Types::ROOK].popcount();
+		int knight_piece_count_after = pieces_by_type[Types::KNIGHT].popcount();
+		int queen_piece_count_after = pieces_by_type[Types::QUEEN].popcount();
+		int king_piece_count_after = pieces_by_type[Types::KING].popcount();
+		int pawn_piece_count_after = pieces_by_type[Types::PAWN].popcount();
+		int bishop_piece_count_after = pieces_by_type[Types::BISHOP].popcount();
+		uint64_t covered_squares_after = get_occupied().get_u64();
+
+		assert(friendly_piece_count_before == friendly_piece_count_after);
+
+		if (capture_move) {
+			assert(covered_squares_before ^ from.get_u64() == covered_squares_after);
+			
+			// check piece counts
+			assert(enemy_piece_count_before == enemy_piece_count_after + 1);
+
+			switch (capt_type) {
+			case Types::PAWN:
+				assert(pawn_piece_count_before == pawn_piece_count_after + 1);
+				assert(knight_piece_count_before == knight_piece_count_after);
+				assert(bishop_piece_count_before == bishop_piece_count_after);
+				assert(rook_piece_count_before == rook_piece_count_after);
+				assert(queen_piece_count_before == queen_piece_count_after);
+				assert(king_piece_count_before == king_piece_count_after);
+			case Types::KNIGHT:
+				assert(pawn_piece_count_before == pawn_piece_count_after);
+				assert(knight_piece_count_before == knight_piece_count_after + 1);
+				assert(bishop_piece_count_before == bishop_piece_count_after);
+				assert(rook_piece_count_before == rook_piece_count_after);
+				assert(queen_piece_count_before == queen_piece_count_after);
+				assert(king_piece_count_before == king_piece_count_after);
+			case Types::BISHOP:
+				assert(pawn_piece_count_before == pawn_piece_count_after);
+				assert(knight_piece_count_before == knight_piece_count_after);
+				assert(bishop_piece_count_before == bishop_piece_count_after + 1);
+				assert(rook_piece_count_before == rook_piece_count_after);
+				assert(queen_piece_count_before == queen_piece_count_after);
+				assert(king_piece_count_before == king_piece_count_after);
+			case Types::ROOK:
+				assert(pawn_piece_count_before == pawn_piece_count_after);
+				assert(knight_piece_count_before == knight_piece_count_after);
+				assert(bishop_piece_count_before == bishop_piece_count_after);
+				assert(rook_piece_count_before == rook_piece_count_after + 1);
+				assert(queen_piece_count_before == queen_piece_count_after);
+				assert(king_piece_count_before == king_piece_count_after);
+			case Types::QUEEN:
+				assert(pawn_piece_count_before == pawn_piece_count_after);
+				assert(knight_piece_count_before == knight_piece_count_after);
+				assert(bishop_piece_count_before == bishop_piece_count_after);
+				assert(rook_piece_count_before == rook_piece_count_after);
+				assert(queen_piece_count_before == queen_piece_count_after + 1);
+				assert(king_piece_count_before == king_piece_count_after);
+			}
+		}
+		else {
+			assert(covered_squares_before ^ from.get_u64() ^ to.get_u64() == covered_squares_after);
+
+			// check piece counts
+			assert(enemy_piece_count_before == enemy_piece_count_after);
+			assert(pawn_piece_count_before == pawn_piece_count_after);
+			assert(knight_piece_count_before == knight_piece_count_after);
+			assert(bishop_piece_count_before == bishop_piece_count_after);
+			assert(rook_piece_count_before == rook_piece_count_after);
+			assert(queen_piece_count_before == queen_piece_count_after);
+			assert(king_piece_count_before == king_piece_count_after);
+		}
+
+		break;
+
+	case SpecialMoves::EN_PASSANT:
+		// FIXME: assert the piece type is pawn and that the relative location of the squares is correct.
+		// remove moved piece from old square
+		pieces_by_type[Types::PAWN].clear_square(from);
+		pieces_by_color[turn].clear_square(from);
+
+		// remove captured piece from the special square
+		pieces_by_type[Types::PAWN].clear_square(special);
+		pieces_by_color[!turn].clear_square(special);
+
+		// place moved piece onto en passant square
+		pieces_by_type[Types::PAWN].mark_square(to);
+		pieces_by_color[turn].mark_square(to);
+
+		break;
+
+	case SpecialMoves::PROMOTION:
+		// FIXME: assert the piece type is a pawn and that the promotion square is on the correct rank.
+		// remove moved piece from old square
+		pieces_by_type[Types::PAWN].clear_square(from);
+		pieces_by_color[turn].clear_square(from);
+
+		// remove captured piece from new square
+		if (capt_type != Types::NONE) {
+			pieces_by_type[capt_type].clear_square(to);
+			pieces_by_color[!turn].clear_square(to);
+		}
+
+		// place promoted piece onto new square
+		pieces_by_type[promote_type].mark_square(to);
+		pieces_by_color[turn].mark_square(to);
+		break;
+
+	case SpecialMoves::CASTLE:
+		// FIXME: assert everything; pieces involved are king and rook, they are on the appropriate squares, they end on the appropriate squares.
+		// remove king from starting square
+		pieces_by_type[Types::KING].clear_square(from);
+		pieces_by_color[turn].clear_square(from);
+		
+		// place king onto the new square
+		pieces_by_type[Types::KING].mark_square(to);
+		pieces_by_color[turn].mark_square(to);
+
+		// remove rook from the special square
+		pieces_by_type[Types::ROOK].clear_square(special);
+		pieces_by_color[turn].clear_square(special);
+
+		// place rook next to the king
+		Directions rook_castle_dir;
+		if (special.on_nth_file(0)) {
+			rook_castle_dir = Directions::ROOK_QUEENSIDE_CASTLE;
+		}
+		else if (special.on_nth_file(7)) {
+			rook_castle_dir = Directions::ROOK_KINGSIDE_CASTLE;
+		}
+		else {
+			assert(false);
+		}
+
+		pieces_by_type[Types::ROOK].mark_square(special + rook_castle_dir);
+		pieces_by_color[turn].mark_square(special + rook_castle_dir);
+		break;
+
+	}
+
+	// calculate if the opponent is in check
+	set_in_check(square_covered(get_king_square(!turn), turn));
+
+	// update the ply clock
+	if (type == Types::PAWN || move_type == MoveOptions::CAPT) {
+		ply_clock = 0;
+	}
+	else {
+		ply_clock++;
+	}
+
+	// update the ply
+	++ply;
+
+	// move integrity check
+	if (capt_type == Types::NONE) {
+		
+	}
+
+	// board integrity check
+	check_integrity();
+
+	// return the position object
 	return *this;
 }
 
@@ -816,6 +845,8 @@ Types Position::get_type(Square sq) {
 	return NONE;
 }
 
+Square Position::get_king_square(Colors color) { return pieces_by_type[Types::KING] & pieces_by_color[color]; };
+
 bool Position::is_type(Square sq, Types type) {
 	return pieces_by_type[type].contains(sq);
 }
@@ -838,6 +869,10 @@ bool Position::is_in_check() {
 	return flags & (1 << 4);
 }
 
+bool Position::is_capture_move(Move move) {
+	return is_opponent(move.get_to());
+}
+
 bool Position::is_opponent(Square sq) {
 	return pieces_by_color[!get_turn()].contains(sq);
 }
@@ -854,6 +889,8 @@ bool Position::attacked_by_piece(Square sq, Types piece_type, Colors attacker) {
 	std::vector<Directions> directions;
 
 	if (piece_type == PAWN || piece_type == KNIGHT || piece_type == KING) { 
+		max_distance = 1;
+
 		if (piece_type == PAWN) {
 			// the pawn capture directions need to be from the perspective of the defending player, since we are searching for 
 			// attackers from the perspective of the square that is under attack.
@@ -861,11 +898,9 @@ bool Position::attacked_by_piece(Square sq, Types piece_type, Colors attacker) {
 			// If I placed one of my pawns on this square, could it capture a pawn? if so, then that other pawn
 			// could also capture me, which means it attacks this square.
 			directions = pawn_capt_directions[!attacker];
-			max_distance = 1;
 		}
 		else {
 			directions = move_directions[piece_type];
-			max_distance = 1;
 		}
 	}
 	else {
@@ -1473,3 +1508,14 @@ bool Position::is_position_illegal()
 	return false;
 }
 
+void MoveIntegrityChecker::get_before_stats(Position pos) {
+
+}
+
+void MoveIntegrityChecker::get_after_stats(Position pos) {
+
+}
+
+void MoveIntegrityChecker::check_move_integrity() {
+
+}

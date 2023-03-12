@@ -35,6 +35,13 @@ const uint8_t QUEENSIDE_CASTLING_RIGHTS_MASK		= 0b00001010;
 const uint8_t CASTLING_RIGHTS_MASK					= 0b00001111;
 const uint8_t IN_CHECK_MASK							= 0b00010000;
 
+const Square WHITE_KING_STARTING_SQUARE = Square(0, 4);
+const Square BLACK_KING_STARTING_SQUARE = Square(7, 4);
+const Square WHITE_QUEENSIDE_ROOK_STARTING_SQUARE = Square(0, 0);
+const Square WHITE_KINGSIDE_ROOK_STARTING_SQUARE = Square(0, 7);
+const Square BLACK_QUEENSIDE_ROOK_STARTING_SQUARE = Square(7, 0);
+const Square BLACK_KINGSIDE_ROOK_STARTING_SQUARE = Square(7, 7);
+
 class Position {
 private:
 	// index these bitboard arrays with the enums defined above!
@@ -76,14 +83,17 @@ public:
 	void parse_fen(std::string fen);
 	//TODO std::string gen_fen();
 	std::vector<Move> move_gen();
+	// TODO remove static keyword; I dont think it does what you think it does ;)
 	static void disp_bitboard(Bitboard bb, std::string title, char piece_c, char empty_c);
 	static void disp_bitboard(Bitboard bb, std::string title);
 	static void disp_bitboard(Bitboard bb);
 	Colors get_turn();
 	Types get_type(Square sq);
+	Square get_king_square(Colors color);
 	bool is_type(Square sq, Types type);
 	bool is_open(Square sq);
 	bool is_opponent(Square sq);
+	bool is_capture_move(Move move);
 	bool is_friend(Square sq);
 	bool is_castling_legal(CastleSide side);
 	bool K_castling_right();
@@ -114,4 +124,11 @@ public:
 	void BASIC_king_threats(); // the basic one will only calculate if the king is in check.
 	bool is_position_illegal(); // calculates whether the opponent's king can be captured from this position, which implies the last move was illegal.
 
+};
+
+class MoveIntegrityChecker {
+	MoveIntegrityChecker(Position pos) { get_before_stats(pos); };
+	void get_before_stats(Position pos);
+	void get_after_stats(Position pos);
+	void check_move_integrity();
 };

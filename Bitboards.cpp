@@ -149,7 +149,7 @@ bool Square::on_nth_rank(unsigned int n) {
 	return bool(this->bitboard & rank_masks[n]);
 }
 
-// TODO: rewrite this so that the function call isn't zero indexed.
+// TODO: rewrite this so that the function call isn't zero indexed. Or make it take a char/string of the file.
 bool Square::on_nth_file(unsigned int n) {
 	return bool(this->bitboard & file_masks[n]);
 }

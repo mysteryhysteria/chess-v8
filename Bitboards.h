@@ -80,7 +80,12 @@ public:
 	Square(Bitboard bb);
 	explicit Square(int sq);
 	explicit Square(unsigned int index);
-	explicit Square(unsigned int rank, unsigned int file);
+
+	// TODO: change implementation so that rank and file arent 0 indexed. Or just rely on the string based constructor and delete this or make it private
+	explicit Square(unsigned int rank, unsigned int file); 
+	
+	// TODO: add constructor to build squares from strings
+	
 	explicit Square();
 
 	// Operator overloads
