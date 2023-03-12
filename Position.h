@@ -35,8 +35,8 @@ private:
 
 	uint16_t ply; // count of the current ply
 	uint16_t ply_clock; // number of plys that have been played since the last capture or pawn move
-	uint8_t flags;	// 4 bits for castling rights (0bxxx1-WK, 0bxx1x-WQ, 0bx1xx-BK, 0b1xxx-BQ)
-					// 1 bit for in-check status (0b1-Check, 0b0-No Check)
+	uint8_t flags;	// 4 bits for castling rights (0b000xxxx1-WK, 0b000xxx1x-WQ, 0b000xx1xx-BK, 0b000x1xxx-BQ)
+					// 1 bit for in-check status (0b0001xxxx-Check, 0b0000xxxx-No Check)
 					// 3 bonus bits!
 
 	Bitboard checking_pieces; // bitboard of squares that are occupied by a piece which is checking the king
@@ -49,7 +49,7 @@ private:
 	std::vector<Move> move_gen_p(Square from);
 	std::vector<Move> move_gen_k(Square from);
 	std::vector<Move> move_gen_sliders(Square from, Types type);
-	std::vector<Move> move_gen_generic(Square from, std::vector<int> directions, int max_distance = -1, MoveOptions move_opts = (MoveOptions::PLACE | MoveOptions::CAPT));
+	std::vector<Move> move_gen_generic(Square from, std::vector<Directions> directions, int max_distance = -1, MoveOptions move_opts = (MoveOptions::PLACE | MoveOptions::CAPT));
 
 	// Implementing a simpler movegen algorithm in hopes that it will be more correct, and to aid in debugging. These methods are to support that effort.
 	std::vector<Move> BASIC_pl_move_gen();
@@ -75,10 +75,11 @@ public:
 	bool is_open(Square sq);
 	bool is_opponent(Square sq);
 	bool is_friend(Square sq);
-	bool is_castle_legal(CastleSide side);
-	bool Q_castle_right();
-	bool K_castle_right();
-	void set_castle_right(Colors color, CastleSide side, bool set);
+	bool is_castling_legal(CastleSide side);
+	bool K_castling_right();
+	bool Q_castling_right();
+	void set_castling_right(Colors color, CastleSide side, bool set);
+	bool get_castling_right(Colors color, CastleSide side);
 	bool is_in_check();
 	bool square_covered(Square sq, Colors attacker);
 	bool attacked_by_piece(Square sq, Types piece_type, Colors attacker);

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <bitset>
-#include <map>
 #include <array>
 #include <optional>
 #include "stdint.h"
@@ -110,11 +109,12 @@ public:
 	bool on_nth_file(unsigned int n);
 	unsigned int convert_to_index();
 	std::string p2an();
-	Square& next(unsigned int skip = 1);
-	Square& previous(unsigned int skip = 1);
+	std::optional<Square> next(unsigned int skip = 1);
+	std::optional<Square> previous(unsigned int skip = 1);
 	Square& first();
 	int popcount();
 	int direction_from(Square from);
+	bool is_square(std::string an);
 };
 
 uint64_t operator&=(uint64_t lhs, Square rhs);

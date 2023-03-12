@@ -1,0 +1,36 @@
+FEN grammar
+<FEN> ::= <rank> "/" <rank> "/" <rank> "/" <rank> "/" <rank> "/" <rank> "/" <rank> "/" <rank> " " <color> " " <castle-rights> " " <ep-sq> " " <ply-clock> " " <fullmove-counter>
+<rank> ::= "8" 																		| <pieces>
+	| <pieces> <digit17> 															| <digit17> <pieces>
+	| <pieces> <digit16> <pieces> 													| <digit16> <pieces> <digit16> 
+	| <pieces> <digit15> <pieces> <digit15> 										| <digit15> <pieces> <digit15> <pieces> 
+	| <pieces> <digit14> <pieces> <digit14> <pieces> 								| <digit14> <pieces> <digit14> <pieces> <digit14> 
+	| <pieces> <digit13> <pieces> <digit13> <pieces> <digit13> 						| <digit13> <pieces> <digit13> <pieces> <digit13> <pieces> 
+	| <pieces> <digit12> <pieces> <digit12> <pieces> <digit12> <pieces> 			| <digit12> <pieces> <digit12> <pieces> <digit12> <pieces> <digit12> 
+	| <piece>  "1"       <piece>  "1"       <piece>  "1"       <piece>  "1"     	| "1"       <piece>  "1"       <piece>  "1"       <piece>  "1"       <piece>
+<color> ::= "w" | "b"
+<castle-rights> ::= <wk-castle-rights> <wq-castle-rights> <bk-castle-rights> <bq-castle-rights> | "-"
+<ply-clock> ::= <digit> | <digit14> <digit> | "50"
+<fullmove-counter> ::= <digit> | <digit19> <numeric>
+<numeric> ::= <digit> | <digit> <numeric>
+<wk-castle-rights> ::= "K" | ""
+<wq-castle-rights> ::= "Q" | ""
+<bk-castle-rights> ::= "k" | ""
+<bq-castle-rights> ::- "q" | ""
+<ep-sq> ::= <file> <digit18>
+<pieces> ::= <piece> | <piece> <pieces>
+<piece> ::= <white-piece> | <black-piece>
+<white-piece> ::= "P" | "N" | "B" | "R" | <white-royal>
+<black-piece> ::= "p" | "n" | "b" | "r" | <black-royal>
+<white-royal> ::= "Q" | "K"
+<black-royal> ::= "q" | "k"
+<file> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" 
+<digit> ::= "0" | <digit19>
+<digit19> ::= <digit18> | "9"
+<digit18> ::= <digit17> | "8"
+<digit17> ::= <digit16> | "7"
+<digit16> ::= <digit15> | "6"
+<digit15> ::= <digit14> | "5"
+<digit14> ::= <digit13> | "4"
+<digit13> ::= <digit12> | "3"
+<digit12> ::= "1" | "2"

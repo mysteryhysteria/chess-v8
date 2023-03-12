@@ -15,7 +15,10 @@ enum class MoveResults {NONE = -1, CHECKMATE, STALEMATE, DISCOVERY, DOUBLE_CHECK
 
 int main() {
 
-	Perft perft = Perft("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1", 2);
+	int depth = 3;
+	Perft perft = Perft(Position("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"), depth);
+	perft.run();
+	perft = Perft(Position("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1").mirror_position(), depth);
 	perft.run();
 
 	//using namespace std;
@@ -114,4 +117,3 @@ int main() {
 //		P.RUN_PERFT(depth, counts);
 //	}
 // }
-

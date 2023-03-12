@@ -133,7 +133,6 @@ bool Square::on_pawn_start_rank(Colors turn) {
 }
 
 bool Square::on_promote_rank(Colors turn) {
-	unsigned int n;
 	if (turn == Colors::WHITE) {
 		return this->on_nth_rank(7);
 	}
@@ -160,17 +159,27 @@ std::string Square::p2an() {
 	return idx2an(this->convert_to_index()).value();
 }
 
-Square& Square::next(unsigned int skip) {
-	return *this <<= skip;
+std::optional<Square> Square::next(unsigned int skip) {
+	*this <<= skip;
+	std::optional<Square> result = std::optional<Square>(std::nullopt);
+	if (!this->is_empty()) {
+		result = *this;
+	}
+	return result;
 }
 
-Square& Square::previous(unsigned int skip) {
-	return *this >>= skip;
+std::optional<Square> Square::previous(unsigned int skip) {
+	*this >>= skip;
+	std::optional<Square> result = std::optional<Square>(std::nullopt);
+	if (!this->is_empty()) {
+		result = *this;
+	}
+	return result;
 }
 
 Square& Square::first() { this->bitboard = (uint64_t) 1; return *this; }
 
-int Square::popcount() { return (bitboard == 0) ? 0 : 1; }
+int Square::popcount() { ASSERT_ONE_SQUARE(*this); return 1; }
 
 int Square::direction_from(Square from)
 {
@@ -178,9 +187,9 @@ int Square::direction_from(Square from)
 	auto i_from = from.convert_to_index();
 
 	auto f_to = i_to % 8;
-	auto r_to = 7 - ((i_to - f_to) / 8);
+	auto r_to = (i_to - f_to) / 8;
 	auto f_from = i_from % 8;
-	auto r_from = 7 - ((i_from - f_from) / 8);
+	auto r_from = (i_from - f_from) / 8;
 	int df = f_to - f_from;
 	int dr = r_to - r_from;
 	
@@ -202,6 +211,9 @@ int Square::direction_from(Square from)
 	return dr * 8 + df;
 }
 
+bool Square::is_square(std::string an) {
+	return this->get_u64() == (1ULL << (an2idx(an).value()));
+}
 
 uint64_t operator&=(uint64_t lhs, Square rhs) { return lhs &= (rhs.get_u64()); };
 uint64_t operator|=(uint64_t lhs, Square rhs) { return lhs |= (rhs.get_u64()); };

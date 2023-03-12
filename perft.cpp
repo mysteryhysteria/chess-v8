@@ -70,6 +70,7 @@ void Perft::perft_core(unsigned int depth) {
 	}
 	else {
 		for (auto& move : cur_pos.BASIC_move_gen()) {
+
 			make_move(move);
 			if (!cur_pos.is_position_illegal()) {
 				if (show_positions) {

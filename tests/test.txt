@@ -1,0 +1,8168 @@
+P=d5 > d6
+
+R=a8 > b8
+
+P=d5 > d6
+
+R=a8 > c8
+
+P=d5 > d6
+
+R=a8 > d8
+
+P=d5 > d6
+
+K=e8 > d8
+
+P=d5 > d6
+
+K=e8 > f8
+
+P=d5 > d6
+
+K=e8 > c8 : Q
+
+P=d5 > d6
+
+K=e8 > g8 : K
+
+P=d5 > d6
+
+R=h8 > g8
+
+P=d5 > d6
+
+R=h8 > f8
+
+P=d5 > d6
+
+R=h8 > h7
+
+P=d5 > d6
+
+R=h8 > h6
+
+P=d5 > d6
+
+R=h8 > h5
+
+P=d5 > d6
+
+R=h8 > h4
+
+P=d5 > d6
+
+P=c7 > c6
+
+P=d5 > d6
+
+P=c7 > c5
+
+P=d5 > d6
+
+P=c7 X P=d6
+
+P=d5 > d6
+
+Q=e7 > d8
+
+P=d5 > d6
+
+Q=e7 > f8
+
+P=d5 > d6
+
+Q=e7 X P=d6
+
+P=d5 > d6
+
+B=g7 > f8
+
+P=d5 > d6
+
+B=g7 > h6
+
+P=d5 > d6
+
+B=a6 > b7
+
+P=d5 > d6
+
+B=a6 > c8
+
+P=d5 > d6
+
+B=a6 > b5
+
+P=d5 > d6
+
+B=a6 > c4
+
+P=d5 > d6
+
+B=a6 > d3
+
+P=d5 > d6
+
+B=a6 X B=e2
+
+P=d5 > d6
+
+N=b6 > c8
+
+P=d5 > d6
+
+N=b6 > d5
+
+P=d5 > d6
+
+N=b6 > a4
+
+P=d5 > d6
+
+N=b6 > c4
+
+P=d5 > d6
+
+N=f6 > g8
+
+P=d5 > d6
+
+N=f6 > h7
+
+P=d5 > d6
+
+N=f6 > d5
+
+P=d5 > d6
+
+N=f6 > h5
+
+P=d5 > d6
+
+N=f6 X P=e4
+
+P=d5 > d6
+
+N=f6 > g4
+
+P=d5 > d6
+
+P=g6 > g5
+
+P=d5 > d6
+
+P=b4 > b3
+
+P=d5 > d6
+
+P=b4 X N=c3
+
+P=d5 > d6
+
+P=h3 X P=g2
+
+P=d5 X P=e6
+
+R=a8 > b8
+
+P=d5 X P=e6
+
+R=a8 > c8
+
+P=d5 X P=e6
+
+R=a8 > d8
+
+P=d5 X P=e6
+
+K=e8 > d8
+
+P=d5 X P=e6
+
+K=e8 > f8
+
+P=d5 X P=e6
+
+K=e8 > c8 : Q
+
+P=d5 X P=e6
+
+K=e8 > g8 : K
+
+P=d5 X P=e6
+
+R=h8 > g8
+
+P=d5 X P=e6
+
+R=h8 > f8
+
+P=d5 X P=e6
+
+R=h8 > h7
+
+P=d5 X P=e6
+
+R=h8 > h6
+
+P=d5 X P=e6
+
+R=h8 > h5
+
+P=d5 X P=e6
+
+R=h8 > h4
+
+P=d5 X P=e6
+
+P=c7 > c6
+
+P=d5 X P=e6
+
+P=c7 > c5
+
+P=d5 X P=e6
+
+P=d7 > d6
+
+P=d5 X P=e6
+
+P=d7 > d5
+
+P=d5 X P=e6
+
+P=d7 X P=e6
+
+P=d5 X P=e6
+
+Q=e7 > d8
+
+P=d5 X P=e6
+
+Q=e7 > f8
+
+P=d5 X P=e6
+
+Q=e7 > d6
+
+P=d5 X P=e6
+
+Q=e7 > c5
+
+P=d5 X P=e6
+
+Q=e7 X P=e6
+
+P=d5 X P=e6
+
+P=f7 X P=e6
+
+P=d5 X P=e6
+
+B=g7 > f8
+
+P=d5 X P=e6
+
+B=g7 > h6
+
+P=d5 X P=e6
+
+B=a6 > b7
+
+P=d5 X P=e6
+
+B=a6 > c8
+
+P=d5 X P=e6
+
+B=a6 > b5
+
+P=d5 X P=e6
+
+B=a6 > c4
+
+P=d5 X P=e6
+
+B=a6 > d3
+
+P=d5 X P=e6
+
+B=a6 X B=e2
+
+P=d5 X P=e6
+
+N=b6 > c8
+
+P=d5 X P=e6
+
+N=b6 > d5
+
+P=d5 X P=e6
+
+N=b6 > a4
+
+P=d5 X P=e6
+
+N=b6 > c4
+
+P=d5 X P=e6
+
+N=f6 > g8
+
+P=d5 X P=e6
+
+N=f6 > h7
+
+P=d5 X P=e6
+
+N=f6 > d5
+
+P=d5 X P=e6
+
+N=f6 > h5
+
+P=d5 X P=e6
+
+N=f6 X P=e4
+
+P=d5 X P=e6
+
+N=f6 > g4
+
+P=d5 X P=e6
+
+P=g6 > g5
+
+P=d5 X P=e6
+
+P=b4 > b3
+
+P=d5 X P=e6
+
+P=b4 X N=c3
+
+P=d5 X P=e6
+
+P=h3 X P=g2
+
+N=e5 X P=d7
+
+R=a8 > b8
+
+N=e5 X P=d7
+
+R=a8 > c8
+
+N=e5 X P=d7
+
+R=a8 > d8
+
+N=e5 X P=d7
+
+K=e8 > d8
+
+N=e5 X P=d7
+
+K=e8 > f8
+
+N=e5 X P=d7
+
+K=e8 X N=d7
+
+N=e5 X P=d7
+
+K=e8 > c8 : Q
+
+N=e5 X P=d7
+
+R=h8 > g8
+
+N=e5 X P=d7
+
+R=h8 > f8
+
+N=e5 X P=d7
+
+R=h8 > h7
+
+N=e5 X P=d7
+
+R=h8 > h6
+
+N=e5 X P=d7
+
+R=h8 > h5
+
+N=e5 X P=d7
+
+R=h8 > h4
+
+N=e5 X P=d7
+
+P=c7 > c6
+
+N=e5 X P=d7
+
+P=c7 > c5
+
+N=e5 X P=d7
+
+Q=e7 > d8
+
+N=e5 X P=d7
+
+Q=e7 > f8
+
+N=e5 X P=d7
+
+Q=e7 X N=d7
+
+N=e5 X P=d7
+
+Q=e7 > d6
+
+N=e5 X P=d7
+
+Q=e7 > c5
+
+N=e5 X P=d7
+
+B=g7 > f8
+
+N=e5 X P=d7
+
+B=g7 > h6
+
+N=e5 X P=d7
+
+B=a6 > b7
+
+N=e5 X P=d7
+
+B=a6 > c8
+
+N=e5 X P=d7
+
+B=a6 > b5
+
+N=e5 X P=d7
+
+B=a6 > c4
+
+N=e5 X P=d7
+
+B=a6 > d3
+
+N=e5 X P=d7
+
+B=a6 X B=e2
+
+N=e5 X P=d7
+
+N=b6 > c8
+
+N=e5 X P=d7
+
+N=b6 X N=d7
+
+N=e5 X P=d7
+
+N=b6 X P=d5
+
+N=e5 X P=d7
+
+N=b6 > a4
+
+N=e5 X P=d7
+
+N=b6 > c4
+
+N=e5 X P=d7
+
+P=e6 > e5
+
+N=e5 X P=d7
+
+P=e6 X P=d5
+
+N=e5 X P=d7
+
+N=f6 > g8
+
+N=e5 X P=d7
+
+N=f6 X N=d7
+
+N=e5 X P=d7
+
+N=f6 > h7
+
+N=e5 X P=d7
+
+N=f6 X P=d5
+
+N=e5 X P=d7
+
+N=f6 > h5
+
+N=e5 X P=d7
+
+N=f6 X P=e4
+
+N=e5 X P=d7
+
+N=f6 > g4
+
+N=e5 X P=d7
+
+P=g6 > g5
+
+N=e5 X P=d7
+
+P=b4 > b3
+
+N=e5 X P=d7
+
+P=b4 X N=c3
+
+N=e5 X P=d7
+
+P=h3 X P=g2
+
+N=e5 X P=f7
+
+R=a8 > b8
+
+N=e5 X P=f7
+
+R=a8 > c8
+
+N=e5 X P=f7
+
+R=a8 > d8
+
+N=e5 X P=f7
+
+K=e8 > d8
+
+N=e5 X P=f7
+
+K=e8 > f8
+
+N=e5 X P=f7
+
+K=e8 X N=f7
+
+N=e5 X P=f7
+
+K=e8 > g8 : K
+
+N=e5 X P=f7
+
+R=h8 > g8
+
+N=e5 X P=f7
+
+R=h8 > f8
+
+N=e5 X P=f7
+
+R=h8 > h7
+
+N=e5 X P=f7
+
+R=h8 > h6
+
+N=e5 X P=f7
+
+R=h8 > h5
+
+N=e5 X P=f7
+
+R=h8 > h4
+
+N=e5 X P=f7
+
+P=c7 > c6
+
+N=e5 X P=f7
+
+P=c7 > c5
+
+N=e5 X P=f7
+
+P=d7 > d6
+
+N=e5 X P=f7
+
+Q=e7 > d8
+
+N=e5 X P=f7
+
+Q=e7 > f8
+
+N=e5 X P=f7
+
+Q=e7 X N=f7
+
+N=e5 X P=f7
+
+Q=e7 > d6
+
+N=e5 X P=f7
+
+Q=e7 > c5
+
+N=e5 X P=f7
+
+B=g7 > f8
+
+N=e5 X P=f7
+
+B=g7 > h6
+
+N=e5 X P=f7
+
+B=a6 > b7
+
+N=e5 X P=f7
+
+B=a6 > c8
+
+N=e5 X P=f7
+
+B=a6 > b5
+
+N=e5 X P=f7
+
+B=a6 > c4
+
+N=e5 X P=f7
+
+B=a6 > d3
+
+N=e5 X P=f7
+
+B=a6 X B=e2
+
+N=e5 X P=f7
+
+N=b6 > c8
+
+N=e5 X P=f7
+
+N=b6 X P=d5
+
+N=e5 X P=f7
+
+N=b6 > a4
+
+N=e5 X P=f7
+
+N=b6 > c4
+
+N=e5 X P=f7
+
+P=e6 > e5
+
+N=e5 X P=f7
+
+P=e6 X P=d5
+
+N=e5 X P=f7
+
+N=f6 > g8
+
+N=e5 X P=f7
+
+N=f6 > h7
+
+N=e5 X P=f7
+
+N=f6 X P=d5
+
+N=e5 X P=f7
+
+N=f6 > h5
+
+N=e5 X P=f7
+
+N=f6 X P=e4
+
+N=e5 X P=f7
+
+N=f6 > g4
+
+N=e5 X P=f7
+
+P=g6 > g5
+
+N=e5 X P=f7
+
+P=b4 > b3
+
+N=e5 X P=f7
+
+P=b4 X N=c3
+
+N=e5 X P=f7
+
+P=h3 X P=g2
+
+N=e5 > c6
+
+R=a8 > b8
+
+N=e5 > c6
+
+R=a8 > c8
+
+N=e5 > c6
+
+R=a8 > d8
+
+N=e5 > c6
+
+K=e8 > d8
+
+N=e5 > c6
+
+K=e8 > f8
+
+N=e5 > c6
+
+K=e8 > g8 : K
+
+N=e5 > c6
+
+R=h8 > g8
+
+N=e5 > c6
+
+R=h8 > f8
+
+N=e5 > c6
+
+R=h8 > h7
+
+N=e5 > c6
+
+R=h8 > h6
+
+N=e5 > c6
+
+R=h8 > h5
+
+N=e5 > c6
+
+R=h8 > h4
+
+N=e5 > c6
+
+P=d7 > d6
+
+N=e5 > c6
+
+P=d7 X N=c6
+
+N=e5 > c6
+
+Q=e7 > d8
+
+N=e5 > c6
+
+Q=e7 > f8
+
+N=e5 > c6
+
+Q=e7 > d6
+
+N=e5 > c6
+
+Q=e7 > c5
+
+N=e5 > c6
+
+B=g7 > f8
+
+N=e5 > c6
+
+B=g7 > h6
+
+N=e5 > c6
+
+B=a6 > b7
+
+N=e5 > c6
+
+B=a6 > c8
+
+N=e5 > c6
+
+B=a6 > b5
+
+N=e5 > c6
+
+B=a6 > c4
+
+N=e5 > c6
+
+B=a6 > d3
+
+N=e5 > c6
+
+B=a6 X B=e2
+
+N=e5 > c6
+
+N=b6 > c8
+
+N=e5 > c6
+
+N=b6 X P=d5
+
+N=e5 > c6
+
+N=b6 > a4
+
+N=e5 > c6
+
+N=b6 > c4
+
+N=e5 > c6
+
+P=e6 > e5
+
+N=e5 > c6
+
+P=e6 X P=d5
+
+N=e5 > c6
+
+N=f6 > g8
+
+N=e5 > c6
+
+N=f6 > h7
+
+N=e5 > c6
+
+N=f6 X P=d5
+
+N=e5 > c6
+
+N=f6 > h5
+
+N=e5 > c6
+
+N=f6 X P=e4
+
+N=e5 > c6
+
+N=f6 > g4
+
+N=e5 > c6
+
+P=g6 > g5
+
+N=e5 > c6
+
+P=b4 > b3
+
+N=e5 > c6
+
+P=b4 X N=c3
+
+N=e5 > c6
+
+P=h3 X P=g2
+
+N=e5 X P=g6
+
+R=a8 > b8
+
+N=e5 X P=g6
+
+R=a8 > c8
+
+N=e5 X P=g6
+
+R=a8 > d8
+
+N=e5 X P=g6
+
+K=e8 > d8
+
+N=e5 X P=g6
+
+K=e8 > f8
+
+N=e5 X P=g6
+
+K=e8 > c8 : Q
+
+N=e5 X P=g6
+
+R=h8 > g8
+
+N=e5 X P=g6
+
+R=h8 > f8
+
+N=e5 X P=g6
+
+R=h8 > h7
+
+N=e5 X P=g6
+
+R=h8 > h6
+
+N=e5 X P=g6
+
+R=h8 > h5
+
+N=e5 X P=g6
+
+R=h8 > h4
+
+N=e5 X P=g6
+
+P=c7 > c6
+
+N=e5 X P=g6
+
+P=c7 > c5
+
+N=e5 X P=g6
+
+P=d7 > d6
+
+N=e5 X P=g6
+
+Q=e7 > d8
+
+N=e5 X P=g6
+
+Q=e7 > f8
+
+N=e5 X P=g6
+
+Q=e7 > d6
+
+N=e5 X P=g6
+
+Q=e7 > c5
+
+N=e5 X P=g6
+
+P=f7 X N=g6
+
+N=e5 X P=g6
+
+B=g7 > f8
+
+N=e5 X P=g6
+
+B=g7 > h6
+
+N=e5 X P=g6
+
+B=a6 > b7
+
+N=e5 X P=g6
+
+B=a6 > c8
+
+N=e5 X P=g6
+
+B=a6 > b5
+
+N=e5 X P=g6
+
+B=a6 > c4
+
+N=e5 X P=g6
+
+B=a6 > d3
+
+N=e5 X P=g6
+
+B=a6 X B=e2
+
+N=e5 X P=g6
+
+N=b6 > c8
+
+N=e5 X P=g6
+
+N=b6 X P=d5
+
+N=e5 X P=g6
+
+N=b6 > a4
+
+N=e5 X P=g6
+
+N=b6 > c4
+
+N=e5 X P=g6
+
+P=e6 > e5
+
+N=e5 X P=g6
+
+P=e6 X P=d5
+
+N=e5 X P=g6
+
+N=f6 > g8
+
+N=e5 X P=g6
+
+N=f6 > h7
+
+N=e5 X P=g6
+
+N=f6 X P=d5
+
+N=e5 X P=g6
+
+N=f6 > h5
+
+N=e5 X P=g6
+
+N=f6 X P=e4
+
+N=e5 X P=g6
+
+N=f6 > g4
+
+N=e5 X P=g6
+
+P=b4 > b3
+
+N=e5 X P=g6
+
+P=b4 X N=c3
+
+N=e5 X P=g6
+
+P=h3 X P=g2
+
+N=e5 > c4
+
+R=a8 > b8
+
+N=e5 > c4
+
+R=a8 > c8
+
+N=e5 > c4
+
+R=a8 > d8
+
+N=e5 > c4
+
+K=e8 > d8
+
+N=e5 > c4
+
+K=e8 > f8
+
+N=e5 > c4
+
+K=e8 > c8 : Q
+
+N=e5 > c4
+
+K=e8 > g8 : K
+
+N=e5 > c4
+
+R=h8 > g8
+
+N=e5 > c4
+
+R=h8 > f8
+
+N=e5 > c4
+
+R=h8 > h7
+
+N=e5 > c4
+
+R=h8 > h6
+
+N=e5 > c4
+
+R=h8 > h5
+
+N=e5 > c4
+
+R=h8 > h4
+
+N=e5 > c4
+
+P=c7 > c6
+
+N=e5 > c4
+
+P=c7 > c5
+
+N=e5 > c4
+
+P=d7 > d6
+
+N=e5 > c4
+
+Q=e7 > d8
+
+N=e5 > c4
+
+Q=e7 > f8
+
+N=e5 > c4
+
+Q=e7 > d6
+
+N=e5 > c4
+
+Q=e7 > c5
+
+N=e5 > c4
+
+B=g7 > f8
+
+N=e5 > c4
+
+B=g7 > h6
+
+N=e5 > c4
+
+B=a6 > b7
+
+N=e5 > c4
+
+B=a6 > c8
+
+N=e5 > c4
+
+B=a6 > b5
+
+N=e5 > c4
+
+B=a6 X N=c4
+
+N=e5 > c4
+
+N=b6 > c8
+
+N=e5 > c4
+
+N=b6 X P=d5
+
+N=e5 > c4
+
+N=b6 > a4
+
+N=e5 > c4
+
+N=b6 X N=c4
+
+N=e5 > c4
+
+P=e6 > e5
+
+N=e5 > c4
+
+P=e6 X P=d5
+
+N=e5 > c4
+
+N=f6 > g8
+
+N=e5 > c4
+
+N=f6 > h7
+
+N=e5 > c4
+
+N=f6 X P=d5
+
+N=e5 > c4
+
+N=f6 > h5
+
+N=e5 > c4
+
+N=f6 X P=e4
+
+N=e5 > c4
+
+N=f6 > g4
+
+N=e5 > c4
+
+P=g6 > g5
+
+N=e5 > c4
+
+P=b4 > b3
+
+N=e5 > c4
+
+P=b4 X N=c3
+
+N=e5 > c4
+
+P=h3 X P=g2
+
+N=e5 > g4
+
+R=a8 > b8
+
+N=e5 > g4
+
+R=a8 > c8
+
+N=e5 > g4
+
+R=a8 > d8
+
+N=e5 > g4
+
+K=e8 > d8
+
+N=e5 > g4
+
+K=e8 > f8
+
+N=e5 > g4
+
+K=e8 > c8 : Q
+
+N=e5 > g4
+
+K=e8 > g8 : K
+
+N=e5 > g4
+
+R=h8 > g8
+
+N=e5 > g4
+
+R=h8 > f8
+
+N=e5 > g4
+
+R=h8 > h7
+
+N=e5 > g4
+
+R=h8 > h6
+
+N=e5 > g4
+
+R=h8 > h5
+
+N=e5 > g4
+
+R=h8 > h4
+
+N=e5 > g4
+
+P=c7 > c6
+
+N=e5 > g4
+
+P=c7 > c5
+
+N=e5 > g4
+
+P=d7 > d6
+
+N=e5 > g4
+
+Q=e7 > d8
+
+N=e5 > g4
+
+Q=e7 > f8
+
+N=e5 > g4
+
+Q=e7 > d6
+
+N=e5 > g4
+
+Q=e7 > c5
+
+N=e5 > g4
+
+B=g7 > f8
+
+N=e5 > g4
+
+B=g7 > h6
+
+N=e5 > g4
+
+B=a6 > b7
+
+N=e5 > g4
+
+B=a6 > c8
+
+N=e5 > g4
+
+B=a6 > b5
+
+N=e5 > g4
+
+B=a6 > c4
+
+N=e5 > g4
+
+B=a6 > d3
+
+N=e5 > g4
+
+B=a6 X B=e2
+
+N=e5 > g4
+
+N=b6 > c8
+
+N=e5 > g4
+
+N=b6 X P=d5
+
+N=e5 > g4
+
+N=b6 > a4
+
+N=e5 > g4
+
+N=b6 > c4
+
+N=e5 > g4
+
+P=e6 > e5
+
+N=e5 > g4
+
+P=e6 X P=d5
+
+N=e5 > g4
+
+N=f6 > g8
+
+N=e5 > g4
+
+N=f6 > h7
+
+N=e5 > g4
+
+N=f6 X P=d5
+
+N=e5 > g4
+
+N=f6 > h5
+
+N=e5 > g4
+
+N=f6 X P=e4
+
+N=e5 > g4
+
+N=f6 X N=g4
+
+N=e5 > g4
+
+P=g6 > g5
+
+N=e5 > g4
+
+P=b4 > b3
+
+N=e5 > g4
+
+P=b4 X N=c3
+
+N=e5 > g4
+
+P=h3 X P=g2
+
+N=e5 > d3
+
+R=a8 > b8
+
+N=e5 > d3
+
+R=a8 > c8
+
+N=e5 > d3
+
+R=a8 > d8
+
+N=e5 > d3
+
+K=e8 > d8
+
+N=e5 > d3
+
+K=e8 > f8
+
+N=e5 > d3
+
+K=e8 > c8 : Q
+
+N=e5 > d3
+
+K=e8 > g8 : K
+
+N=e5 > d3
+
+R=h8 > g8
+
+N=e5 > d3
+
+R=h8 > f8
+
+N=e5 > d3
+
+R=h8 > h7
+
+N=e5 > d3
+
+R=h8 > h6
+
+N=e5 > d3
+
+R=h8 > h5
+
+N=e5 > d3
+
+R=h8 > h4
+
+N=e5 > d3
+
+P=c7 > c6
+
+N=e5 > d3
+
+P=c7 > c5
+
+N=e5 > d3
+
+P=d7 > d6
+
+N=e5 > d3
+
+Q=e7 > d8
+
+N=e5 > d3
+
+Q=e7 > f8
+
+N=e5 > d3
+
+Q=e7 > d6
+
+N=e5 > d3
+
+Q=e7 > c5
+
+N=e5 > d3
+
+B=g7 > f8
+
+N=e5 > d3
+
+B=g7 > h6
+
+N=e5 > d3
+
+B=a6 > b7
+
+N=e5 > d3
+
+B=a6 > c8
+
+N=e5 > d3
+
+B=a6 > b5
+
+N=e5 > d3
+
+B=a6 > c4
+
+N=e5 > d3
+
+B=a6 X N=d3
+
+N=e5 > d3
+
+N=b6 > c8
+
+N=e5 > d3
+
+N=b6 X P=d5
+
+N=e5 > d3
+
+N=b6 > a4
+
+N=e5 > d3
+
+N=b6 > c4
+
+N=e5 > d3
+
+P=e6 > e5
+
+N=e5 > d3
+
+P=e6 X P=d5
+
+N=e5 > d3
+
+N=f6 > g8
+
+N=e5 > d3
+
+N=f6 > h7
+
+N=e5 > d3
+
+N=f6 X P=d5
+
+N=e5 > d3
+
+N=f6 > h5
+
+N=e5 > d3
+
+N=f6 X P=e4
+
+N=e5 > d3
+
+N=f6 > g4
+
+N=e5 > d3
+
+P=g6 > g5
+
+N=e5 > d3
+
+P=b4 > b3
+
+N=e5 > d3
+
+P=b4 X N=c3
+
+N=e5 > d3
+
+P=h3 X P=g2
+
+N=c3 > b5
+
+R=a8 > b8
+
+N=c3 > b5
+
+R=a8 > c8
+
+N=c3 > b5
+
+R=a8 > d8
+
+N=c3 > b5
+
+K=e8 > d8
+
+N=c3 > b5
+
+K=e8 > f8
+
+N=c3 > b5
+
+K=e8 > c8 : Q
+
+N=c3 > b5
+
+K=e8 > g8 : K
+
+N=c3 > b5
+
+R=h8 > g8
+
+N=c3 > b5
+
+R=h8 > f8
+
+N=c3 > b5
+
+R=h8 > h7
+
+N=c3 > b5
+
+R=h8 > h6
+
+N=c3 > b5
+
+R=h8 > h5
+
+N=c3 > b5
+
+R=h8 > h4
+
+N=c3 > b5
+
+P=c7 > c6
+
+N=c3 > b5
+
+P=c7 > c5
+
+N=c3 > b5
+
+P=d7 > d6
+
+N=c3 > b5
+
+Q=e7 > d8
+
+N=c3 > b5
+
+Q=e7 > f8
+
+N=c3 > b5
+
+Q=e7 > d6
+
+N=c3 > b5
+
+Q=e7 > c5
+
+N=c3 > b5
+
+B=g7 > f8
+
+N=c3 > b5
+
+B=g7 > h6
+
+N=c3 > b5
+
+B=a6 > b7
+
+N=c3 > b5
+
+B=a6 > c8
+
+N=c3 > b5
+
+B=a6 X N=b5
+
+N=c3 > b5
+
+N=b6 > c8
+
+N=c3 > b5
+
+N=b6 X P=d5
+
+N=c3 > b5
+
+N=b6 > a4
+
+N=c3 > b5
+
+N=b6 > c4
+
+N=c3 > b5
+
+P=e6 X P=d5
+
+N=c3 > b5
+
+N=f6 > g8
+
+N=c3 > b5
+
+N=f6 > h7
+
+N=c3 > b5
+
+N=f6 X P=d5
+
+N=c3 > b5
+
+N=f6 > h5
+
+N=c3 > b5
+
+N=f6 X P=e4
+
+N=c3 > b5
+
+N=f6 > g4
+
+N=c3 > b5
+
+P=g6 > g5
+
+N=c3 > b5
+
+P=b4 > b3
+
+N=c3 > b5
+
+P=h3 X P=g2
+
+N=c3 > a4
+
+R=a8 > b8
+
+N=c3 > a4
+
+R=a8 > c8
+
+N=c3 > a4
+
+R=a8 > d8
+
+N=c3 > a4
+
+K=e8 > d8
+
+N=c3 > a4
+
+K=e8 > f8
+
+N=c3 > a4
+
+K=e8 > c8 : Q
+
+N=c3 > a4
+
+K=e8 > g8 : K
+
+N=c3 > a4
+
+R=h8 > g8
+
+N=c3 > a4
+
+R=h8 > f8
+
+N=c3 > a4
+
+R=h8 > h7
+
+N=c3 > a4
+
+R=h8 > h6
+
+N=c3 > a4
+
+R=h8 > h5
+
+N=c3 > a4
+
+R=h8 > h4
+
+N=c3 > a4
+
+P=c7 > c6
+
+N=c3 > a4
+
+P=c7 > c5
+
+N=c3 > a4
+
+P=d7 > d6
+
+N=c3 > a4
+
+Q=e7 > d8
+
+N=c3 > a4
+
+Q=e7 > f8
+
+N=c3 > a4
+
+Q=e7 > d6
+
+N=c3 > a4
+
+Q=e7 > c5
+
+N=c3 > a4
+
+B=g7 > f8
+
+N=c3 > a4
+
+B=g7 > h6
+
+N=c3 > a4
+
+B=a6 > b7
+
+N=c3 > a4
+
+B=a6 > c8
+
+N=c3 > a4
+
+B=a6 > b5
+
+N=c3 > a4
+
+B=a6 > c4
+
+N=c3 > a4
+
+B=a6 > d3
+
+N=c3 > a4
+
+B=a6 X B=e2
+
+N=c3 > a4
+
+N=b6 > c8
+
+N=c3 > a4
+
+N=b6 X P=d5
+
+N=c3 > a4
+
+N=b6 X N=a4
+
+N=c3 > a4
+
+N=b6 > c4
+
+N=c3 > a4
+
+P=e6 X P=d5
+
+N=c3 > a4
+
+N=f6 > g8
+
+N=c3 > a4
+
+N=f6 > h7
+
+N=c3 > a4
+
+N=f6 X P=d5
+
+N=c3 > a4
+
+N=f6 > h5
+
+N=c3 > a4
+
+N=f6 X P=e4
+
+N=c3 > a4
+
+N=f6 > g4
+
+N=c3 > a4
+
+P=g6 > g5
+
+N=c3 > a4
+
+P=b4 > b3
+
+N=c3 > a4
+
+P=h3 X P=g2
+
+N=c3 > b1
+
+R=a8 > b8
+
+N=c3 > b1
+
+R=a8 > c8
+
+N=c3 > b1
+
+R=a8 > d8
+
+N=c3 > b1
+
+K=e8 > d8
+
+N=c3 > b1
+
+K=e8 > f8
+
+N=c3 > b1
+
+K=e8 > c8 : Q
+
+N=c3 > b1
+
+K=e8 > g8 : K
+
+N=c3 > b1
+
+R=h8 > g8
+
+N=c3 > b1
+
+R=h8 > f8
+
+N=c3 > b1
+
+R=h8 > h7
+
+N=c3 > b1
+
+R=h8 > h6
+
+N=c3 > b1
+
+R=h8 > h5
+
+N=c3 > b1
+
+R=h8 > h4
+
+N=c3 > b1
+
+P=c7 > c6
+
+N=c3 > b1
+
+P=c7 > c5
+
+N=c3 > b1
+
+P=d7 > d6
+
+N=c3 > b1
+
+Q=e7 > d8
+
+N=c3 > b1
+
+Q=e7 > f8
+
+N=c3 > b1
+
+Q=e7 > d6
+
+N=c3 > b1
+
+Q=e7 > c5
+
+N=c3 > b1
+
+B=g7 > f8
+
+N=c3 > b1
+
+B=g7 > h6
+
+N=c3 > b1
+
+B=a6 > b7
+
+N=c3 > b1
+
+B=a6 > c8
+
+N=c3 > b1
+
+B=a6 > b5
+
+N=c3 > b1
+
+B=a6 > c4
+
+N=c3 > b1
+
+B=a6 > d3
+
+N=c3 > b1
+
+B=a6 X B=e2
+
+N=c3 > b1
+
+N=b6 > c8
+
+N=c3 > b1
+
+N=b6 X P=d5
+
+N=c3 > b1
+
+N=b6 > a4
+
+N=c3 > b1
+
+N=b6 > c4
+
+N=c3 > b1
+
+P=e6 X P=d5
+
+N=c3 > b1
+
+N=f6 > g8
+
+N=c3 > b1
+
+N=f6 > h7
+
+N=c3 > b1
+
+N=f6 X P=d5
+
+N=c3 > b1
+
+N=f6 > h5
+
+N=c3 > b1
+
+N=f6 X P=e4
+
+N=c3 > b1
+
+N=f6 > g4
+
+N=c3 > b1
+
+P=g6 > g5
+
+N=c3 > b1
+
+P=b4 > b3
+
+N=c3 > b1
+
+P=h3 X P=g2
+
+N=c3 > d1
+
+R=a8 > b8
+
+N=c3 > d1
+
+R=a8 > c8
+
+N=c3 > d1
+
+R=a8 > d8
+
+N=c3 > d1
+
+K=e8 > d8
+
+N=c3 > d1
+
+K=e8 > f8
+
+N=c3 > d1
+
+K=e8 > c8 : Q
+
+N=c3 > d1
+
+K=e8 > g8 : K
+
+N=c3 > d1
+
+R=h8 > g8
+
+N=c3 > d1
+
+R=h8 > f8
+
+N=c3 > d1
+
+R=h8 > h7
+
+N=c3 > d1
+
+R=h8 > h6
+
+N=c3 > d1
+
+R=h8 > h5
+
+N=c3 > d1
+
+R=h8 > h4
+
+N=c3 > d1
+
+P=c7 > c6
+
+N=c3 > d1
+
+P=c7 > c5
+
+N=c3 > d1
+
+P=d7 > d6
+
+N=c3 > d1
+
+Q=e7 > d8
+
+N=c3 > d1
+
+Q=e7 > f8
+
+N=c3 > d1
+
+Q=e7 > d6
+
+N=c3 > d1
+
+Q=e7 > c5
+
+N=c3 > d1
+
+B=g7 > f8
+
+N=c3 > d1
+
+B=g7 > h6
+
+N=c3 > d1
+
+B=a6 > b7
+
+N=c3 > d1
+
+B=a6 > c8
+
+N=c3 > d1
+
+B=a6 > b5
+
+N=c3 > d1
+
+B=a6 > c4
+
+N=c3 > d1
+
+B=a6 > d3
+
+N=c3 > d1
+
+B=a6 X B=e2
+
+N=c3 > d1
+
+N=b6 > c8
+
+N=c3 > d1
+
+N=b6 X P=d5
+
+N=c3 > d1
+
+N=b6 > a4
+
+N=c3 > d1
+
+N=b6 > c4
+
+N=c3 > d1
+
+P=e6 X P=d5
+
+N=c3 > d1
+
+N=f6 > g8
+
+N=c3 > d1
+
+N=f6 > h7
+
+N=c3 > d1
+
+N=f6 X P=d5
+
+N=c3 > d1
+
+N=f6 > h5
+
+N=c3 > d1
+
+N=f6 X P=e4
+
+N=c3 > d1
+
+N=f6 > g4
+
+N=c3 > d1
+
+P=g6 > g5
+
+N=c3 > d1
+
+P=b4 > b3
+
+N=c3 > d1
+
+P=h3 X P=g2
+
+Q=f3 > f4
+
+R=a8 > b8
+
+Q=f3 > f4
+
+R=a8 > c8
+
+Q=f3 > f4
+
+R=a8 > d8
+
+Q=f3 > f4
+
+K=e8 > d8
+
+Q=f3 > f4
+
+K=e8 > f8
+
+Q=f3 > f4
+
+K=e8 > c8 : Q
+
+Q=f3 > f4
+
+K=e8 > g8 : K
+
+Q=f3 > f4
+
+R=h8 > g8
+
+Q=f3 > f4
+
+R=h8 > f8
+
+Q=f3 > f4
+
+R=h8 > h7
+
+Q=f3 > f4
+
+R=h8 > h6
+
+Q=f3 > f4
+
+R=h8 > h5
+
+Q=f3 > f4
+
+R=h8 > h4
+
+Q=f3 > f4
+
+P=c7 > c6
+
+Q=f3 > f4
+
+P=c7 > c5
+
+Q=f3 > f4
+
+P=d7 > d6
+
+Q=f3 > f4
+
+Q=e7 > d8
+
+Q=f3 > f4
+
+Q=e7 > f8
+
+Q=f3 > f4
+
+Q=e7 > d6
+
+Q=f3 > f4
+
+Q=e7 > c5
+
+Q=f3 > f4
+
+B=g7 > f8
+
+Q=f3 > f4
+
+B=g7 > h6
+
+Q=f3 > f4
+
+B=a6 > b7
+
+Q=f3 > f4
+
+B=a6 > c8
+
+Q=f3 > f4
+
+B=a6 > b5
+
+Q=f3 > f4
+
+B=a6 > c4
+
+Q=f3 > f4
+
+B=a6 > d3
+
+Q=f3 > f4
+
+B=a6 X B=e2
+
+Q=f3 > f4
+
+N=b6 > c8
+
+Q=f3 > f4
+
+N=b6 X P=d5
+
+Q=f3 > f4
+
+N=b6 > a4
+
+Q=f3 > f4
+
+N=b6 > c4
+
+Q=f3 > f4
+
+P=e6 X P=d5
+
+Q=f3 > f4
+
+N=f6 > g8
+
+Q=f3 > f4
+
+N=f6 > h7
+
+Q=f3 > f4
+
+N=f6 X P=d5
+
+Q=f3 > f4
+
+N=f6 > h5
+
+Q=f3 > f4
+
+N=f6 X P=e4
+
+Q=f3 > f4
+
+N=f6 > g4
+
+Q=f3 > f4
+
+P=g6 > g5
+
+Q=f3 > f4
+
+P=b4 > b3
+
+Q=f3 > f4
+
+P=b4 X N=c3
+
+Q=f3 > f4
+
+P=h3 X P=g2
+
+Q=f3 > f5
+
+R=a8 > b8
+
+Q=f3 > f5
+
+R=a8 > c8
+
+Q=f3 > f5
+
+R=a8 > d8
+
+Q=f3 > f5
+
+K=e8 > d8
+
+Q=f3 > f5
+
+K=e8 > f8
+
+Q=f3 > f5
+
+K=e8 > c8 : Q
+
+Q=f3 > f5
+
+K=e8 > g8 : K
+
+Q=f3 > f5
+
+R=h8 > g8
+
+Q=f3 > f5
+
+R=h8 > f8
+
+Q=f3 > f5
+
+R=h8 > h7
+
+Q=f3 > f5
+
+R=h8 > h6
+
+Q=f3 > f5
+
+R=h8 > h5
+
+Q=f3 > f5
+
+R=h8 > h4
+
+Q=f3 > f5
+
+P=c7 > c6
+
+Q=f3 > f5
+
+P=c7 > c5
+
+Q=f3 > f5
+
+P=d7 > d6
+
+Q=f3 > f5
+
+Q=e7 > d8
+
+Q=f3 > f5
+
+Q=e7 > f8
+
+Q=f3 > f5
+
+Q=e7 > d6
+
+Q=f3 > f5
+
+Q=e7 > c5
+
+Q=f3 > f5
+
+B=g7 > f8
+
+Q=f3 > f5
+
+B=g7 > h6
+
+Q=f3 > f5
+
+B=a6 > b7
+
+Q=f3 > f5
+
+B=a6 > c8
+
+Q=f3 > f5
+
+B=a6 > b5
+
+Q=f3 > f5
+
+B=a6 > c4
+
+Q=f3 > f5
+
+B=a6 > d3
+
+Q=f3 > f5
+
+B=a6 X B=e2
+
+Q=f3 > f5
+
+N=b6 > c8
+
+Q=f3 > f5
+
+N=b6 X P=d5
+
+Q=f3 > f5
+
+N=b6 > a4
+
+Q=f3 > f5
+
+N=b6 > c4
+
+Q=f3 > f5
+
+P=e6 X P=d5
+
+Q=f3 > f5
+
+P=e6 X Q=f5
+
+Q=f3 > f5
+
+N=f6 > g8
+
+Q=f3 > f5
+
+N=f6 > h7
+
+Q=f3 > f5
+
+N=f6 X P=d5
+
+Q=f3 > f5
+
+N=f6 > h5
+
+Q=f3 > f5
+
+N=f6 X P=e4
+
+Q=f3 > f5
+
+N=f6 > g4
+
+Q=f3 > f5
+
+P=g6 > g5
+
+Q=f3 > f5
+
+P=g6 X Q=f5
+
+Q=f3 > f5
+
+P=b4 > b3
+
+Q=f3 > f5
+
+P=b4 X N=c3
+
+Q=f3 > f5
+
+P=h3 X P=g2
+
+Q=f3 X N=f6
+
+R=a8 > b8
+
+Q=f3 X N=f6
+
+R=a8 > c8
+
+Q=f3 X N=f6
+
+R=a8 > d8
+
+Q=f3 X N=f6
+
+K=e8 > d8
+
+Q=f3 X N=f6
+
+K=e8 > f8
+
+Q=f3 X N=f6
+
+K=e8 > c8 : Q
+
+Q=f3 X N=f6
+
+K=e8 > g8 : K
+
+Q=f3 X N=f6
+
+R=h8 > g8
+
+Q=f3 X N=f6
+
+R=h8 > f8
+
+Q=f3 X N=f6
+
+R=h8 > h7
+
+Q=f3 X N=f6
+
+R=h8 > h6
+
+Q=f3 X N=f6
+
+R=h8 > h5
+
+Q=f3 X N=f6
+
+R=h8 > h4
+
+Q=f3 X N=f6
+
+P=c7 > c6
+
+Q=f3 X N=f6
+
+P=c7 > c5
+
+Q=f3 X N=f6
+
+P=d7 > d6
+
+Q=f3 X N=f6
+
+Q=e7 > d8
+
+Q=f3 X N=f6
+
+Q=e7 > f8
+
+Q=f3 X N=f6
+
+Q=e7 > d6
+
+Q=f3 X N=f6
+
+Q=e7 > c5
+
+Q=f3 X N=f6
+
+Q=e7 X Q=f6
+
+Q=f3 X N=f6
+
+B=g7 > f8
+
+Q=f3 X N=f6
+
+B=g7 X Q=f6
+
+Q=f3 X N=f6
+
+B=g7 > h6
+
+Q=f3 X N=f6
+
+B=a6 > b7
+
+Q=f3 X N=f6
+
+B=a6 > c8
+
+Q=f3 X N=f6
+
+B=a6 > b5
+
+Q=f3 X N=f6
+
+B=a6 > c4
+
+Q=f3 X N=f6
+
+B=a6 > d3
+
+Q=f3 X N=f6
+
+B=a6 X B=e2
+
+Q=f3 X N=f6
+
+N=b6 > c8
+
+Q=f3 X N=f6
+
+N=b6 X P=d5
+
+Q=f3 X N=f6
+
+N=b6 > a4
+
+Q=f3 X N=f6
+
+N=b6 > c4
+
+Q=f3 X N=f6
+
+P=e6 X P=d5
+
+Q=f3 X N=f6
+
+P=g6 > g5
+
+Q=f3 X N=f6
+
+P=b4 > b3
+
+Q=f3 X N=f6
+
+P=b4 X N=c3
+
+Q=f3 X N=f6
+
+P=h3 X P=g2
+
+Q=f3 > g4
+
+R=a8 > b8
+
+Q=f3 > g4
+
+R=a8 > c8
+
+Q=f3 > g4
+
+R=a8 > d8
+
+Q=f3 > g4
+
+K=e8 > d8
+
+Q=f3 > g4
+
+K=e8 > f8
+
+Q=f3 > g4
+
+K=e8 > c8 : Q
+
+Q=f3 > g4
+
+K=e8 > g8 : K
+
+Q=f3 > g4
+
+R=h8 > g8
+
+Q=f3 > g4
+
+R=h8 > f8
+
+Q=f3 > g4
+
+R=h8 > h7
+
+Q=f3 > g4
+
+R=h8 > h6
+
+Q=f3 > g4
+
+R=h8 > h5
+
+Q=f3 > g4
+
+R=h8 > h4
+
+Q=f3 > g4
+
+P=c7 > c6
+
+Q=f3 > g4
+
+P=c7 > c5
+
+Q=f3 > g4
+
+P=d7 > d6
+
+Q=f3 > g4
+
+Q=e7 > d8
+
+Q=f3 > g4
+
+Q=e7 > f8
+
+Q=f3 > g4
+
+Q=e7 > d6
+
+Q=f3 > g4
+
+Q=e7 > c5
+
+Q=f3 > g4
+
+B=g7 > f8
+
+Q=f3 > g4
+
+B=g7 > h6
+
+Q=f3 > g4
+
+B=a6 > b7
+
+Q=f3 > g4
+
+B=a6 > c8
+
+Q=f3 > g4
+
+B=a6 > b5
+
+Q=f3 > g4
+
+B=a6 > c4
+
+Q=f3 > g4
+
+B=a6 > d3
+
+Q=f3 > g4
+
+B=a6 X B=e2
+
+Q=f3 > g4
+
+N=b6 > c8
+
+Q=f3 > g4
+
+N=b6 X P=d5
+
+Q=f3 > g4
+
+N=b6 > a4
+
+Q=f3 > g4
+
+N=b6 > c4
+
+Q=f3 > g4
+
+P=e6 X P=d5
+
+Q=f3 > g4
+
+N=f6 > g8
+
+Q=f3 > g4
+
+N=f6 > h7
+
+Q=f3 > g4
+
+N=f6 X P=d5
+
+Q=f3 > g4
+
+N=f6 > h5
+
+Q=f3 > g4
+
+N=f6 X P=e4
+
+Q=f3 > g4
+
+N=f6 X Q=g4
+
+Q=f3 > g4
+
+P=g6 > g5
+
+Q=f3 > g4
+
+P=b4 > b3
+
+Q=f3 > g4
+
+P=b4 X N=c3
+
+Q=f3 > g4
+
+P=h3 X P=g2
+
+Q=f3 > h5
+
+R=a8 > b8
+
+Q=f3 > h5
+
+R=a8 > c8
+
+Q=f3 > h5
+
+R=a8 > d8
+
+Q=f3 > h5
+
+K=e8 > d8
+
+Q=f3 > h5
+
+K=e8 > f8
+
+Q=f3 > h5
+
+K=e8 > c8 : Q
+
+Q=f3 > h5
+
+K=e8 > g8 : K
+
+Q=f3 > h5
+
+R=h8 > g8
+
+Q=f3 > h5
+
+R=h8 > f8
+
+Q=f3 > h5
+
+R=h8 > h7
+
+Q=f3 > h5
+
+R=h8 > h6
+
+Q=f3 > h5
+
+R=h8 X Q=h5
+
+Q=f3 > h5
+
+P=c7 > c6
+
+Q=f3 > h5
+
+P=c7 > c5
+
+Q=f3 > h5
+
+P=d7 > d6
+
+Q=f3 > h5
+
+Q=e7 > d8
+
+Q=f3 > h5
+
+Q=e7 > f8
+
+Q=f3 > h5
+
+Q=e7 > d6
+
+Q=f3 > h5
+
+Q=e7 > c5
+
+Q=f3 > h5
+
+B=g7 > f8
+
+Q=f3 > h5
+
+B=g7 > h6
+
+Q=f3 > h5
+
+B=a6 > b7
+
+Q=f3 > h5
+
+B=a6 > c8
+
+Q=f3 > h5
+
+B=a6 > b5
+
+Q=f3 > h5
+
+B=a6 > c4
+
+Q=f3 > h5
+
+B=a6 > d3
+
+Q=f3 > h5
+
+B=a6 X B=e2
+
+Q=f3 > h5
+
+N=b6 > c8
+
+Q=f3 > h5
+
+N=b6 X P=d5
+
+Q=f3 > h5
+
+N=b6 > a4
+
+Q=f3 > h5
+
+N=b6 > c4
+
+Q=f3 > h5
+
+P=e6 X P=d5
+
+Q=f3 > h5
+
+N=f6 > g8
+
+Q=f3 > h5
+
+N=f6 > h7
+
+Q=f3 > h5
+
+N=f6 X P=d5
+
+Q=f3 > h5
+
+N=f6 X Q=h5
+
+Q=f3 > h5
+
+N=f6 X P=e4
+
+Q=f3 > h5
+
+N=f6 > g4
+
+Q=f3 > h5
+
+P=g6 > g5
+
+Q=f3 > h5
+
+P=g6 X Q=h5
+
+Q=f3 > h5
+
+P=b4 > b3
+
+Q=f3 > h5
+
+P=b4 X N=c3
+
+Q=f3 > h5
+
+P=h3 X P=g2
+
+Q=f3 > e3
+
+R=a8 > b8
+
+Q=f3 > e3
+
+R=a8 > c8
+
+Q=f3 > e3
+
+R=a8 > d8
+
+Q=f3 > e3
+
+K=e8 > d8
+
+Q=f3 > e3
+
+K=e8 > f8
+
+Q=f3 > e3
+
+K=e8 > c8 : Q
+
+Q=f3 > e3
+
+K=e8 > g8 : K
+
+Q=f3 > e3
+
+R=h8 > g8
+
+Q=f3 > e3
+
+R=h8 > f8
+
+Q=f3 > e3
+
+R=h8 > h7
+
+Q=f3 > e3
+
+R=h8 > h6
+
+Q=f3 > e3
+
+R=h8 > h5
+
+Q=f3 > e3
+
+R=h8 > h4
+
+Q=f3 > e3
+
+P=c7 > c6
+
+Q=f3 > e3
+
+P=c7 > c5
+
+Q=f3 > e3
+
+P=d7 > d6
+
+Q=f3 > e3
+
+Q=e7 > d8
+
+Q=f3 > e3
+
+Q=e7 > f8
+
+Q=f3 > e3
+
+Q=e7 > d6
+
+Q=f3 > e3
+
+Q=e7 > c5
+
+Q=f3 > e3
+
+B=g7 > f8
+
+Q=f3 > e3
+
+B=g7 > h6
+
+Q=f3 > e3
+
+B=a6 > b7
+
+Q=f3 > e3
+
+B=a6 > c8
+
+Q=f3 > e3
+
+B=a6 > b5
+
+Q=f3 > e3
+
+B=a6 > c4
+
+Q=f3 > e3
+
+B=a6 > d3
+
+Q=f3 > e3
+
+B=a6 X B=e2
+
+Q=f3 > e3
+
+N=b6 > c8
+
+Q=f3 > e3
+
+N=b6 X P=d5
+
+Q=f3 > e3
+
+N=b6 > a4
+
+Q=f3 > e3
+
+N=b6 > c4
+
+Q=f3 > e3
+
+P=e6 X P=d5
+
+Q=f3 > e3
+
+N=f6 > g8
+
+Q=f3 > e3
+
+N=f6 > h7
+
+Q=f3 > e3
+
+N=f6 X P=d5
+
+Q=f3 > e3
+
+N=f6 > h5
+
+Q=f3 > e3
+
+N=f6 X P=e4
+
+Q=f3 > e3
+
+N=f6 > g4
+
+Q=f3 > e3
+
+P=g6 > g5
+
+Q=f3 > e3
+
+P=b4 > b3
+
+Q=f3 > e3
+
+P=b4 X N=c3
+
+Q=f3 > e3
+
+P=h3 X P=g2
+
+Q=f3 > d3
+
+R=a8 > b8
+
+Q=f3 > d3
+
+R=a8 > c8
+
+Q=f3 > d3
+
+R=a8 > d8
+
+Q=f3 > d3
+
+K=e8 > d8
+
+Q=f3 > d3
+
+K=e8 > f8
+
+Q=f3 > d3
+
+K=e8 > c8 : Q
+
+Q=f3 > d3
+
+K=e8 > g8 : K
+
+Q=f3 > d3
+
+R=h8 > g8
+
+Q=f3 > d3
+
+R=h8 > f8
+
+Q=f3 > d3
+
+R=h8 > h7
+
+Q=f3 > d3
+
+R=h8 > h6
+
+Q=f3 > d3
+
+R=h8 > h5
+
+Q=f3 > d3
+
+R=h8 > h4
+
+Q=f3 > d3
+
+P=c7 > c6
+
+Q=f3 > d3
+
+P=c7 > c5
+
+Q=f3 > d3
+
+P=d7 > d6
+
+Q=f3 > d3
+
+Q=e7 > d8
+
+Q=f3 > d3
+
+Q=e7 > f8
+
+Q=f3 > d3
+
+Q=e7 > d6
+
+Q=f3 > d3
+
+Q=e7 > c5
+
+Q=f3 > d3
+
+B=g7 > f8
+
+Q=f3 > d3
+
+B=g7 > h6
+
+Q=f3 > d3
+
+B=a6 > b7
+
+Q=f3 > d3
+
+B=a6 > c8
+
+Q=f3 > d3
+
+B=a6 > b5
+
+Q=f3 > d3
+
+B=a6 > c4
+
+Q=f3 > d3
+
+B=a6 X Q=d3
+
+Q=f3 > d3
+
+N=b6 > c8
+
+Q=f3 > d3
+
+N=b6 X P=d5
+
+Q=f3 > d3
+
+N=b6 > a4
+
+Q=f3 > d3
+
+N=b6 > c4
+
+Q=f3 > d3
+
+P=e6 X P=d5
+
+Q=f3 > d3
+
+N=f6 > g8
+
+Q=f3 > d3
+
+N=f6 > h7
+
+Q=f3 > d3
+
+N=f6 X P=d5
+
+Q=f3 > d3
+
+N=f6 > h5
+
+Q=f3 > d3
+
+N=f6 X P=e4
+
+Q=f3 > d3
+
+N=f6 > g4
+
+Q=f3 > d3
+
+P=g6 > g5
+
+Q=f3 > d3
+
+P=b4 > b3
+
+Q=f3 > d3
+
+P=b4 X N=c3
+
+Q=f3 > d3
+
+P=h3 X P=g2
+
+Q=f3 > g3
+
+R=a8 > b8
+
+Q=f3 > g3
+
+R=a8 > c8
+
+Q=f3 > g3
+
+R=a8 > d8
+
+Q=f3 > g3
+
+K=e8 > d8
+
+Q=f3 > g3
+
+K=e8 > f8
+
+Q=f3 > g3
+
+K=e8 > c8 : Q
+
+Q=f3 > g3
+
+K=e8 > g8 : K
+
+Q=f3 > g3
+
+R=h8 > g8
+
+Q=f3 > g3
+
+R=h8 > f8
+
+Q=f3 > g3
+
+R=h8 > h7
+
+Q=f3 > g3
+
+R=h8 > h6
+
+Q=f3 > g3
+
+R=h8 > h5
+
+Q=f3 > g3
+
+R=h8 > h4
+
+Q=f3 > g3
+
+P=c7 > c6
+
+Q=f3 > g3
+
+P=c7 > c5
+
+Q=f3 > g3
+
+P=d7 > d6
+
+Q=f3 > g3
+
+Q=e7 > d8
+
+Q=f3 > g3
+
+Q=e7 > f8
+
+Q=f3 > g3
+
+Q=e7 > d6
+
+Q=f3 > g3
+
+Q=e7 > c5
+
+Q=f3 > g3
+
+B=g7 > f8
+
+Q=f3 > g3
+
+B=g7 > h6
+
+Q=f3 > g3
+
+B=a6 > b7
+
+Q=f3 > g3
+
+B=a6 > c8
+
+Q=f3 > g3
+
+B=a6 > b5
+
+Q=f3 > g3
+
+B=a6 > c4
+
+Q=f3 > g3
+
+B=a6 > d3
+
+Q=f3 > g3
+
+B=a6 X B=e2
+
+Q=f3 > g3
+
+N=b6 > c8
+
+Q=f3 > g3
+
+N=b6 X P=d5
+
+Q=f3 > g3
+
+N=b6 > a4
+
+Q=f3 > g3
+
+N=b6 > c4
+
+Q=f3 > g3
+
+P=e6 X P=d5
+
+Q=f3 > g3
+
+N=f6 > g8
+
+Q=f3 > g3
+
+N=f6 > h7
+
+Q=f3 > g3
+
+N=f6 X P=d5
+
+Q=f3 > g3
+
+N=f6 > h5
+
+Q=f3 > g3
+
+N=f6 X P=e4
+
+Q=f3 > g3
+
+N=f6 > g4
+
+Q=f3 > g3
+
+P=g6 > g5
+
+Q=f3 > g3
+
+P=b4 > b3
+
+Q=f3 > g3
+
+P=b4 X N=c3
+
+Q=f3 > g3
+
+P=h3 X P=g2
+
+Q=f3 X P=h3
+
+R=a8 > b8
+
+Q=f3 X P=h3
+
+R=a8 > c8
+
+Q=f3 X P=h3
+
+R=a8 > d8
+
+Q=f3 X P=h3
+
+K=e8 > d8
+
+Q=f3 X P=h3
+
+K=e8 > f8
+
+Q=f3 X P=h3
+
+K=e8 > c8 : Q
+
+Q=f3 X P=h3
+
+K=e8 > g8 : K
+
+Q=f3 X P=h3
+
+R=h8 > g8
+
+Q=f3 X P=h3
+
+R=h8 > f8
+
+Q=f3 X P=h3
+
+R=h8 > h7
+
+Q=f3 X P=h3
+
+R=h8 > h6
+
+Q=f3 X P=h3
+
+R=h8 > h5
+
+Q=f3 X P=h3
+
+R=h8 > h4
+
+Q=f3 X P=h3
+
+R=h8 X Q=h3
+
+Q=f3 X P=h3
+
+P=c7 > c6
+
+Q=f3 X P=h3
+
+P=c7 > c5
+
+Q=f3 X P=h3
+
+P=d7 > d6
+
+Q=f3 X P=h3
+
+Q=e7 > d8
+
+Q=f3 X P=h3
+
+Q=e7 > f8
+
+Q=f3 X P=h3
+
+Q=e7 > d6
+
+Q=f3 X P=h3
+
+Q=e7 > c5
+
+Q=f3 X P=h3
+
+B=g7 > f8
+
+Q=f3 X P=h3
+
+B=g7 > h6
+
+Q=f3 X P=h3
+
+B=a6 > b7
+
+Q=f3 X P=h3
+
+B=a6 > c8
+
+Q=f3 X P=h3
+
+B=a6 > b5
+
+Q=f3 X P=h3
+
+B=a6 > c4
+
+Q=f3 X P=h3
+
+B=a6 > d3
+
+Q=f3 X P=h3
+
+B=a6 X B=e2
+
+Q=f3 X P=h3
+
+N=b6 > c8
+
+Q=f3 X P=h3
+
+N=b6 X P=d5
+
+Q=f3 X P=h3
+
+N=b6 > a4
+
+Q=f3 X P=h3
+
+N=b6 > c4
+
+Q=f3 X P=h3
+
+P=e6 X P=d5
+
+Q=f3 X P=h3
+
+N=f6 > g8
+
+Q=f3 X P=h3
+
+N=f6 > h7
+
+Q=f3 X P=h3
+
+N=f6 X P=d5
+
+Q=f3 X P=h3
+
+N=f6 > h5
+
+Q=f3 X P=h3
+
+N=f6 X P=e4
+
+Q=f3 X P=h3
+
+N=f6 > g4
+
+Q=f3 X P=h3
+
+P=g6 > g5
+
+Q=f3 X P=h3
+
+P=b4 > b3
+
+Q=f3 X P=h3
+
+P=b4 X N=c3
+
+P=a2 > a3
+
+R=a8 > b8
+
+P=a2 > a3
+
+R=a8 > c8
+
+P=a2 > a3
+
+R=a8 > d8
+
+P=a2 > a3
+
+K=e8 > d8
+
+P=a2 > a3
+
+K=e8 > f8
+
+P=a2 > a3
+
+K=e8 > c8 : Q
+
+P=a2 > a3
+
+K=e8 > g8 : K
+
+P=a2 > a3
+
+R=h8 > g8
+
+P=a2 > a3
+
+R=h8 > f8
+
+P=a2 > a3
+
+R=h8 > h7
+
+P=a2 > a3
+
+R=h8 > h6
+
+P=a2 > a3
+
+R=h8 > h5
+
+P=a2 > a3
+
+R=h8 > h4
+
+P=a2 > a3
+
+P=c7 > c6
+
+P=a2 > a3
+
+P=c7 > c5
+
+P=a2 > a3
+
+P=d7 > d6
+
+P=a2 > a3
+
+Q=e7 > d8
+
+P=a2 > a3
+
+Q=e7 > f8
+
+P=a2 > a3
+
+Q=e7 > d6
+
+P=a2 > a3
+
+Q=e7 > c5
+
+P=a2 > a3
+
+B=g7 > f8
+
+P=a2 > a3
+
+B=g7 > h6
+
+P=a2 > a3
+
+B=a6 > b7
+
+P=a2 > a3
+
+B=a6 > c8
+
+P=a2 > a3
+
+B=a6 > b5
+
+P=a2 > a3
+
+B=a6 > c4
+
+P=a2 > a3
+
+B=a6 > d3
+
+P=a2 > a3
+
+B=a6 X B=e2
+
+P=a2 > a3
+
+N=b6 > c8
+
+P=a2 > a3
+
+N=b6 X P=d5
+
+P=a2 > a3
+
+N=b6 > a4
+
+P=a2 > a3
+
+N=b6 > c4
+
+P=a2 > a3
+
+P=e6 X P=d5
+
+P=a2 > a3
+
+N=f6 > g8
+
+P=a2 > a3
+
+N=f6 > h7
+
+P=a2 > a3
+
+N=f6 X P=d5
+
+P=a2 > a3
+
+N=f6 > h5
+
+P=a2 > a3
+
+N=f6 X P=e4
+
+P=a2 > a3
+
+N=f6 > g4
+
+P=a2 > a3
+
+P=g6 > g5
+
+P=a2 > a3
+
+P=b4 > b3
+
+P=a2 > a3
+
+P=b4 X P=a3
+
+P=a2 > a3
+
+P=b4 X N=c3
+
+P=a2 > a3
+
+P=h3 X P=g2
+
+P=a2 > a4
+
+R=a8 > b8
+
+P=a2 > a4
+
+R=a8 > c8
+
+P=a2 > a4
+
+R=a8 > d8
+
+P=a2 > a4
+
+K=e8 > d8
+
+P=a2 > a4
+
+K=e8 > f8
+
+P=a2 > a4
+
+K=e8 > c8 : Q
+
+P=a2 > a4
+
+K=e8 > g8 : K
+
+P=a2 > a4
+
+R=h8 > g8
+
+P=a2 > a4
+
+R=h8 > f8
+
+P=a2 > a4
+
+R=h8 > h7
+
+P=a2 > a4
+
+R=h8 > h6
+
+P=a2 > a4
+
+R=h8 > h5
+
+P=a2 > a4
+
+R=h8 > h4
+
+P=a2 > a4
+
+P=c7 > c6
+
+P=a2 > a4
+
+P=c7 > c5
+
+P=a2 > a4
+
+P=d7 > d6
+
+P=a2 > a4
+
+Q=e7 > d8
+
+P=a2 > a4
+
+Q=e7 > f8
+
+P=a2 > a4
+
+Q=e7 > d6
+
+P=a2 > a4
+
+Q=e7 > c5
+
+P=a2 > a4
+
+B=g7 > f8
+
+P=a2 > a4
+
+B=g7 > h6
+
+P=a2 > a4
+
+B=a6 > b7
+
+P=a2 > a4
+
+B=a6 > c8
+
+P=a2 > a4
+
+B=a6 > b5
+
+P=a2 > a4
+
+B=a6 > c4
+
+P=a2 > a4
+
+B=a6 > d3
+
+P=a2 > a4
+
+B=a6 X B=e2
+
+P=a2 > a4
+
+N=b6 > c8
+
+P=a2 > a4
+
+N=b6 X P=d5
+
+P=a2 > a4
+
+N=b6 X P=a4
+
+P=a2 > a4
+
+N=b6 > c4
+
+P=a2 > a4
+
+P=e6 X P=d5
+
+P=a2 > a4
+
+N=f6 > g8
+
+P=a2 > a4
+
+N=f6 > h7
+
+P=a2 > a4
+
+N=f6 X P=d5
+
+P=a2 > a4
+
+N=f6 > h5
+
+P=a2 > a4
+
+N=f6 X P=e4
+
+P=a2 > a4
+
+N=f6 > g4
+
+P=a2 > a4
+
+P=g6 > g5
+
+P=a2 > a4
+
+P=b4 > b3
+
+P=a2 > a4
+
+P=b4 X N=c3
+
+P=a2 > a4
+
+P=h3 X P=g2
+
+P=b2 > b3
+
+R=a8 > b8
+
+P=b2 > b3
+
+R=a8 > c8
+
+P=b2 > b3
+
+R=a8 > d8
+
+P=b2 > b3
+
+K=e8 > d8
+
+P=b2 > b3
+
+K=e8 > f8
+
+P=b2 > b3
+
+K=e8 > c8 : Q
+
+P=b2 > b3
+
+K=e8 > g8 : K
+
+P=b2 > b3
+
+R=h8 > g8
+
+P=b2 > b3
+
+R=h8 > f8
+
+P=b2 > b3
+
+R=h8 > h7
+
+P=b2 > b3
+
+R=h8 > h6
+
+P=b2 > b3
+
+R=h8 > h5
+
+P=b2 > b3
+
+R=h8 > h4
+
+P=b2 > b3
+
+P=c7 > c6
+
+P=b2 > b3
+
+P=c7 > c5
+
+P=b2 > b3
+
+P=d7 > d6
+
+P=b2 > b3
+
+Q=e7 > d8
+
+P=b2 > b3
+
+Q=e7 > f8
+
+P=b2 > b3
+
+Q=e7 > d6
+
+P=b2 > b3
+
+Q=e7 > c5
+
+P=b2 > b3
+
+B=g7 > f8
+
+P=b2 > b3
+
+B=g7 > h6
+
+P=b2 > b3
+
+B=a6 > b7
+
+P=b2 > b3
+
+B=a6 > c8
+
+P=b2 > b3
+
+B=a6 > b5
+
+P=b2 > b3
+
+B=a6 > c4
+
+P=b2 > b3
+
+B=a6 > d3
+
+P=b2 > b3
+
+B=a6 X B=e2
+
+P=b2 > b3
+
+N=b6 > c8
+
+P=b2 > b3
+
+N=b6 X P=d5
+
+P=b2 > b3
+
+N=b6 > a4
+
+P=b2 > b3
+
+N=b6 > c4
+
+P=b2 > b3
+
+P=e6 X P=d5
+
+P=b2 > b3
+
+N=f6 > g8
+
+P=b2 > b3
+
+N=f6 > h7
+
+P=b2 > b3
+
+N=f6 X P=d5
+
+P=b2 > b3
+
+N=f6 > h5
+
+P=b2 > b3
+
+N=f6 X P=e4
+
+P=b2 > b3
+
+N=f6 > g4
+
+P=b2 > b3
+
+P=g6 > g5
+
+P=b2 > b3
+
+P=b4 X N=c3
+
+P=b2 > b3
+
+P=h3 X P=g2
+
+B=d2 > e3
+
+R=a8 > b8
+
+B=d2 > e3
+
+R=a8 > c8
+
+B=d2 > e3
+
+R=a8 > d8
+
+B=d2 > e3
+
+K=e8 > d8
+
+B=d2 > e3
+
+K=e8 > f8
+
+B=d2 > e3
+
+K=e8 > c8 : Q
+
+B=d2 > e3
+
+K=e8 > g8 : K
+
+B=d2 > e3
+
+R=h8 > g8
+
+B=d2 > e3
+
+R=h8 > f8
+
+B=d2 > e3
+
+R=h8 > h7
+
+B=d2 > e3
+
+R=h8 > h6
+
+B=d2 > e3
+
+R=h8 > h5
+
+B=d2 > e3
+
+R=h8 > h4
+
+B=d2 > e3
+
+P=c7 > c6
+
+B=d2 > e3
+
+P=c7 > c5
+
+B=d2 > e3
+
+P=d7 > d6
+
+B=d2 > e3
+
+Q=e7 > d8
+
+B=d2 > e3
+
+Q=e7 > f8
+
+B=d2 > e3
+
+Q=e7 > d6
+
+B=d2 > e3
+
+Q=e7 > c5
+
+B=d2 > e3
+
+B=g7 > f8
+
+B=d2 > e3
+
+B=g7 > h6
+
+B=d2 > e3
+
+B=a6 > b7
+
+B=d2 > e3
+
+B=a6 > c8
+
+B=d2 > e3
+
+B=a6 > b5
+
+B=d2 > e3
+
+B=a6 > c4
+
+B=d2 > e3
+
+B=a6 > d3
+
+B=d2 > e3
+
+B=a6 X B=e2
+
+B=d2 > e3
+
+N=b6 > c8
+
+B=d2 > e3
+
+N=b6 X P=d5
+
+B=d2 > e3
+
+N=b6 > a4
+
+B=d2 > e3
+
+N=b6 > c4
+
+B=d2 > e3
+
+P=e6 X P=d5
+
+B=d2 > e3
+
+N=f6 > g8
+
+B=d2 > e3
+
+N=f6 > h7
+
+B=d2 > e3
+
+N=f6 X P=d5
+
+B=d2 > e3
+
+N=f6 > h5
+
+B=d2 > e3
+
+N=f6 X P=e4
+
+B=d2 > e3
+
+N=f6 > g4
+
+B=d2 > e3
+
+P=g6 > g5
+
+B=d2 > e3
+
+P=b4 > b3
+
+B=d2 > e3
+
+P=b4 X N=c3
+
+B=d2 > e3
+
+P=h3 X P=g2
+
+B=d2 > f4
+
+R=a8 > b8
+
+B=d2 > f4
+
+R=a8 > c8
+
+B=d2 > f4
+
+R=a8 > d8
+
+B=d2 > f4
+
+K=e8 > d8
+
+B=d2 > f4
+
+K=e8 > f8
+
+B=d2 > f4
+
+K=e8 > c8 : Q
+
+B=d2 > f4
+
+K=e8 > g8 : K
+
+B=d2 > f4
+
+R=h8 > g8
+
+B=d2 > f4
+
+R=h8 > f8
+
+B=d2 > f4
+
+R=h8 > h7
+
+B=d2 > f4
+
+R=h8 > h6
+
+B=d2 > f4
+
+R=h8 > h5
+
+B=d2 > f4
+
+R=h8 > h4
+
+B=d2 > f4
+
+P=c7 > c6
+
+B=d2 > f4
+
+P=c7 > c5
+
+B=d2 > f4
+
+P=d7 > d6
+
+B=d2 > f4
+
+Q=e7 > d8
+
+B=d2 > f4
+
+Q=e7 > f8
+
+B=d2 > f4
+
+Q=e7 > d6
+
+B=d2 > f4
+
+Q=e7 > c5
+
+B=d2 > f4
+
+B=g7 > f8
+
+B=d2 > f4
+
+B=g7 > h6
+
+B=d2 > f4
+
+B=a6 > b7
+
+B=d2 > f4
+
+B=a6 > c8
+
+B=d2 > f4
+
+B=a6 > b5
+
+B=d2 > f4
+
+B=a6 > c4
+
+B=d2 > f4
+
+B=a6 > d3
+
+B=d2 > f4
+
+B=a6 X B=e2
+
+B=d2 > f4
+
+N=b6 > c8
+
+B=d2 > f4
+
+N=b6 X P=d5
+
+B=d2 > f4
+
+N=b6 > a4
+
+B=d2 > f4
+
+N=b6 > c4
+
+B=d2 > f4
+
+P=e6 X P=d5
+
+B=d2 > f4
+
+N=f6 > g8
+
+B=d2 > f4
+
+N=f6 > h7
+
+B=d2 > f4
+
+N=f6 X P=d5
+
+B=d2 > f4
+
+N=f6 > h5
+
+B=d2 > f4
+
+N=f6 X P=e4
+
+B=d2 > f4
+
+N=f6 > g4
+
+B=d2 > f4
+
+P=g6 > g5
+
+B=d2 > f4
+
+P=b4 > b3
+
+B=d2 > f4
+
+P=b4 X N=c3
+
+B=d2 > f4
+
+P=h3 X P=g2
+
+B=d2 > g5
+
+R=a8 > b8
+
+B=d2 > g5
+
+R=a8 > c8
+
+B=d2 > g5
+
+R=a8 > d8
+
+B=d2 > g5
+
+K=e8 > d8
+
+B=d2 > g5
+
+K=e8 > f8
+
+B=d2 > g5
+
+K=e8 > c8 : Q
+
+B=d2 > g5
+
+K=e8 > g8 : K
+
+B=d2 > g5
+
+R=h8 > g8
+
+B=d2 > g5
+
+R=h8 > f8
+
+B=d2 > g5
+
+R=h8 > h7
+
+B=d2 > g5
+
+R=h8 > h6
+
+B=d2 > g5
+
+R=h8 > h5
+
+B=d2 > g5
+
+R=h8 > h4
+
+B=d2 > g5
+
+P=c7 > c6
+
+B=d2 > g5
+
+P=c7 > c5
+
+B=d2 > g5
+
+P=d7 > d6
+
+B=d2 > g5
+
+Q=e7 > d8
+
+B=d2 > g5
+
+Q=e7 > f8
+
+B=d2 > g5
+
+Q=e7 > d6
+
+B=d2 > g5
+
+Q=e7 > c5
+
+B=d2 > g5
+
+B=g7 > f8
+
+B=d2 > g5
+
+B=g7 > h6
+
+B=d2 > g5
+
+B=a6 > b7
+
+B=d2 > g5
+
+B=a6 > c8
+
+B=d2 > g5
+
+B=a6 > b5
+
+B=d2 > g5
+
+B=a6 > c4
+
+B=d2 > g5
+
+B=a6 > d3
+
+B=d2 > g5
+
+B=a6 X B=e2
+
+B=d2 > g5
+
+N=b6 > c8
+
+B=d2 > g5
+
+N=b6 X P=d5
+
+B=d2 > g5
+
+N=b6 > a4
+
+B=d2 > g5
+
+N=b6 > c4
+
+B=d2 > g5
+
+P=e6 X P=d5
+
+B=d2 > g5
+
+N=f6 > g8
+
+B=d2 > g5
+
+N=f6 > h7
+
+B=d2 > g5
+
+N=f6 X P=d5
+
+B=d2 > g5
+
+N=f6 > h5
+
+B=d2 > g5
+
+N=f6 X P=e4
+
+B=d2 > g5
+
+N=f6 > g4
+
+B=d2 > g5
+
+P=b4 > b3
+
+B=d2 > g5
+
+P=b4 X N=c3
+
+B=d2 > g5
+
+P=h3 X P=g2
+
+B=d2 > h6
+
+R=a8 > b8
+
+B=d2 > h6
+
+R=a8 > c8
+
+B=d2 > h6
+
+R=a8 > d8
+
+B=d2 > h6
+
+K=e8 > d8
+
+B=d2 > h6
+
+K=e8 > f8
+
+B=d2 > h6
+
+K=e8 > c8 : Q
+
+B=d2 > h6
+
+K=e8 > g8 : K
+
+B=d2 > h6
+
+R=h8 > g8
+
+B=d2 > h6
+
+R=h8 > f8
+
+B=d2 > h6
+
+R=h8 > h7
+
+B=d2 > h6
+
+R=h8 X B=h6
+
+B=d2 > h6
+
+P=c7 > c6
+
+B=d2 > h6
+
+P=c7 > c5
+
+B=d2 > h6
+
+P=d7 > d6
+
+B=d2 > h6
+
+Q=e7 > d8
+
+B=d2 > h6
+
+Q=e7 > f8
+
+B=d2 > h6
+
+Q=e7 > d6
+
+B=d2 > h6
+
+Q=e7 > c5
+
+B=d2 > h6
+
+B=g7 > f8
+
+B=d2 > h6
+
+B=g7 X B=h6
+
+B=d2 > h6
+
+B=a6 > b7
+
+B=d2 > h6
+
+B=a6 > c8
+
+B=d2 > h6
+
+B=a6 > b5
+
+B=d2 > h6
+
+B=a6 > c4
+
+B=d2 > h6
+
+B=a6 > d3
+
+B=d2 > h6
+
+B=a6 X B=e2
+
+B=d2 > h6
+
+N=b6 > c8
+
+B=d2 > h6
+
+N=b6 X P=d5
+
+B=d2 > h6
+
+N=b6 > a4
+
+B=d2 > h6
+
+N=b6 > c4
+
+B=d2 > h6
+
+P=e6 X P=d5
+
+B=d2 > h6
+
+N=f6 > g8
+
+B=d2 > h6
+
+N=f6 > h7
+
+B=d2 > h6
+
+N=f6 X P=d5
+
+B=d2 > h6
+
+N=f6 > h5
+
+B=d2 > h6
+
+N=f6 X P=e4
+
+B=d2 > h6
+
+N=f6 > g4
+
+B=d2 > h6
+
+P=g6 > g5
+
+B=d2 > h6
+
+P=b4 > b3
+
+B=d2 > h6
+
+P=b4 X N=c3
+
+B=d2 > h6
+
+P=h3 X P=g2
+
+B=d2 > c1
+
+R=a8 > b8
+
+B=d2 > c1
+
+R=a8 > c8
+
+B=d2 > c1
+
+R=a8 > d8
+
+B=d2 > c1
+
+K=e8 > d8
+
+B=d2 > c1
+
+K=e8 > f8
+
+B=d2 > c1
+
+K=e8 > c8 : Q
+
+B=d2 > c1
+
+K=e8 > g8 : K
+
+B=d2 > c1
+
+R=h8 > g8
+
+B=d2 > c1
+
+R=h8 > f8
+
+B=d2 > c1
+
+R=h8 > h7
+
+B=d2 > c1
+
+R=h8 > h6
+
+B=d2 > c1
+
+R=h8 > h5
+
+B=d2 > c1
+
+R=h8 > h4
+
+B=d2 > c1
+
+P=c7 > c6
+
+B=d2 > c1
+
+P=c7 > c5
+
+B=d2 > c1
+
+P=d7 > d6
+
+B=d2 > c1
+
+Q=e7 > d8
+
+B=d2 > c1
+
+Q=e7 > f8
+
+B=d2 > c1
+
+Q=e7 > d6
+
+B=d2 > c1
+
+Q=e7 > c5
+
+B=d2 > c1
+
+B=g7 > f8
+
+B=d2 > c1
+
+B=g7 > h6
+
+B=d2 > c1
+
+B=a6 > b7
+
+B=d2 > c1
+
+B=a6 > c8
+
+B=d2 > c1
+
+B=a6 > b5
+
+B=d2 > c1
+
+B=a6 > c4
+
+B=d2 > c1
+
+B=a6 > d3
+
+B=d2 > c1
+
+B=a6 X B=e2
+
+B=d2 > c1
+
+N=b6 > c8
+
+B=d2 > c1
+
+N=b6 X P=d5
+
+B=d2 > c1
+
+N=b6 > a4
+
+B=d2 > c1
+
+N=b6 > c4
+
+B=d2 > c1
+
+P=e6 X P=d5
+
+B=d2 > c1
+
+N=f6 > g8
+
+B=d2 > c1
+
+N=f6 > h7
+
+B=d2 > c1
+
+N=f6 X P=d5
+
+B=d2 > c1
+
+N=f6 > h5
+
+B=d2 > c1
+
+N=f6 X P=e4
+
+B=d2 > c1
+
+N=f6 > g4
+
+B=d2 > c1
+
+P=g6 > g5
+
+B=d2 > c1
+
+P=b4 > b3
+
+B=d2 > c1
+
+P=b4 X N=c3
+
+B=d2 > c1
+
+P=h3 X P=g2
+
+B=e2 > d3
+
+R=a8 > b8
+
+B=e2 > d3
+
+R=a8 > c8
+
+B=e2 > d3
+
+R=a8 > d8
+
+B=e2 > d3
+
+K=e8 > d8
+
+B=e2 > d3
+
+K=e8 > f8
+
+B=e2 > d3
+
+K=e8 > c8 : Q
+
+B=e2 > d3
+
+K=e8 > g8 : K
+
+B=e2 > d3
+
+R=h8 > g8
+
+B=e2 > d3
+
+R=h8 > f8
+
+B=e2 > d3
+
+R=h8 > h7
+
+B=e2 > d3
+
+R=h8 > h6
+
+B=e2 > d3
+
+R=h8 > h5
+
+B=e2 > d3
+
+R=h8 > h4
+
+B=e2 > d3
+
+P=c7 > c6
+
+B=e2 > d3
+
+P=c7 > c5
+
+B=e2 > d3
+
+P=d7 > d6
+
+B=e2 > d3
+
+Q=e7 > d8
+
+B=e2 > d3
+
+Q=e7 > f8
+
+B=e2 > d3
+
+Q=e7 > d6
+
+B=e2 > d3
+
+Q=e7 > c5
+
+B=e2 > d3
+
+B=g7 > f8
+
+B=e2 > d3
+
+B=g7 > h6
+
+B=e2 > d3
+
+B=a6 > b7
+
+B=e2 > d3
+
+B=a6 > c8
+
+B=e2 > d3
+
+B=a6 > b5
+
+B=e2 > d3
+
+B=a6 > c4
+
+B=e2 > d3
+
+B=a6 X B=d3
+
+B=e2 > d3
+
+N=b6 > c8
+
+B=e2 > d3
+
+N=b6 X P=d5
+
+B=e2 > d3
+
+N=b6 > a4
+
+B=e2 > d3
+
+N=b6 > c4
+
+B=e2 > d3
+
+P=e6 X P=d5
+
+B=e2 > d3
+
+N=f6 > g8
+
+B=e2 > d3
+
+N=f6 > h7
+
+B=e2 > d3
+
+N=f6 X P=d5
+
+B=e2 > d3
+
+N=f6 > h5
+
+B=e2 > d3
+
+N=f6 X P=e4
+
+B=e2 > d3
+
+N=f6 > g4
+
+B=e2 > d3
+
+P=g6 > g5
+
+B=e2 > d3
+
+P=b4 > b3
+
+B=e2 > d3
+
+P=b4 X N=c3
+
+B=e2 > d3
+
+P=h3 X P=g2
+
+B=e2 > c4
+
+R=a8 > b8
+
+B=e2 > c4
+
+R=a8 > c8
+
+B=e2 > c4
+
+R=a8 > d8
+
+B=e2 > c4
+
+K=e8 > d8
+
+B=e2 > c4
+
+K=e8 > f8
+
+B=e2 > c4
+
+K=e8 > c8 : Q
+
+B=e2 > c4
+
+K=e8 > g8 : K
+
+B=e2 > c4
+
+R=h8 > g8
+
+B=e2 > c4
+
+R=h8 > f8
+
+B=e2 > c4
+
+R=h8 > h7
+
+B=e2 > c4
+
+R=h8 > h6
+
+B=e2 > c4
+
+R=h8 > h5
+
+B=e2 > c4
+
+R=h8 > h4
+
+B=e2 > c4
+
+P=c7 > c6
+
+B=e2 > c4
+
+P=c7 > c5
+
+B=e2 > c4
+
+P=d7 > d6
+
+B=e2 > c4
+
+Q=e7 > d8
+
+B=e2 > c4
+
+Q=e7 > f8
+
+B=e2 > c4
+
+Q=e7 > d6
+
+B=e2 > c4
+
+Q=e7 > c5
+
+B=e2 > c4
+
+B=g7 > f8
+
+B=e2 > c4
+
+B=g7 > h6
+
+B=e2 > c4
+
+B=a6 > b7
+
+B=e2 > c4
+
+B=a6 > c8
+
+B=e2 > c4
+
+B=a6 > b5
+
+B=e2 > c4
+
+B=a6 X B=c4
+
+B=e2 > c4
+
+N=b6 > c8
+
+B=e2 > c4
+
+N=b6 X P=d5
+
+B=e2 > c4
+
+N=b6 > a4
+
+B=e2 > c4
+
+N=b6 X B=c4
+
+B=e2 > c4
+
+P=e6 X P=d5
+
+B=e2 > c4
+
+N=f6 > g8
+
+B=e2 > c4
+
+N=f6 > h7
+
+B=e2 > c4
+
+N=f6 X P=d5
+
+B=e2 > c4
+
+N=f6 > h5
+
+B=e2 > c4
+
+N=f6 X P=e4
+
+B=e2 > c4
+
+N=f6 > g4
+
+B=e2 > c4
+
+P=g6 > g5
+
+B=e2 > c4
+
+P=b4 > b3
+
+B=e2 > c4
+
+P=b4 X N=c3
+
+B=e2 > c4
+
+P=h3 X P=g2
+
+B=e2 > b5
+
+R=a8 > b8
+
+B=e2 > b5
+
+R=a8 > c8
+
+B=e2 > b5
+
+R=a8 > d8
+
+B=e2 > b5
+
+K=e8 > d8
+
+B=e2 > b5
+
+K=e8 > f8
+
+B=e2 > b5
+
+K=e8 > c8 : Q
+
+B=e2 > b5
+
+K=e8 > g8 : K
+
+B=e2 > b5
+
+R=h8 > g8
+
+B=e2 > b5
+
+R=h8 > f8
+
+B=e2 > b5
+
+R=h8 > h7
+
+B=e2 > b5
+
+R=h8 > h6
+
+B=e2 > b5
+
+R=h8 > h5
+
+B=e2 > b5
+
+R=h8 > h4
+
+B=e2 > b5
+
+P=c7 > c6
+
+B=e2 > b5
+
+P=c7 > c5
+
+B=e2 > b5
+
+Q=e7 > d8
+
+B=e2 > b5
+
+Q=e7 > f8
+
+B=e2 > b5
+
+Q=e7 > d6
+
+B=e2 > b5
+
+Q=e7 > c5
+
+B=e2 > b5
+
+B=g7 > f8
+
+B=e2 > b5
+
+B=g7 > h6
+
+B=e2 > b5
+
+B=a6 > b7
+
+B=e2 > b5
+
+B=a6 > c8
+
+B=e2 > b5
+
+B=a6 X B=b5
+
+B=e2 > b5
+
+N=b6 > c8
+
+B=e2 > b5
+
+N=b6 X P=d5
+
+B=e2 > b5
+
+N=b6 > a4
+
+B=e2 > b5
+
+N=b6 > c4
+
+B=e2 > b5
+
+P=e6 X P=d5
+
+B=e2 > b5
+
+N=f6 > g8
+
+B=e2 > b5
+
+N=f6 > h7
+
+B=e2 > b5
+
+N=f6 X P=d5
+
+B=e2 > b5
+
+N=f6 > h5
+
+B=e2 > b5
+
+N=f6 X P=e4
+
+B=e2 > b5
+
+N=f6 > g4
+
+B=e2 > b5
+
+P=g6 > g5
+
+B=e2 > b5
+
+P=b4 > b3
+
+B=e2 > b5
+
+P=b4 X N=c3
+
+B=e2 > b5
+
+P=h3 X P=g2
+
+B=e2 X B=a6
+
+R=a8 > b8
+
+B=e2 X B=a6
+
+R=a8 > c8
+
+B=e2 X B=a6
+
+R=a8 > d8
+
+B=e2 X B=a6
+
+K=e8 > d8
+
+B=e2 X B=a6
+
+K=e8 > f8
+
+B=e2 X B=a6
+
+K=e8 > g8 : K
+
+B=e2 X B=a6
+
+R=h8 > g8
+
+B=e2 X B=a6
+
+R=h8 > f8
+
+B=e2 X B=a6
+
+R=h8 > h7
+
+B=e2 X B=a6
+
+R=h8 > h6
+
+B=e2 X B=a6
+
+R=h8 > h5
+
+B=e2 X B=a6
+
+R=h8 > h4
+
+B=e2 X B=a6
+
+P=c7 > c6
+
+B=e2 X B=a6
+
+P=c7 > c5
+
+B=e2 X B=a6
+
+P=d7 > d6
+
+B=e2 X B=a6
+
+Q=e7 > d8
+
+B=e2 X B=a6
+
+Q=e7 > f8
+
+B=e2 X B=a6
+
+Q=e7 > d6
+
+B=e2 X B=a6
+
+Q=e7 > c5
+
+B=e2 X B=a6
+
+B=g7 > f8
+
+B=e2 X B=a6
+
+B=g7 > h6
+
+B=e2 X B=a6
+
+N=b6 > c8
+
+B=e2 X B=a6
+
+N=b6 X P=d5
+
+B=e2 X B=a6
+
+N=b6 > a4
+
+B=e2 X B=a6
+
+N=b6 > c4
+
+B=e2 X B=a6
+
+P=e6 X P=d5
+
+B=e2 X B=a6
+
+N=f6 > g8
+
+B=e2 X B=a6
+
+N=f6 > h7
+
+B=e2 X B=a6
+
+N=f6 X P=d5
+
+B=e2 X B=a6
+
+N=f6 > h5
+
+B=e2 X B=a6
+
+N=f6 X P=e4
+
+B=e2 X B=a6
+
+N=f6 > g4
+
+B=e2 X B=a6
+
+P=g6 > g5
+
+B=e2 X B=a6
+
+P=b4 > b3
+
+B=e2 X B=a6
+
+P=b4 X N=c3
+
+B=e2 X B=a6
+
+P=h3 X P=g2
+
+B=e2 > d1
+
+R=a8 > b8
+
+B=e2 > d1
+
+R=a8 > c8
+
+B=e2 > d1
+
+R=a8 > d8
+
+B=e2 > d1
+
+K=e8 > d8
+
+B=e2 > d1
+
+K=e8 > f8
+
+B=e2 > d1
+
+K=e8 > c8 : Q
+
+B=e2 > d1
+
+K=e8 > g8 : K
+
+B=e2 > d1
+
+R=h8 > g8
+
+B=e2 > d1
+
+R=h8 > f8
+
+B=e2 > d1
+
+R=h8 > h7
+
+B=e2 > d1
+
+R=h8 > h6
+
+B=e2 > d1
+
+R=h8 > h5
+
+B=e2 > d1
+
+R=h8 > h4
+
+B=e2 > d1
+
+P=c7 > c6
+
+B=e2 > d1
+
+P=c7 > c5
+
+B=e2 > d1
+
+P=d7 > d6
+
+B=e2 > d1
+
+Q=e7 > d8
+
+B=e2 > d1
+
+Q=e7 > f8
+
+B=e2 > d1
+
+Q=e7 > d6
+
+B=e2 > d1
+
+Q=e7 > c5
+
+B=e2 > d1
+
+B=g7 > f8
+
+B=e2 > d1
+
+B=g7 > h6
+
+B=e2 > d1
+
+B=a6 > b7
+
+B=e2 > d1
+
+B=a6 > c8
+
+B=e2 > d1
+
+B=a6 > b5
+
+B=e2 > d1
+
+B=a6 > c4
+
+B=e2 > d1
+
+B=a6 > d3
+
+B=e2 > d1
+
+B=a6 > e2
+
+B=e2 > d1
+
+B=a6 > f1
+
+B=e2 > d1
+
+N=b6 > c8
+
+B=e2 > d1
+
+N=b6 X P=d5
+
+B=e2 > d1
+
+N=b6 > a4
+
+B=e2 > d1
+
+N=b6 > c4
+
+B=e2 > d1
+
+P=e6 X P=d5
+
+B=e2 > d1
+
+N=f6 > g8
+
+B=e2 > d1
+
+N=f6 > h7
+
+B=e2 > d1
+
+N=f6 X P=d5
+
+B=e2 > d1
+
+N=f6 > h5
+
+B=e2 > d1
+
+N=f6 X P=e4
+
+B=e2 > d1
+
+N=f6 > g4
+
+B=e2 > d1
+
+P=g6 > g5
+
+B=e2 > d1
+
+P=b4 > b3
+
+B=e2 > d1
+
+P=b4 X N=c3
+
+B=e2 > d1
+
+P=h3 X P=g2
+
+B=e2 > f1
+
+R=a8 > b8
+
+B=e2 > f1
+
+R=a8 > c8
+
+B=e2 > f1
+
+R=a8 > d8
+
+B=e2 > f1
+
+K=e8 > d8
+
+B=e2 > f1
+
+K=e8 > f8
+
+B=e2 > f1
+
+K=e8 > c8 : Q
+
+B=e2 > f1
+
+K=e8 > g8 : K
+
+B=e2 > f1
+
+R=h8 > g8
+
+B=e2 > f1
+
+R=h8 > f8
+
+B=e2 > f1
+
+R=h8 > h7
+
+B=e2 > f1
+
+R=h8 > h6
+
+B=e2 > f1
+
+R=h8 > h5
+
+B=e2 > f1
+
+R=h8 > h4
+
+B=e2 > f1
+
+P=c7 > c6
+
+B=e2 > f1
+
+P=c7 > c5
+
+B=e2 > f1
+
+P=d7 > d6
+
+B=e2 > f1
+
+Q=e7 > d8
+
+B=e2 > f1
+
+Q=e7 > f8
+
+B=e2 > f1
+
+Q=e7 > d6
+
+B=e2 > f1
+
+Q=e7 > c5
+
+B=e2 > f1
+
+B=g7 > f8
+
+B=e2 > f1
+
+B=g7 > h6
+
+B=e2 > f1
+
+B=a6 > b7
+
+B=e2 > f1
+
+B=a6 > c8
+
+B=e2 > f1
+
+B=a6 > b5
+
+B=e2 > f1
+
+B=a6 > c4
+
+B=e2 > f1
+
+B=a6 > d3
+
+B=e2 > f1
+
+B=a6 > e2
+
+B=e2 > f1
+
+B=a6 X B=f1
+
+B=e2 > f1
+
+N=b6 > c8
+
+B=e2 > f1
+
+N=b6 X P=d5
+
+B=e2 > f1
+
+N=b6 > a4
+
+B=e2 > f1
+
+N=b6 > c4
+
+B=e2 > f1
+
+P=e6 X P=d5
+
+B=e2 > f1
+
+N=f6 > g8
+
+B=e2 > f1
+
+N=f6 > h7
+
+B=e2 > f1
+
+N=f6 X P=d5
+
+B=e2 > f1
+
+N=f6 > h5
+
+B=e2 > f1
+
+N=f6 X P=e4
+
+B=e2 > f1
+
+N=f6 > g4
+
+B=e2 > f1
+
+P=g6 > g5
+
+B=e2 > f1
+
+P=b4 > b3
+
+B=e2 > f1
+
+P=b4 X N=c3
+
+B=e2 > f1
+
+P=h3 X P=g2
+
+P=g2 > g3
+
+R=a8 > b8
+
+P=g2 > g3
+
+R=a8 > c8
+
+P=g2 > g3
+
+R=a8 > d8
+
+P=g2 > g3
+
+K=e8 > d8
+
+P=g2 > g3
+
+K=e8 > f8
+
+P=g2 > g3
+
+K=e8 > c8 : Q
+
+P=g2 > g3
+
+K=e8 > g8 : K
+
+P=g2 > g3
+
+R=h8 > g8
+
+P=g2 > g3
+
+R=h8 > f8
+
+P=g2 > g3
+
+R=h8 > h7
+
+P=g2 > g3
+
+R=h8 > h6
+
+P=g2 > g3
+
+R=h8 > h5
+
+P=g2 > g3
+
+R=h8 > h4
+
+P=g2 > g3
+
+P=c7 > c6
+
+P=g2 > g3
+
+P=c7 > c5
+
+P=g2 > g3
+
+P=d7 > d6
+
+P=g2 > g3
+
+Q=e7 > d8
+
+P=g2 > g3
+
+Q=e7 > f8
+
+P=g2 > g3
+
+Q=e7 > d6
+
+P=g2 > g3
+
+Q=e7 > c5
+
+P=g2 > g3
+
+B=g7 > f8
+
+P=g2 > g3
+
+B=g7 > h6
+
+P=g2 > g3
+
+B=a6 > b7
+
+P=g2 > g3
+
+B=a6 > c8
+
+P=g2 > g3
+
+B=a6 > b5
+
+P=g2 > g3
+
+B=a6 > c4
+
+P=g2 > g3
+
+B=a6 > d3
+
+P=g2 > g3
+
+B=a6 X B=e2
+
+P=g2 > g3
+
+N=b6 > c8
+
+P=g2 > g3
+
+N=b6 X P=d5
+
+P=g2 > g3
+
+N=b6 > a4
+
+P=g2 > g3
+
+N=b6 > c4
+
+P=g2 > g3
+
+P=e6 X P=d5
+
+P=g2 > g3
+
+N=f6 > g8
+
+P=g2 > g3
+
+N=f6 > h7
+
+P=g2 > g3
+
+N=f6 X P=d5
+
+P=g2 > g3
+
+N=f6 > h5
+
+P=g2 > g3
+
+N=f6 X P=e4
+
+P=g2 > g3
+
+N=f6 > g4
+
+P=g2 > g3
+
+P=g6 > g5
+
+P=g2 > g3
+
+P=b4 > b3
+
+P=g2 > g3
+
+P=b4 X N=c3
+
+P=g2 > g4
+
+R=a8 > b8
+
+P=g2 > g4
+
+R=a8 > c8
+
+P=g2 > g4
+
+R=a8 > d8
+
+P=g2 > g4
+
+K=e8 > d8
+
+P=g2 > g4
+
+K=e8 > f8
+
+P=g2 > g4
+
+K=e8 > c8 : Q
+
+P=g2 > g4
+
+K=e8 > g8 : K
+
+P=g2 > g4
+
+R=h8 > g8
+
+P=g2 > g4
+
+R=h8 > f8
+
+P=g2 > g4
+
+R=h8 > h7
+
+P=g2 > g4
+
+R=h8 > h6
+
+P=g2 > g4
+
+R=h8 > h5
+
+P=g2 > g4
+
+R=h8 > h4
+
+P=g2 > g4
+
+P=c7 > c6
+
+P=g2 > g4
+
+P=c7 > c5
+
+P=g2 > g4
+
+P=d7 > d6
+
+P=g2 > g4
+
+Q=e7 > d8
+
+P=g2 > g4
+
+Q=e7 > f8
+
+P=g2 > g4
+
+Q=e7 > d6
+
+P=g2 > g4
+
+Q=e7 > c5
+
+P=g2 > g4
+
+B=g7 > f8
+
+P=g2 > g4
+
+B=g7 > h6
+
+P=g2 > g4
+
+B=a6 > b7
+
+P=g2 > g4
+
+B=a6 > c8
+
+P=g2 > g4
+
+B=a6 > b5
+
+P=g2 > g4
+
+B=a6 > c4
+
+P=g2 > g4
+
+B=a6 > d3
+
+P=g2 > g4
+
+B=a6 X B=e2
+
+P=g2 > g4
+
+N=b6 > c8
+
+P=g2 > g4
+
+N=b6 X P=d5
+
+P=g2 > g4
+
+N=b6 > a4
+
+P=g2 > g4
+
+N=b6 > c4
+
+P=g2 > g4
+
+P=e6 X P=d5
+
+P=g2 > g4
+
+N=f6 > g8
+
+P=g2 > g4
+
+N=f6 > h7
+
+P=g2 > g4
+
+N=f6 X P=d5
+
+P=g2 > g4
+
+N=f6 > h5
+
+P=g2 > g4
+
+N=f6 X P=e4
+
+P=g2 > g4
+
+N=f6 X P=g4
+
+P=g2 > g4
+
+P=g6 > g5
+
+P=g2 > g4
+
+P=b4 > b3
+
+P=g2 > g4
+
+P=b4 X N=c3
+
+P=g2 X P=h3
+
+R=a8 > b8
+
+P=g2 X P=h3
+
+R=a8 > c8
+
+P=g2 X P=h3
+
+R=a8 > d8
+
+P=g2 X P=h3
+
+K=e8 > d8
+
+P=g2 X P=h3
+
+K=e8 > f8
+
+P=g2 X P=h3
+
+K=e8 > c8 : Q
+
+P=g2 X P=h3
+
+K=e8 > g8 : K
+
+P=g2 X P=h3
+
+R=h8 > g8
+
+P=g2 X P=h3
+
+R=h8 > f8
+
+P=g2 X P=h3
+
+R=h8 > h7
+
+P=g2 X P=h3
+
+R=h8 > h6
+
+P=g2 X P=h3
+
+R=h8 > h5
+
+P=g2 X P=h3
+
+R=h8 > h4
+
+P=g2 X P=h3
+
+R=h8 X P=h3
+
+P=g2 X P=h3
+
+P=c7 > c6
+
+P=g2 X P=h3
+
+P=c7 > c5
+
+P=g2 X P=h3
+
+P=d7 > d6
+
+P=g2 X P=h3
+
+Q=e7 > d8
+
+P=g2 X P=h3
+
+Q=e7 > f8
+
+P=g2 X P=h3
+
+Q=e7 > d6
+
+P=g2 X P=h3
+
+Q=e7 > c5
+
+P=g2 X P=h3
+
+B=g7 > f8
+
+P=g2 X P=h3
+
+B=g7 > h6
+
+P=g2 X P=h3
+
+B=a6 > b7
+
+P=g2 X P=h3
+
+B=a6 > c8
+
+P=g2 X P=h3
+
+B=a6 > b5
+
+P=g2 X P=h3
+
+B=a6 > c4
+
+P=g2 X P=h3
+
+B=a6 > d3
+
+P=g2 X P=h3
+
+B=a6 X B=e2
+
+P=g2 X P=h3
+
+N=b6 > c8
+
+P=g2 X P=h3
+
+N=b6 X P=d5
+
+P=g2 X P=h3
+
+N=b6 > a4
+
+P=g2 X P=h3
+
+N=b6 > c4
+
+P=g2 X P=h3
+
+P=e6 X P=d5
+
+P=g2 X P=h3
+
+N=f6 > g8
+
+P=g2 X P=h3
+
+N=f6 > h7
+
+P=g2 X P=h3
+
+N=f6 X P=d5
+
+P=g2 X P=h3
+
+N=f6 > h5
+
+P=g2 X P=h3
+
+N=f6 X P=e4
+
+P=g2 X P=h3
+
+N=f6 > g4
+
+P=g2 X P=h3
+
+P=g6 > g5
+
+P=g2 X P=h3
+
+P=b4 > b3
+
+P=g2 X P=h3
+
+P=b4 X N=c3
+
+R=a1 > b1
+
+R=a8 > b8
+
+R=a1 > b1
+
+R=a8 > c8
+
+R=a1 > b1
+
+R=a8 > d8
+
+R=a1 > b1
+
+K=e8 > d8
+
+R=a1 > b1
+
+K=e8 > f8
+
+R=a1 > b1
+
+K=e8 > c8 : Q
+
+R=a1 > b1
+
+K=e8 > g8 : K
+
+R=a1 > b1
+
+R=h8 > g8
+
+R=a1 > b1
+
+R=h8 > f8
+
+R=a1 > b1
+
+R=h8 > h7
+
+R=a1 > b1
+
+R=h8 > h6
+
+R=a1 > b1
+
+R=h8 > h5
+
+R=a1 > b1
+
+R=h8 > h4
+
+R=a1 > b1
+
+P=c7 > c6
+
+R=a1 > b1
+
+P=c7 > c5
+
+R=a1 > b1
+
+P=d7 > d6
+
+R=a1 > b1
+
+Q=e7 > d8
+
+R=a1 > b1
+
+Q=e7 > f8
+
+R=a1 > b1
+
+Q=e7 > d6
+
+R=a1 > b1
+
+Q=e7 > c5
+
+R=a1 > b1
+
+B=g7 > f8
+
+R=a1 > b1
+
+B=g7 > h6
+
+R=a1 > b1
+
+B=a6 > b7
+
+R=a1 > b1
+
+B=a6 > c8
+
+R=a1 > b1
+
+B=a6 > b5
+
+R=a1 > b1
+
+B=a6 > c4
+
+R=a1 > b1
+
+B=a6 > d3
+
+R=a1 > b1
+
+B=a6 X B=e2
+
+R=a1 > b1
+
+N=b6 > c8
+
+R=a1 > b1
+
+N=b6 X P=d5
+
+R=a1 > b1
+
+N=b6 > a4
+
+R=a1 > b1
+
+N=b6 > c4
+
+R=a1 > b1
+
+P=e6 X P=d5
+
+R=a1 > b1
+
+N=f6 > g8
+
+R=a1 > b1
+
+N=f6 > h7
+
+R=a1 > b1
+
+N=f6 X P=d5
+
+R=a1 > b1
+
+N=f6 > h5
+
+R=a1 > b1
+
+N=f6 X P=e4
+
+R=a1 > b1
+
+N=f6 > g4
+
+R=a1 > b1
+
+P=g6 > g5
+
+R=a1 > b1
+
+P=b4 > b3
+
+R=a1 > b1
+
+P=b4 X N=c3
+
+R=a1 > b1
+
+P=h3 X P=g2
+
+R=a1 > c1
+
+R=a8 > b8
+
+R=a1 > c1
+
+R=a8 > c8
+
+R=a1 > c1
+
+R=a8 > d8
+
+R=a1 > c1
+
+K=e8 > d8
+
+R=a1 > c1
+
+K=e8 > f8
+
+R=a1 > c1
+
+K=e8 > c8 : Q
+
+R=a1 > c1
+
+K=e8 > g8 : K
+
+R=a1 > c1
+
+R=h8 > g8
+
+R=a1 > c1
+
+R=h8 > f8
+
+R=a1 > c1
+
+R=h8 > h7
+
+R=a1 > c1
+
+R=h8 > h6
+
+R=a1 > c1
+
+R=h8 > h5
+
+R=a1 > c1
+
+R=h8 > h4
+
+R=a1 > c1
+
+P=c7 > c6
+
+R=a1 > c1
+
+P=c7 > c5
+
+R=a1 > c1
+
+P=d7 > d6
+
+R=a1 > c1
+
+Q=e7 > d8
+
+R=a1 > c1
+
+Q=e7 > f8
+
+R=a1 > c1
+
+Q=e7 > d6
+
+R=a1 > c1
+
+Q=e7 > c5
+
+R=a1 > c1
+
+B=g7 > f8
+
+R=a1 > c1
+
+B=g7 > h6
+
+R=a1 > c1
+
+B=a6 > b7
+
+R=a1 > c1
+
+B=a6 > c8
+
+R=a1 > c1
+
+B=a6 > b5
+
+R=a1 > c1
+
+B=a6 > c4
+
+R=a1 > c1
+
+B=a6 > d3
+
+R=a1 > c1
+
+B=a6 X B=e2
+
+R=a1 > c1
+
+N=b6 > c8
+
+R=a1 > c1
+
+N=b6 X P=d5
+
+R=a1 > c1
+
+N=b6 > a4
+
+R=a1 > c1
+
+N=b6 > c4
+
+R=a1 > c1
+
+P=e6 X P=d5
+
+R=a1 > c1
+
+N=f6 > g8
+
+R=a1 > c1
+
+N=f6 > h7
+
+R=a1 > c1
+
+N=f6 X P=d5
+
+R=a1 > c1
+
+N=f6 > h5
+
+R=a1 > c1
+
+N=f6 X P=e4
+
+R=a1 > c1
+
+N=f6 > g4
+
+R=a1 > c1
+
+P=g6 > g5
+
+R=a1 > c1
+
+P=b4 > b3
+
+R=a1 > c1
+
+P=b4 X N=c3
+
+R=a1 > c1
+
+P=h3 X P=g2
+
+R=a1 > d1
+
+R=a8 > b8
+
+R=a1 > d1
+
+R=a8 > c8
+
+R=a1 > d1
+
+R=a8 > d8
+
+R=a1 > d1
+
+K=e8 > d8
+
+R=a1 > d1
+
+K=e8 > f8
+
+R=a1 > d1
+
+K=e8 > c8 : Q
+
+R=a1 > d1
+
+K=e8 > g8 : K
+
+R=a1 > d1
+
+R=h8 > g8
+
+R=a1 > d1
+
+R=h8 > f8
+
+R=a1 > d1
+
+R=h8 > h7
+
+R=a1 > d1
+
+R=h8 > h6
+
+R=a1 > d1
+
+R=h8 > h5
+
+R=a1 > d1
+
+R=h8 > h4
+
+R=a1 > d1
+
+P=c7 > c6
+
+R=a1 > d1
+
+P=c7 > c5
+
+R=a1 > d1
+
+P=d7 > d6
+
+R=a1 > d1
+
+Q=e7 > d8
+
+R=a1 > d1
+
+Q=e7 > f8
+
+R=a1 > d1
+
+Q=e7 > d6
+
+R=a1 > d1
+
+Q=e7 > c5
+
+R=a1 > d1
+
+B=g7 > f8
+
+R=a1 > d1
+
+B=g7 > h6
+
+R=a1 > d1
+
+B=a6 > b7
+
+R=a1 > d1
+
+B=a6 > c8
+
+R=a1 > d1
+
+B=a6 > b5
+
+R=a1 > d1
+
+B=a6 > c4
+
+R=a1 > d1
+
+B=a6 > d3
+
+R=a1 > d1
+
+B=a6 X B=e2
+
+R=a1 > d1
+
+N=b6 > c8
+
+R=a1 > d1
+
+N=b6 X P=d5
+
+R=a1 > d1
+
+N=b6 > a4
+
+R=a1 > d1
+
+N=b6 > c4
+
+R=a1 > d1
+
+P=e6 X P=d5
+
+R=a1 > d1
+
+N=f6 > g8
+
+R=a1 > d1
+
+N=f6 > h7
+
+R=a1 > d1
+
+N=f6 X P=d5
+
+R=a1 > d1
+
+N=f6 > h5
+
+R=a1 > d1
+
+N=f6 X P=e4
+
+R=a1 > d1
+
+N=f6 > g4
+
+R=a1 > d1
+
+P=g6 > g5
+
+R=a1 > d1
+
+P=b4 > b3
+
+R=a1 > d1
+
+P=b4 X N=c3
+
+R=a1 > d1
+
+P=h3 X P=g2
+
+K=e1 > d1
+
+R=a8 > b8
+
+K=e1 > d1
+
+R=a8 > c8
+
+K=e1 > d1
+
+R=a8 > d8
+
+K=e1 > d1
+
+K=e8 > d8
+
+K=e1 > d1
+
+K=e8 > f8
+
+K=e1 > d1
+
+K=e8 > c8 : Q
+
+K=e1 > d1
+
+K=e8 > g8 : K
+
+K=e1 > d1
+
+R=h8 > g8
+
+K=e1 > d1
+
+R=h8 > f8
+
+K=e1 > d1
+
+R=h8 > h7
+
+K=e1 > d1
+
+R=h8 > h6
+
+K=e1 > d1
+
+R=h8 > h5
+
+K=e1 > d1
+
+R=h8 > h4
+
+K=e1 > d1
+
+P=c7 > c6
+
+K=e1 > d1
+
+P=c7 > c5
+
+K=e1 > d1
+
+P=d7 > d6
+
+K=e1 > d1
+
+Q=e7 > d8
+
+K=e1 > d1
+
+Q=e7 > f8
+
+K=e1 > d1
+
+Q=e7 > d6
+
+K=e1 > d1
+
+Q=e7 > c5
+
+K=e1 > d1
+
+B=g7 > f8
+
+K=e1 > d1
+
+B=g7 > h6
+
+K=e1 > d1
+
+B=a6 > b7
+
+K=e1 > d1
+
+B=a6 > c8
+
+K=e1 > d1
+
+B=a6 > b5
+
+K=e1 > d1
+
+B=a6 > c4
+
+K=e1 > d1
+
+B=a6 > d3
+
+K=e1 > d1
+
+B=a6 X B=e2
+
+K=e1 > d1
+
+N=b6 > c8
+
+K=e1 > d1
+
+N=b6 X P=d5
+
+K=e1 > d1
+
+N=b6 > a4
+
+K=e1 > d1
+
+N=b6 > c4
+
+K=e1 > d1
+
+P=e6 X P=d5
+
+K=e1 > d1
+
+N=f6 > g8
+
+K=e1 > d1
+
+N=f6 > h7
+
+K=e1 > d1
+
+N=f6 X P=d5
+
+K=e1 > d1
+
+N=f6 > h5
+
+K=e1 > d1
+
+N=f6 X P=e4
+
+K=e1 > d1
+
+N=f6 > g4
+
+K=e1 > d1
+
+P=g6 > g5
+
+K=e1 > d1
+
+P=b4 > b3
+
+K=e1 > d1
+
+P=b4 X N=c3
+
+K=e1 > d1
+
+P=h3 X P=g2
+
+K=e1 > f1
+
+R=a8 > b8
+
+K=e1 > f1
+
+R=a8 > c8
+
+K=e1 > f1
+
+R=a8 > d8
+
+K=e1 > f1
+
+K=e8 > d8
+
+K=e1 > f1
+
+K=e8 > f8
+
+K=e1 > f1
+
+K=e8 > c8 : Q
+
+K=e1 > f1
+
+K=e8 > g8 : K
+
+K=e1 > f1
+
+R=h8 > g8
+
+K=e1 > f1
+
+R=h8 > f8
+
+K=e1 > f1
+
+R=h8 > h7
+
+K=e1 > f1
+
+R=h8 > h6
+
+K=e1 > f1
+
+R=h8 > h5
+
+K=e1 > f1
+
+R=h8 > h4
+
+K=e1 > f1
+
+P=c7 > c6
+
+K=e1 > f1
+
+P=c7 > c5
+
+K=e1 > f1
+
+P=d7 > d6
+
+K=e1 > f1
+
+Q=e7 > d8
+
+K=e1 > f1
+
+Q=e7 > f8
+
+K=e1 > f1
+
+Q=e7 > d6
+
+K=e1 > f1
+
+Q=e7 > c5
+
+K=e1 > f1
+
+B=g7 > f8
+
+K=e1 > f1
+
+B=g7 > h6
+
+K=e1 > f1
+
+B=a6 > b7
+
+K=e1 > f1
+
+B=a6 > c8
+
+K=e1 > f1
+
+B=a6 > b5
+
+K=e1 > f1
+
+B=a6 > c4
+
+K=e1 > f1
+
+B=a6 > d3
+
+K=e1 > f1
+
+B=a6 X B=e2
+
+K=e1 > f1
+
+N=b6 > c8
+
+K=e1 > f1
+
+N=b6 X P=d5
+
+K=e1 > f1
+
+N=b6 > a4
+
+K=e1 > f1
+
+N=b6 > c4
+
+K=e1 > f1
+
+P=e6 X P=d5
+
+K=e1 > f1
+
+N=f6 > g8
+
+K=e1 > f1
+
+N=f6 > h7
+
+K=e1 > f1
+
+N=f6 X P=d5
+
+K=e1 > f1
+
+N=f6 > h5
+
+K=e1 > f1
+
+N=f6 X P=e4
+
+K=e1 > f1
+
+N=f6 > g4
+
+K=e1 > f1
+
+P=g6 > g5
+
+K=e1 > f1
+
+P=b4 > b3
+
+K=e1 > f1
+
+P=b4 X N=c3
+
+K=e1 > f1
+
+P=h3 X P=g2
+
+K=e1 > c1 : Q
+
+R=a8 > b8
+
+K=e1 > c1 : Q
+
+R=a8 > c8
+
+K=e1 > c1 : Q
+
+R=a8 > d8
+
+K=e1 > c1 : Q
+
+K=e8 > d8
+
+K=e1 > c1 : Q
+
+K=e8 > f8
+
+K=e1 > c1 : Q
+
+K=e8 > c8 : Q
+
+K=e1 > c1 : Q
+
+K=e8 > g8 : K
+
+K=e1 > c1 : Q
+
+R=h8 > g8
+
+K=e1 > c1 : Q
+
+R=h8 > f8
+
+K=e1 > c1 : Q
+
+R=h8 > h7
+
+K=e1 > c1 : Q
+
+R=h8 > h6
+
+K=e1 > c1 : Q
+
+R=h8 > h5
+
+K=e1 > c1 : Q
+
+R=h8 > h4
+
+K=e1 > c1 : Q
+
+P=c7 > c6
+
+K=e1 > c1 : Q
+
+P=c7 > c5
+
+K=e1 > c1 : Q
+
+P=d7 > d6
+
+K=e1 > c1 : Q
+
+Q=e7 > d8
+
+K=e1 > c1 : Q
+
+Q=e7 > f8
+
+K=e1 > c1 : Q
+
+Q=e7 > d6
+
+K=e1 > c1 : Q
+
+Q=e7 > c5
+
+K=e1 > c1 : Q
+
+B=g7 > f8
+
+K=e1 > c1 : Q
+
+B=g7 > h6
+
+K=e1 > c1 : Q
+
+B=a6 > b7
+
+K=e1 > c1 : Q
+
+B=a6 > c8
+
+K=e1 > c1 : Q
+
+B=a6 > b5
+
+K=e1 > c1 : Q
+
+B=a6 > c4
+
+K=e1 > c1 : Q
+
+B=a6 > d3
+
+K=e1 > c1 : Q
+
+B=a6 X B=e2
+
+K=e1 > c1 : Q
+
+N=b6 > c8
+
+K=e1 > c1 : Q
+
+N=b6 X P=d5
+
+K=e1 > c1 : Q
+
+N=b6 > a4
+
+K=e1 > c1 : Q
+
+N=b6 > c4
+
+K=e1 > c1 : Q
+
+P=e6 X P=d5
+
+K=e1 > c1 : Q
+
+N=f6 > g8
+
+K=e1 > c1 : Q
+
+N=f6 > h7
+
+K=e1 > c1 : Q
+
+N=f6 X P=d5
+
+K=e1 > c1 : Q
+
+N=f6 > h5
+
+K=e1 > c1 : Q
+
+N=f6 X P=e4
+
+K=e1 > c1 : Q
+
+N=f6 > g4
+
+K=e1 > c1 : Q
+
+P=g6 > g5
+
+K=e1 > c1 : Q
+
+P=b4 > b3
+
+K=e1 > c1 : Q
+
+P=b4 X N=c3
+
+K=e1 > c1 : Q
+
+P=h3 X P=g2
+
+K=e1 > g1 : K
+
+R=a8 > b8
+
+K=e1 > g1 : K
+
+R=a8 > c8
+
+K=e1 > g1 : K
+
+R=a8 > d8
+
+K=e1 > g1 : K
+
+K=e8 > d8
+
+K=e1 > g1 : K
+
+K=e8 > f8
+
+K=e1 > g1 : K
+
+K=e8 > c8 : Q
+
+K=e1 > g1 : K
+
+K=e8 > g8 : K
+
+K=e1 > g1 : K
+
+R=h8 > g8
+
+K=e1 > g1 : K
+
+R=h8 > f8
+
+K=e1 > g1 : K
+
+R=h8 > h7
+
+K=e1 > g1 : K
+
+R=h8 > h6
+
+K=e1 > g1 : K
+
+R=h8 > h5
+
+K=e1 > g1 : K
+
+R=h8 > h4
+
+K=e1 > g1 : K
+
+P=c7 > c6
+
+K=e1 > g1 : K
+
+P=c7 > c5
+
+K=e1 > g1 : K
+
+P=d7 > d6
+
+K=e1 > g1 : K
+
+Q=e7 > d8
+
+K=e1 > g1 : K
+
+Q=e7 > f8
+
+K=e1 > g1 : K
+
+Q=e7 > d6
+
+K=e1 > g1 : K
+
+Q=e7 > c5
+
+K=e1 > g1 : K
+
+B=g7 > f8
+
+K=e1 > g1 : K
+
+B=g7 > h6
+
+K=e1 > g1 : K
+
+B=a6 > b7
+
+K=e1 > g1 : K
+
+B=a6 > c8
+
+K=e1 > g1 : K
+
+B=a6 > b5
+
+K=e1 > g1 : K
+
+B=a6 > c4
+
+K=e1 > g1 : K
+
+B=a6 > d3
+
+K=e1 > g1 : K
+
+B=a6 X B=e2
+
+K=e1 > g1 : K
+
+N=b6 > c8
+
+K=e1 > g1 : K
+
+N=b6 X P=d5
+
+K=e1 > g1 : K
+
+N=b6 > a4
+
+K=e1 > g1 : K
+
+N=b6 > c4
+
+K=e1 > g1 : K
+
+P=e6 X P=d5
+
+K=e1 > g1 : K
+
+N=f6 > g8
+
+K=e1 > g1 : K
+
+N=f6 > h7
+
+K=e1 > g1 : K
+
+N=f6 X P=d5
+
+K=e1 > g1 : K
+
+N=f6 > h5
+
+K=e1 > g1 : K
+
+N=f6 X P=e4
+
+K=e1 > g1 : K
+
+N=f6 > g4
+
+K=e1 > g1 : K
+
+P=g6 > g5
+
+K=e1 > g1 : K
+
+P=b4 > b3
+
+K=e1 > g1 : K
+
+P=b4 X N=c3
+
+K=e1 > g1 : K
+
+P=h3 X P=g2
+
+R=h1 > g1
+
+R=a8 > b8
+
+R=h1 > g1
+
+R=a8 > c8
+
+R=h1 > g1
+
+R=a8 > d8
+
+R=h1 > g1
+
+K=e8 > d8
+
+R=h1 > g1
+
+K=e8 > f8
+
+R=h1 > g1
+
+K=e8 > c8 : Q
+
+R=h1 > g1
+
+K=e8 > g8 : K
+
+R=h1 > g1
+
+R=h8 > g8
+
+R=h1 > g1
+
+R=h8 > f8
+
+R=h1 > g1
+
+R=h8 > h7
+
+R=h1 > g1
+
+R=h8 > h6
+
+R=h1 > g1
+
+R=h8 > h5
+
+R=h1 > g1
+
+R=h8 > h4
+
+R=h1 > g1
+
+P=c7 > c6
+
+R=h1 > g1
+
+P=c7 > c5
+
+R=h1 > g1
+
+P=d7 > d6
+
+R=h1 > g1
+
+Q=e7 > d8
+
+R=h1 > g1
+
+Q=e7 > f8
+
+R=h1 > g1
+
+Q=e7 > d6
+
+R=h1 > g1
+
+Q=e7 > c5
+
+R=h1 > g1
+
+B=g7 > f8
+
+R=h1 > g1
+
+B=g7 > h6
+
+R=h1 > g1
+
+B=a6 > b7
+
+R=h1 > g1
+
+B=a6 > c8
+
+R=h1 > g1
+
+B=a6 > b5
+
+R=h1 > g1
+
+B=a6 > c4
+
+R=h1 > g1
+
+B=a6 > d3
+
+R=h1 > g1
+
+B=a6 X B=e2
+
+R=h1 > g1
+
+N=b6 > c8
+
+R=h1 > g1
+
+N=b6 X P=d5
+
+R=h1 > g1
+
+N=b6 > a4
+
+R=h1 > g1
+
+N=b6 > c4
+
+R=h1 > g1
+
+P=e6 X P=d5
+
+R=h1 > g1
+
+N=f6 > g8
+
+R=h1 > g1
+
+N=f6 > h7
+
+R=h1 > g1
+
+N=f6 X P=d5
+
+R=h1 > g1
+
+N=f6 > h5
+
+R=h1 > g1
+
+N=f6 X P=e4
+
+R=h1 > g1
+
+N=f6 > g4
+
+R=h1 > g1
+
+P=g6 > g5
+
+R=h1 > g1
+
+P=b4 > b3
+
+R=h1 > g1
+
+P=b4 X N=c3
+
+R=h1 > g1
+
+P=h3 X P=g2
+
+R=h1 > f1
+
+R=a8 > b8
+
+R=h1 > f1
+
+R=a8 > c8
+
+R=h1 > f1
+
+R=a8 > d8
+
+R=h1 > f1
+
+K=e8 > d8
+
+R=h1 > f1
+
+K=e8 > f8
+
+R=h1 > f1
+
+K=e8 > c8 : Q
+
+R=h1 > f1
+
+K=e8 > g8 : K
+
+R=h1 > f1
+
+R=h8 > g8
+
+R=h1 > f1
+
+R=h8 > f8
+
+R=h1 > f1
+
+R=h8 > h7
+
+R=h1 > f1
+
+R=h8 > h6
+
+R=h1 > f1
+
+R=h8 > h5
+
+R=h1 > f1
+
+R=h8 > h4
+
+R=h1 > f1
+
+P=c7 > c6
+
+R=h1 > f1
+
+P=c7 > c5
+
+R=h1 > f1
+
+P=d7 > d6
+
+R=h1 > f1
+
+Q=e7 > d8
+
+R=h1 > f1
+
+Q=e7 > f8
+
+R=h1 > f1
+
+Q=e7 > d6
+
+R=h1 > f1
+
+Q=e7 > c5
+
+R=h1 > f1
+
+B=g7 > f8
+
+R=h1 > f1
+
+B=g7 > h6
+
+R=h1 > f1
+
+B=a6 > b7
+
+R=h1 > f1
+
+B=a6 > c8
+
+R=h1 > f1
+
+B=a6 > b5
+
+R=h1 > f1
+
+B=a6 > c4
+
+R=h1 > f1
+
+B=a6 > d3
+
+R=h1 > f1
+
+B=a6 X B=e2
+
+R=h1 > f1
+
+N=b6 > c8
+
+R=h1 > f1
+
+N=b6 X P=d5
+
+R=h1 > f1
+
+N=b6 > a4
+
+R=h1 > f1
+
+N=b6 > c4
+
+R=h1 > f1
+
+P=e6 X P=d5
+
+R=h1 > f1
+
+N=f6 > g8
+
+R=h1 > f1
+
+N=f6 > h7
+
+R=h1 > f1
+
+N=f6 X P=d5
+
+R=h1 > f1
+
+N=f6 > h5
+
+R=h1 > f1
+
+N=f6 X P=e4
+
+R=h1 > f1
+
+N=f6 > g4
+
+R=h1 > f1
+
+P=g6 > g5
+
+R=h1 > f1
+
+P=b4 > b3
+
+R=h1 > f1
+
+P=b4 X N=c3
+
+R=h1 > f1
+
+P=h3 X P=g2
+
