@@ -101,12 +101,38 @@ Bitboard Square::operator|(const Square rhs) { return Bitboard(this->bitboard | 
 Bitboard Square::operator&(Bitboard rhs) { return Bitboard(this->bitboard & rhs.get_u64()); };
 Bitboard Square::operator|(Bitboard rhs) { return Bitboard(this->bitboard | rhs.get_u64()); };
 Bitboard Square::operator~() { return Bitboard(~(this->bitboard)); };
-Square& Square::operator>>=(const unsigned int n) { this->bitboard >>= n; return *this; };
-Square& Square::operator<<=(const unsigned int n) { this->bitboard <<= n; return *this; };
-Square& Square::operator+=(const unsigned int n) { return *this <<= n; };
-Square& Square::operator-=(const unsigned int n) { return *this >>= n; };
 Square Square::operator>>(const unsigned int n) { return Square(this->bitboard >> n); };
 Square Square::operator<<(const unsigned int n) { return Square(this->bitboard << n); };
+Square& Square::operator>>=(const unsigned int n) { this->bitboard >>= n; return *this; };
+Square& Square::operator<<=(const unsigned int n) { this->bitboard <<= n; return *this; };
+Square Square::operator+(const int n) {
+	if		(n < 0) { return *this >> static_cast<unsigned int>(-n); }
+	else if (n > 0) { return *this << static_cast<unsigned int>( n); }
+	else			{ return *this; }
+};
+
+Square Square::operator-(const int n) {
+	if		(n < 0) { return *this << static_cast<unsigned int>(-n); }
+	else if (n > 0) { return *this >> static_cast<unsigned int>( n); }
+	else			{ return *this; }
+};
+
+Square& Square::operator+=(const int n) { 
+	if		(n < 0) { return *this >>= static_cast<unsigned int>(-n); }
+	else if (n > 0) { return *this <<= static_cast<unsigned int>( n); }
+	else			{ return *this; }
+};
+
+Square& Square::operator-=(const int n) {
+	if		(n < 0) { return *this <<= static_cast<unsigned int>(-n); }
+	else if (n > 0) { return *this >>= static_cast<unsigned int>( n); }
+	else			{ return *this; }
+};
+
+Square Square::operator+(const Directions dir) { return *this + static_cast<int>(dir); };
+Square Square::operator-(const Directions dir) { return *this - static_cast<int>(dir); };
+Square& Square::operator+=(const Directions dir) { return *this += static_cast<int>(dir); };
+Square& Square::operator-=(const Directions dir) { return *this -= static_cast<int>(dir); };
 bool Square::operator!=(const Square rhs) { return bool(this->bitboard != rhs.bitboard); };
 bool Square::operator!=(const uint64_t rhs) { return *this != Square(rhs); };
 bool Square::operator==(const Square rhs) { return bool(this->bitboard == rhs.bitboard); };
@@ -118,10 +144,12 @@ bool Square::is_empty() { return this->bitboard == (uint64_t) 0; };
 
 uint64_t Square::get_u64() { return this->bitboard; };
 
+// TODO: rewrite this so that the function call isn't zero indexed.
 bool Square::on_nth_rank(unsigned int n) {
 	return bool(this->bitboard & rank_masks[n]);
 }
 
+// TODO: rewrite this so that the function call isn't zero indexed.
 bool Square::on_nth_file(unsigned int n) {
 	return bool(this->bitboard & file_masks[n]);
 }

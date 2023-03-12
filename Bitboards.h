@@ -6,6 +6,7 @@
 #include "stdint.h"
 #include "Colors.h"
 #include "Utils.h"
+#include "Ray.h"
 
 inline std::optional<int> an2idx(std::string an) {
 	auto idx = std::optional<int>(std::nullopt);
@@ -88,12 +89,18 @@ public:
 	Bitboard operator&(Bitboard rhs);
 	Bitboard operator|(Bitboard rhs);
 	Bitboard operator~();
-	Square& operator>>=(const unsigned int n);
-	Square& operator<<=(const unsigned int n);
-	Square& operator+=(const unsigned int n);
-	Square& operator-=(const unsigned int n);
 	Square operator>>(const unsigned int n);
 	Square operator<<(const unsigned int n);
+	Square& operator>>=(const unsigned int n);
+	Square& operator<<=(const unsigned int n);
+	Square operator+(const int n);
+	Square operator-(const int n);
+	Square& operator+=(const int n);
+	Square& operator-=(const int n);
+	Square operator+(const Directions dir);
+	Square operator-(const Directions dir);
+	Square& operator+=(const Directions dir);
+	Square& operator-=(const Directions dir);
 	bool operator!=(const Square rhs);
 	bool operator!=(const uint64_t rhs);
 	bool operator==(const Square rhs);
