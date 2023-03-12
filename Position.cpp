@@ -423,11 +423,13 @@ Position& Position::make_move(Move move) {
 						if (to.on_nth_file(7) && to.on_nth_rank(0)) {
 							// remove K castle right
 							set_castling_right(!turn, KINGSIDE, false);
+							assert(get_castling_right(!turn, KINGSIDE) == false);
 						}
 							// else if to square is a1:
 						else if (to.on_nth_file(0) && to.on_nth_rank(0)) {
 							// remove Q castle right
 							set_castling_right(!turn, QUEENSIDE, false);
+							assert(get_castling_right(!turn, QUEENSIDE) == false);
 						}
 					}
 				}
