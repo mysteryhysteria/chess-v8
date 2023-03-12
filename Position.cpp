@@ -398,17 +398,8 @@ Position& Position::make_move(Move move) {
 	Square to = move.get_to();
 	Square special = move.get_special();
 
-	// compute some values for move integrity checking
-	bool capture_move;
-	int friendly_piece_count_before = pieces_by_color[turn].popcount();
-	int enemy_piece_count_before = pieces_by_color[!turn].popcount();
-	int rook_piece_count_before = pieces_by_type[Types::ROOK].popcount();
-	int knight_piece_count_before = pieces_by_type[Types::KNIGHT].popcount();
-	int queen_piece_count_before = pieces_by_type[Types::QUEEN].popcount();
-	int king_piece_count_before = pieces_by_type[Types::KING].popcount();
-	int pawn_piece_count_before = pieces_by_type[Types::PAWN].popcount();
-	int bishop_piece_count_before = pieces_by_type[Types::BISHOP].popcount();
-	uint64_t covered_squares_before = get_occupied().get_u64();
+	// create integrity checker
+	MoveIntegrityChecker oracle = MoveIntegrityChecker(*this, turn);
 
 	// Update the En Passant square state
 	epsq = Square(); // clear the ep square by default
@@ -431,33 +422,10 @@ Position& Position::make_move(Move move) {
 
 	// update the castling rights
 	if (flags & CASTLING_RIGHTS_MASK != 0) { //Check if any castling rights remain
-
-		// test assumptions. For castling to be available, the king and rook must be in their starting positions.
-		if (flags & WHITE_QUEENSIDE_CASTLING_RIGHTS_MASK) {
-			assert(pieces_by_type[Types::ROOK].contains(WHITE_QUEENSIDE_ROOK_STARTING_SQUARE));
-			assert(pieces_by_type[Types::KING].contains(WHITE_KING_STARTING_SQUARE));
-			assert(pieces_by_color[Colors::WHITE].contains(WHITE_QUEENSIDE_ROOK_STARTING_SQUARE));
-			assert(pieces_by_color[Colors::WHITE].contains(WHITE_KING_STARTING_SQUARE));
-		}
-		if (flags & WHITE_KINGSIDE_CASTLING_RIGHTS_MASK) {
-			assert(pieces_by_type[Types::ROOK].contains(WHITE_KINGSIDE_ROOK_STARTING_SQUARE));
-			assert(pieces_by_type[Types::KING].contains(WHITE_KING_STARTING_SQUARE));
-			assert(pieces_by_color[Colors::WHITE].contains(WHITE_KINGSIDE_ROOK_STARTING_SQUARE));
-			assert(pieces_by_color[Colors::WHITE].contains(WHITE_KING_STARTING_SQUARE));
-		}
-		if (flags & BLACK_QUEENSIDE_CASTLING_RIGHTS_MASK) {
-			assert(pieces_by_type[Types::ROOK].contains(BLACK_QUEENSIDE_ROOK_STARTING_SQUARE));
-			assert(pieces_by_type[Types::KING].contains(BLACK_KING_STARTING_SQUARE));
-			assert(pieces_by_color[Colors::BLACK].contains(BLACK_QUEENSIDE_ROOK_STARTING_SQUARE));
-			assert(pieces_by_color[Colors::BLACK].contains(BLACK_KING_STARTING_SQUARE));
-		}
-		if (flags & BLACK_KINGSIDE_CASTLING_RIGHTS_MASK) {
-			assert(pieces_by_type[Types::ROOK].contains(BLACK_KINGSIDE_ROOK_STARTING_SQUARE));
-			assert(pieces_by_type[Types::KING].contains(BLACK_KING_STARTING_SQUARE));
-			assert(pieces_by_color[Colors::BLACK].contains(BLACK_KINGSIDE_ROOK_STARTING_SQUARE));
-			assert(pieces_by_color[Colors::BLACK].contains(BLACK_KING_STARTING_SQUARE));
-		}
 		
+		// integrity check
+		oracle.check_castling_rights(*this);
+
 		// Test for King and Rook moves, as they may remove castling rights
 		if (type == Types::KING) { // includes both normal moves and castling
 			this->set_castling_right(turn, CastleSide::KINGSIDE, false);
@@ -492,7 +460,6 @@ Position& Position::make_move(Move move) {
 
 		// remove captured piece from new square
 		if (capt_type != Types::NONE) {
-			capture_move = true;
 			pieces_by_type[capt_type].clear_square(to);
 			pieces_by_color[!turn].clear_square(to);
 		}
@@ -500,81 +467,10 @@ Position& Position::make_move(Move move) {
 		// place moved piece onto new square
 		pieces_by_type[type].mark_square(to);
 		pieces_by_color[turn].mark_square(to);
-		
-		// assertions
-		int friendly_piece_count_after = pieces_by_color[turn].popcount();
-		int enemy_piece_count_after = pieces_by_color[!turn].popcount();
-		int rook_piece_count_after = pieces_by_type[Types::ROOK].popcount();
-		int knight_piece_count_after = pieces_by_type[Types::KNIGHT].popcount();
-		int queen_piece_count_after = pieces_by_type[Types::QUEEN].popcount();
-		int king_piece_count_after = pieces_by_type[Types::KING].popcount();
-		int pawn_piece_count_after = pieces_by_type[Types::PAWN].popcount();
-		int bishop_piece_count_after = pieces_by_type[Types::BISHOP].popcount();
-		uint64_t covered_squares_after = get_occupied().get_u64();
-
-		assert(friendly_piece_count_before == friendly_piece_count_after);
-
-		if (capture_move) {
-			assert(covered_squares_before ^ from.get_u64() == covered_squares_after);
-			
-			// check piece counts
-			assert(enemy_piece_count_before == enemy_piece_count_after + 1);
-
-			switch (capt_type) {
-			case Types::PAWN:
-				assert(pawn_piece_count_before == pawn_piece_count_after + 1);
-				assert(knight_piece_count_before == knight_piece_count_after);
-				assert(bishop_piece_count_before == bishop_piece_count_after);
-				assert(rook_piece_count_before == rook_piece_count_after);
-				assert(queen_piece_count_before == queen_piece_count_after);
-				assert(king_piece_count_before == king_piece_count_after);
-			case Types::KNIGHT:
-				assert(pawn_piece_count_before == pawn_piece_count_after);
-				assert(knight_piece_count_before == knight_piece_count_after + 1);
-				assert(bishop_piece_count_before == bishop_piece_count_after);
-				assert(rook_piece_count_before == rook_piece_count_after);
-				assert(queen_piece_count_before == queen_piece_count_after);
-				assert(king_piece_count_before == king_piece_count_after);
-			case Types::BISHOP:
-				assert(pawn_piece_count_before == pawn_piece_count_after);
-				assert(knight_piece_count_before == knight_piece_count_after);
-				assert(bishop_piece_count_before == bishop_piece_count_after + 1);
-				assert(rook_piece_count_before == rook_piece_count_after);
-				assert(queen_piece_count_before == queen_piece_count_after);
-				assert(king_piece_count_before == king_piece_count_after);
-			case Types::ROOK:
-				assert(pawn_piece_count_before == pawn_piece_count_after);
-				assert(knight_piece_count_before == knight_piece_count_after);
-				assert(bishop_piece_count_before == bishop_piece_count_after);
-				assert(rook_piece_count_before == rook_piece_count_after + 1);
-				assert(queen_piece_count_before == queen_piece_count_after);
-				assert(king_piece_count_before == king_piece_count_after);
-			case Types::QUEEN:
-				assert(pawn_piece_count_before == pawn_piece_count_after);
-				assert(knight_piece_count_before == knight_piece_count_after);
-				assert(bishop_piece_count_before == bishop_piece_count_after);
-				assert(rook_piece_count_before == rook_piece_count_after);
-				assert(queen_piece_count_before == queen_piece_count_after + 1);
-				assert(king_piece_count_before == king_piece_count_after);
-			}
-		}
-		else {
-			assert(covered_squares_before ^ from.get_u64() ^ to.get_u64() == covered_squares_after);
-
-			// check piece counts
-			assert(enemy_piece_count_before == enemy_piece_count_after);
-			assert(pawn_piece_count_before == pawn_piece_count_after);
-			assert(knight_piece_count_before == knight_piece_count_after);
-			assert(bishop_piece_count_before == bishop_piece_count_after);
-			assert(rook_piece_count_before == rook_piece_count_after);
-			assert(queen_piece_count_before == queen_piece_count_after);
-			assert(king_piece_count_before == king_piece_count_after);
-		}
 
 		break;
 
 	case SpecialMoves::EN_PASSANT:
-		// FIXME: assert the piece type is pawn and that the relative location of the squares is correct.
 		// remove moved piece from old square
 		pieces_by_type[Types::PAWN].clear_square(from);
 		pieces_by_color[turn].clear_square(from);
@@ -590,7 +486,6 @@ Position& Position::make_move(Move move) {
 		break;
 
 	case SpecialMoves::PROMOTION:
-		// FIXME: assert the piece type is a pawn and that the promotion square is on the correct rank.
 		// remove moved piece from old square
 		pieces_by_type[Types::PAWN].clear_square(from);
 		pieces_by_color[turn].clear_square(from);
@@ -607,7 +502,6 @@ Position& Position::make_move(Move move) {
 		break;
 
 	case SpecialMoves::CASTLE:
-		// FIXME: assert everything; pieces involved are king and rook, they are on the appropriate squares, they end on the appropriate squares.
 		// remove king from starting square
 		pieces_by_type[Types::KING].clear_square(from);
 		pieces_by_color[turn].clear_square(from);
@@ -637,6 +531,9 @@ Position& Position::make_move(Move move) {
 		break;
 
 	}
+
+	// integrity check
+	oracle.check_move_integrity(*this, turn, move);
 
 	// calculate if the opponent is in check
 	set_in_check(square_covered(get_king_square(!turn), turn));
@@ -1138,7 +1035,7 @@ std::vector<Move> Position::move_gen_k(Square from)
 
 	if (!is_in_check()) { // if not in check...
 		if (K_castling_right() && is_castling_legal(KINGSIDE)) { // see if we have the right to castle kingside
-			temp_moves = move_gen_generic(from, { Directions::KINGSIDE_CASTLE }, 1); 
+			temp_moves = move_gen_generic(from, { Directions::KING_KINGSIDE_CASTLE }, 1); 
 			assert(temp_moves.size() == 1);
 
 			// update move to be the more specific move type of castling
@@ -1146,7 +1043,7 @@ std::vector<Move> Position::move_gen_k(Square from)
 			moves.push_back(temp_moves[0]);
 		}
 		if (Q_castling_right() && is_castling_legal(QUEENSIDE)) { // see if we have the right to castle queenside
-			temp_moves = move_gen_generic(from, { Directions::QUEENSIDE_CASTLE }, 1);
+			temp_moves = move_gen_generic(from, { Directions::KING_QUEENSIDE_CASTLE }, 1);
 			assert(temp_moves.size() == 1);
 
 			temp_moves[0].set_move_type(CASTLE).set_special(from >> 4); // changes to a castle move and adds the Queen's rook square to the special field
@@ -1508,14 +1405,325 @@ bool Position::is_position_illegal()
 	return false;
 }
 
-void MoveIntegrityChecker::get_before_stats(Position pos) {
-
+void MoveIntegrityChecker::get_before_stats(Position pos, Colors turn) {
+	friendly_piece_count_before = pos.pieces_by_color[turn].popcount();
+	enemy_piece_count_before = pos.pieces_by_color[!turn].popcount();
+	rook_piece_count_before = pos.pieces_by_type[Types::ROOK].popcount();
+	knight_piece_count_before = pos.pieces_by_type[Types::KNIGHT].popcount();
+	queen_piece_count_before = pos.pieces_by_type[Types::QUEEN].popcount();
+	king_piece_count_before = pos.pieces_by_type[Types::KING].popcount();
+	pawn_piece_count_before = pos.pieces_by_type[Types::PAWN].popcount();
+	bishop_piece_count_before = pos.pieces_by_type[Types::BISHOP].popcount();
+	covered_squares_before = pos.get_occupied().get_u64();
 }
 
-void MoveIntegrityChecker::get_after_stats(Position pos) {
-
+void MoveIntegrityChecker::get_after_stats(Position pos, Colors turn) {
+	friendly_piece_count_after = pos.pieces_by_color[turn].popcount();
+	enemy_piece_count_after = pos.pieces_by_color[!turn].popcount();
+	rook_piece_count_after = pos.pieces_by_type[Types::ROOK].popcount();
+	knight_piece_count_after = pos.pieces_by_type[Types::KNIGHT].popcount();
+	queen_piece_count_after = pos.pieces_by_type[Types::QUEEN].popcount();
+	king_piece_count_after = pos.pieces_by_type[Types::KING].popcount();
+	pawn_piece_count_after = pos.pieces_by_type[Types::PAWN].popcount();
+	bishop_piece_count_after = pos.pieces_by_type[Types::BISHOP].popcount();
+	covered_squares_after = pos.get_occupied().get_u64();
 }
 
-void MoveIntegrityChecker::check_move_integrity() {
+void MoveIntegrityChecker::check_move_integrity(Position pos, Colors turn, Move move) {
+	get_after_stats(pos, turn);
+	bool capture_move = pos.is_capture_move(move);
+	Types capt_type = move.get_capt_type();
+	Types promo_type = move.get_promote_type();
+	SpecialMoves move_type = move.get_move_type();
+	uint64_t special = move.get_special().get_u64();
+	uint64_t to = move.get_to().get_u64();
+	uint64_t from = move.get_from().get_u64();
+
+	assert(friendly_piece_count_before == friendly_piece_count_after);
+	assert(king_piece_count_before == king_piece_count_after);
+
+	// checking piece counts
+	switch (move_type) {
+	case SpecialMoves::STD:
+		if (capture_move) {
+			assert(enemy_piece_count_before == enemy_piece_count_after + 1);
+			switch (capt_type) {
+			case Types::PAWN:
+				assert(pawn_piece_count_before == pawn_piece_count_after + 1);
+				assert(knight_piece_count_before == knight_piece_count_after);
+				assert(bishop_piece_count_before == bishop_piece_count_after);
+				assert(rook_piece_count_before == rook_piece_count_after);
+				assert(queen_piece_count_before == queen_piece_count_after);
+			case Types::KNIGHT:
+				assert(pawn_piece_count_before == pawn_piece_count_after);
+				assert(knight_piece_count_before == knight_piece_count_after + 1);
+				assert(bishop_piece_count_before == bishop_piece_count_after);
+				assert(rook_piece_count_before == rook_piece_count_after);
+				assert(queen_piece_count_before == queen_piece_count_after);
+			case Types::BISHOP:
+				assert(pawn_piece_count_before == pawn_piece_count_after);
+				assert(knight_piece_count_before == knight_piece_count_after);
+				assert(bishop_piece_count_before == bishop_piece_count_after + 1);
+				assert(rook_piece_count_before == rook_piece_count_after);
+				assert(queen_piece_count_before == queen_piece_count_after);
+			case Types::ROOK:
+				assert(pawn_piece_count_before == pawn_piece_count_after);
+				assert(knight_piece_count_before == knight_piece_count_after);
+				assert(bishop_piece_count_before == bishop_piece_count_after);
+				assert(rook_piece_count_before == rook_piece_count_after + 1);
+				assert(queen_piece_count_before == queen_piece_count_after);
+			case Types::QUEEN:
+				assert(pawn_piece_count_before == pawn_piece_count_after);
+				assert(knight_piece_count_before == knight_piece_count_after);
+				assert(bishop_piece_count_before == bishop_piece_count_after);
+				assert(rook_piece_count_before == rook_piece_count_after);
+				assert(queen_piece_count_before == queen_piece_count_after + 1);
+			}
+		}
+		else {
+			assert(enemy_piece_count_before == enemy_piece_count_after);
+			assert(pawn_piece_count_before == pawn_piece_count_after);
+			assert(knight_piece_count_before == knight_piece_count_after);
+			assert(bishop_piece_count_before == bishop_piece_count_after);
+			assert(rook_piece_count_before == rook_piece_count_after);
+			assert(queen_piece_count_before == queen_piece_count_after);
+		}
+		break;
+	case SpecialMoves::EN_PASSANT:
+		assert(enemy_piece_count_before == enemy_piece_count_after + 1);
+		assert(pawn_piece_count_before == pawn_piece_count_after + 1);
+		assert(knight_piece_count_before == knight_piece_count_after);
+		assert(bishop_piece_count_before == bishop_piece_count_after);
+		assert(rook_piece_count_before == rook_piece_count_after);
+		assert(queen_piece_count_before == queen_piece_count_after);
+		break;
+
+	case SpecialMoves::CASTLE:
+		assert(enemy_piece_count_before == enemy_piece_count_after);
+		assert(pawn_piece_count_before == pawn_piece_count_after);
+		assert(knight_piece_count_before == knight_piece_count_after);
+		assert(bishop_piece_count_before == bishop_piece_count_after);
+		assert(rook_piece_count_before == rook_piece_count_after);
+		assert(queen_piece_count_before == queen_piece_count_after);
+		break;
+
+	case SpecialMoves::PROMOTION:
+		assert(capt_type != Types::KING && capt_type != Types::PAWN);
+		assert(pawn_piece_count_before == pawn_piece_count_after + 1);
+
+		if (capture_move) {
+			assert(enemy_piece_count_before == enemy_piece_count_after + 1);
+			switch (promo_type) {
+			case Types::KNIGHT:
+				switch (capt_type) {
+				case Types::KNIGHT:
+					assert(knight_piece_count_before == knight_piece_count_after - 1 + 1);
+					assert(bishop_piece_count_before == bishop_piece_count_after);
+					assert(rook_piece_count_before == rook_piece_count_after);
+					assert(queen_piece_count_before == queen_piece_count_after);
+					break;
+				case Types::BISHOP:
+					assert(knight_piece_count_before == knight_piece_count_after - 1);
+					assert(bishop_piece_count_before == bishop_piece_count_after + 1);
+					assert(rook_piece_count_before == rook_piece_count_after);
+					assert(queen_piece_count_before == queen_piece_count_after);
+					break;
+				case Types::ROOK:
+					assert(knight_piece_count_before == knight_piece_count_after - 1);
+					assert(bishop_piece_count_before == bishop_piece_count_after);
+					assert(rook_piece_count_before == rook_piece_count_after + 1);
+					assert(queen_piece_count_before == queen_piece_count_after);
+					break;
+				case Types::QUEEN:
+					assert(knight_piece_count_before == knight_piece_count_after - 1);
+					assert(bishop_piece_count_before == bishop_piece_count_after);
+					assert(rook_piece_count_before == rook_piece_count_after);
+					assert(queen_piece_count_before == queen_piece_count_after + 1);
+					break;
+				}
+				break;
+			case Types::BISHOP:
+				switch (capt_type) {
+				case Types::KNIGHT:
+					assert(knight_piece_count_before == knight_piece_count_after + 1);
+					assert(bishop_piece_count_before == bishop_piece_count_after - 1);
+					assert(rook_piece_count_before == rook_piece_count_after);
+					assert(queen_piece_count_before == queen_piece_count_after);
+					break;
+				case Types::BISHOP:
+					assert(knight_piece_count_before == knight_piece_count_after);
+					assert(bishop_piece_count_before == bishop_piece_count_after - 1 + 1);
+					assert(rook_piece_count_before == rook_piece_count_after);
+					assert(queen_piece_count_before == queen_piece_count_after);
+					break;
+				case Types::ROOK:
+					assert(knight_piece_count_before == knight_piece_count_after);
+					assert(bishop_piece_count_before == bishop_piece_count_after - 1);
+					assert(rook_piece_count_before == rook_piece_count_after + 1);
+					assert(queen_piece_count_before == queen_piece_count_after);
+					break;
+				case Types::QUEEN:
+					assert(knight_piece_count_before == knight_piece_count_after);
+					assert(bishop_piece_count_before == bishop_piece_count_after - 1);
+					assert(rook_piece_count_before == rook_piece_count_after);
+					assert(queen_piece_count_before == queen_piece_count_after + 1);
+					break;
+				}
+				break;
+			case Types::ROOK:
+				switch (capt_type) {
+				case Types::KNIGHT:
+					assert(knight_piece_count_before == knight_piece_count_after + 1);
+					assert(bishop_piece_count_before == bishop_piece_count_after);
+					assert(rook_piece_count_before == rook_piece_count_after - 1);
+					assert(queen_piece_count_before == queen_piece_count_after);
+					break;
+				case Types::BISHOP:
+					assert(knight_piece_count_before == knight_piece_count_after);
+					assert(bishop_piece_count_before == bishop_piece_count_after + 1);
+					assert(rook_piece_count_before == rook_piece_count_after - 1);
+					assert(queen_piece_count_before == queen_piece_count_after);
+					break;
+				case Types::ROOK:
+					assert(knight_piece_count_before == knight_piece_count_after);
+					assert(bishop_piece_count_before == bishop_piece_count_after);
+					assert(rook_piece_count_before == rook_piece_count_after - 1 + 1);
+					assert(queen_piece_count_before == queen_piece_count_after);
+					break;
+				case Types::QUEEN:
+					assert(knight_piece_count_before == knight_piece_count_after);
+					assert(bishop_piece_count_before == bishop_piece_count_after);
+					assert(rook_piece_count_before == rook_piece_count_after - 1);
+					assert(queen_piece_count_before == queen_piece_count_after + 1);
+					break;
+				}
+				break;
+			case Types::QUEEN:
+				switch (capt_type) {
+				case Types::KNIGHT:
+					assert(knight_piece_count_before == knight_piece_count_after + 1);
+					assert(bishop_piece_count_before == bishop_piece_count_after);
+					assert(rook_piece_count_before == rook_piece_count_after);
+					assert(queen_piece_count_before == queen_piece_count_after - 1);
+					break;
+				case Types::BISHOP:
+					assert(knight_piece_count_before == knight_piece_count_after);
+					assert(bishop_piece_count_before == bishop_piece_count_after + 1);
+					assert(rook_piece_count_before == rook_piece_count_after);
+					assert(queen_piece_count_before == queen_piece_count_after - 1);
+					break;
+				case Types::ROOK:
+					assert(knight_piece_count_before == knight_piece_count_after);
+					assert(bishop_piece_count_before == bishop_piece_count_after);
+					assert(rook_piece_count_before == rook_piece_count_after + 1);
+					assert(queen_piece_count_before == queen_piece_count_after - 1);
+					break;
+				case Types::QUEEN:
+					assert(knight_piece_count_before == knight_piece_count_after);
+					assert(bishop_piece_count_before == bishop_piece_count_after);
+					assert(rook_piece_count_before == rook_piece_count_after);
+					assert(queen_piece_count_before == queen_piece_count_after - 1 + 1);
+					break;
+				}
+				break;
+			}
+		}
+		else {
+			assert(enemy_piece_count_before == enemy_piece_count_after);
+
+			switch (promo_type) {
+			case Types::KNIGHT:
+				assert(knight_piece_count_before == knight_piece_count_after - 1);
+				assert(bishop_piece_count_before == bishop_piece_count_after);
+				assert(rook_piece_count_before == rook_piece_count_after);
+				assert(queen_piece_count_before == queen_piece_count_after);
+				break;
+			case Types::BISHOP:
+				assert(knight_piece_count_before == knight_piece_count_after);
+				assert(bishop_piece_count_before == bishop_piece_count_after - 1);
+				assert(rook_piece_count_before == rook_piece_count_after);
+				assert(queen_piece_count_before == queen_piece_count_after);
+				break;
+			case Types::ROOK:
+				assert(knight_piece_count_before == knight_piece_count_after);
+				assert(bishop_piece_count_before == bishop_piece_count_after);
+				assert(rook_piece_count_before == rook_piece_count_after - 1);
+				assert(queen_piece_count_before == queen_piece_count_after);
+				break;
+			case Types::QUEEN:
+				assert(knight_piece_count_before == knight_piece_count_after);
+				assert(bishop_piece_count_before == bishop_piece_count_after);
+				assert(rook_piece_count_before == rook_piece_count_after);
+				assert(queen_piece_count_before == queen_piece_count_after - 1);
+				break;
+			}
+		}
+		break;
+	}
+
+	// checking piece coverage
+	switch (move_type) {
+	case SpecialMoves::EN_PASSANT:
+		assert(covered_squares_before ^ from ^ special ^ to == covered_squares_after);
+		break;
+	case SpecialMoves::CASTLE:
+		if (turn == Colors::WHITE) {
+			if (special == WHITE_QUEENSIDE_ROOK_STARTING_SQUARE.get_u64()) {
+				assert(covered_squares_before ^ from ^ to ^ special ^ (from >> 1) == covered_squares_after);
+			}
+			else if (special == WHITE_KINGSIDE_ROOK_STARTING_SQUARE.get_u64()) {
+				assert(covered_squares_before ^ from ^ to ^ special ^ (from << 1) == covered_squares_after);
+			}
+		}
+		else if (turn == Colors::BLACK) {
+			if (special == BLACK_QUEENSIDE_ROOK_STARTING_SQUARE.get_u64()) {
+				assert(covered_squares_before ^ from ^ to ^ special ^ (from >> 1) == covered_squares_after);
+
+			}
+			else if (special == BLACK_KINGSIDE_ROOK_STARTING_SQUARE.get_u64()) {
+				assert(covered_squares_before ^ from ^ to ^ special ^ (from << 1) == covered_squares_after);
+
+			}
+		}
+		break;
+	case SpecialMoves::PROMOTION:
+		if (capture_move) {	assert(covered_squares_before ^ from == covered_squares_after); }
+		else { assert(covered_squares_before ^ from ^ to == covered_squares_after); }
+		break;
+	case SpecialMoves::STD:
+		if (capture_move) {	assert(covered_squares_before ^ from == covered_squares_after);	}
+		else { assert(covered_squares_before ^ from ^ to == covered_squares_after); }
+		break;
+	}
+}
+
+void MoveIntegrityChecker::check_castling_rights(Position pos) {
+	uint8_t flags = pos.flags;
+
+	// test assumptions. For castling to be available, the king and rook must be in their starting positions.
+	if (flags & WHITE_QUEENSIDE_CASTLING_RIGHTS_MASK) {
+		assert(pos.pieces_by_type[Types::ROOK].contains(WHITE_QUEENSIDE_ROOK_STARTING_SQUARE));
+		assert(pos.pieces_by_type[Types::KING].contains(WHITE_KING_STARTING_SQUARE));
+		assert(pos.pieces_by_color[Colors::WHITE].contains(WHITE_QUEENSIDE_ROOK_STARTING_SQUARE));
+		assert(pos.pieces_by_color[Colors::WHITE].contains(WHITE_KING_STARTING_SQUARE));
+	}
+	if (flags & WHITE_KINGSIDE_CASTLING_RIGHTS_MASK) {
+		assert(pos.pieces_by_type[Types::ROOK].contains(WHITE_KINGSIDE_ROOK_STARTING_SQUARE));
+		assert(pos.pieces_by_type[Types::KING].contains(WHITE_KING_STARTING_SQUARE));
+		assert(pos.pieces_by_color[Colors::WHITE].contains(WHITE_KINGSIDE_ROOK_STARTING_SQUARE));
+		assert(pos.pieces_by_color[Colors::WHITE].contains(WHITE_KING_STARTING_SQUARE));
+	}
+	if (flags & BLACK_QUEENSIDE_CASTLING_RIGHTS_MASK) {
+		assert(pos.pieces_by_type[Types::ROOK].contains(BLACK_QUEENSIDE_ROOK_STARTING_SQUARE));
+		assert(pos.pieces_by_type[Types::KING].contains(BLACK_KING_STARTING_SQUARE));
+		assert(pos.pieces_by_color[Colors::BLACK].contains(BLACK_QUEENSIDE_ROOK_STARTING_SQUARE));
+		assert(pos.pieces_by_color[Colors::BLACK].contains(BLACK_KING_STARTING_SQUARE));
+	}
+	if (flags & BLACK_KINGSIDE_CASTLING_RIGHTS_MASK) {
+		assert(pos.pieces_by_type[Types::ROOK].contains(BLACK_KINGSIDE_ROOK_STARTING_SQUARE));
+		assert(pos.pieces_by_type[Types::KING].contains(BLACK_KING_STARTING_SQUARE));
+		assert(pos.pieces_by_color[Colors::BLACK].contains(BLACK_KINGSIDE_ROOK_STARTING_SQUARE));
+		assert(pos.pieces_by_color[Colors::BLACK].contains(BLACK_KING_STARTING_SQUARE));
+	}
 
 }

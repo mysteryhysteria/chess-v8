@@ -74,6 +74,8 @@ private:
 	std::vector<Move> BASIC_pl_pawn_move_gen(Square from);
 	std::vector<Move> BASIC_pl_castle_move_gen(Square from);
 
+	friend class MoveIntegrityChecker;
+
 public:
 	// Constructors
 	Position(std::string fen) { parse_fen(fen); }
@@ -127,8 +129,32 @@ public:
 };
 
 class MoveIntegrityChecker {
-	MoveIntegrityChecker(Position pos) { get_before_stats(pos); };
-	void get_before_stats(Position pos);
-	void get_after_stats(Position pos);
-	void check_move_integrity();
+
+	int friendly_piece_count_before;
+	int enemy_piece_count_before;
+	int rook_piece_count_before;
+	int knight_piece_count_before;
+	int queen_piece_count_before;
+	int king_piece_count_before;
+	int pawn_piece_count_before;
+	int bishop_piece_count_before;
+	uint64_t covered_squares_before;
+
+	int friendly_piece_count_after;
+	int enemy_piece_count_after;
+	int rook_piece_count_after;
+	int knight_piece_count_after;
+	int queen_piece_count_after;
+	int king_piece_count_after;
+	int pawn_piece_count_after;
+	int bishop_piece_count_after;
+	uint64_t covered_squares_after;
+
+	void get_before_stats(Position pos, Colors turn);
+	void get_after_stats(Position pos, Colors turn);
+
+public:
+	MoveIntegrityChecker(Position pos, Colors turn) { get_before_stats(pos, turn); };
+	void check_castling_rights(Position pos);
+	void check_move_integrity(Position pos, Colors turn, Move move);
 };

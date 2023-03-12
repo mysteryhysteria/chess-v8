@@ -3,10 +3,10 @@
 #include <bitset>
 #include <array>
 #include <optional>
+#include <unordered_map>
 #include "stdint.h"
 #include "Colors.h"
 #include "Utils.h"
-#include "Ray.h"
 
 inline std::optional<int> an2idx(std::string an) {
 	auto idx = std::optional<int>(std::nullopt);
@@ -36,6 +36,7 @@ inline std::optional<std::string> idx2an(int i) {
 }
 
 class Square;
+enum class Directions;
 
 class Bitboard {
 private:
@@ -70,7 +71,6 @@ public:
 	Bitboard operator~();
 	
 };
-
 class Square {
 private:
 	uint64_t bitboard;
@@ -114,7 +114,7 @@ public:
 
 	// Methods
 	bool is_empty();
-	uint64_t get_u64();
+	uint64_t get_u64() const;
 	bool on_pawn_start_rank(Colors turn);
 	bool on_promote_rank(Colors turn);
 	bool on_nth_rank(unsigned int n);
@@ -127,6 +127,68 @@ public:
 	int popcount();
 	int direction_from(Square from);
 	bool is_square(std::string an);
+};
+
+enum class Directions {
+	N = -8,
+	NNE = -15,
+	NE = -7,
+	ENE = -6,
+	E = 1,
+	ESE = 10,
+	SE = 9,
+	SSE = 17,
+	S = 8,
+	SSW = 15,
+	SW = 7,
+	WSW = 6,
+	W = -1,
+	WNW = -10,
+	NW = -9,
+	NNW = -17,
+	NN = -16,
+	EE = 2,
+	SS = 16,
+	WW = -2,
+	EEE = 3,
+	NO_DIRECTION = 0,
+	BLACK_PAWN_CAPTURE_WEST = SW,
+	BLACK_PAWN_CAPTURE_EAST = SE,
+	BLACK_PAWN_PUSH = S,
+	BLACK_PAWN_DOUBLE_PUSH = SS,
+	WHITE_PAWN_CAPTURE_EAST = NE,
+	WHITE_PAWN_CAPTURE_WEST = NW,
+	WHITE_PAWN_PUSH = N,
+	WHITE_PAWN_DOUBLE_PUSH = NN,
+	KING_QUEENSIDE_CASTLE = WW,
+	KING_KINGSIDE_CASTLE = EE,
+	ROOK_QUEENSIDE_CASTLE = EEE,
+	ROOK_KINGSIDE_CASTLE = WW
+};
+
+bool operator==(Directions lhs, int rhs);
+bool operator==(int lhs, Directions rhs);
+bool operator==(Directions lhs, Directions rhs);
+
+const std::unordered_map<Directions, Bitboard> move_masks = { // map of move directions to bitmasks for the move generation
+		{Directions::NNW, Bitboard(~0x010101010101ffff)},
+		{Directions::NNE, Bitboard(~0x808080808080ffff)},
+		{Directions::WNW, Bitboard(~0x03030303030303ff)},
+		{Directions::NW,  Bitboard(~0x01010101010101ff)},
+		{Directions::N,   Bitboard(~0x00000000000000ff)},
+		{Directions::NE,  Bitboard(~0x80808080808080ff)},
+		{Directions::ENE, Bitboard(~0xc0c0c0c0c0c0c0ff)},
+		{Directions::WW,  Bitboard(~0x0303030303030303)},
+		{Directions::W,   Bitboard(~0x0101010101010101)},
+		{Directions::E,   Bitboard(~0x8080808080808080)},
+		{Directions::EE,  Bitboard(~0xc0c0c0c0c0c0c0c0)},
+		{Directions::WSW, Bitboard(~0xff03030303030303)},
+		{Directions::SW,  Bitboard(~0xff01010101010101)},
+		{Directions::S,   Bitboard(~0xff00000000000000)},
+		{Directions::SE,  Bitboard(~0xff80808080808080)},
+		{Directions::ESE, Bitboard(~0xffc0c0c0c0c0c0c0)},
+		{Directions::SSW, Bitboard(~0xffff010101010101)},
+		{Directions::SSE, Bitboard(~0xffff808080808080)}
 };
 
 uint64_t operator&=(uint64_t lhs, Square rhs);

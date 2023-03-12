@@ -142,7 +142,7 @@ bool Square::operator==(const uint64_t rhs) { return *this == Square(rhs); };
 
 bool Square::is_empty() { return this->bitboard == (uint64_t) 0; };
 
-uint64_t Square::get_u64() { return this->bitboard; };
+uint64_t Square::get_u64() const { return this->bitboard; };
 
 // TODO: rewrite this so that the function call isn't zero indexed.
 bool Square::on_nth_rank(unsigned int n) {
