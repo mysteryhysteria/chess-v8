@@ -24,6 +24,16 @@ const enum CastleSide {KINGSIDE = 0, QUEENSIDE = 1};
 MoveOptions operator|(MoveOptions lhs, MoveOptions rhs);
 
 const std::string STARTING_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+const uint8_t WHITE_KINGSIDE_CASTLING_RIGHTS_MASK	= 0b00000001;
+const uint8_t WHITE_QUEENSIDE_CASTLING_RIGHTS_MASK	= 0b00000010;
+const uint8_t BLACK_KINGSIDE_CASTLING_RIGHTS_MASK	= 0b00000100;
+const uint8_t BLACK_QUEENSIDE_CASTLING_RIGHTS_MASK	= 0b00001000;
+const uint8_t WHITE_CASTLING_RIGHTS_MASK			= 0b00000011;
+const uint8_t BLACK_CASTLING_RIGHTS_MASK			= 0b00001100;
+const uint8_t KINGSIDE_CASTLING_RIGHTS_MASK			= 0b00000101;
+const uint8_t QUEENSIDE_CASTLING_RIGHTS_MASK		= 0b00001010;
+const uint8_t CASTLING_RIGHTS_MASK					= 0b00001111;
+const uint8_t IN_CHECK_MASK							= 0b00010000;
 
 class Position {
 private:
