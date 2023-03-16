@@ -1307,8 +1307,10 @@ std::vector<Move> Position::BASIC_pl_std_move_gen(Square from) {
 				moves.push_back(Move(from, to, get_turn(), type));
 			}
 			else {
-				if (is_opponent(to) && to != get_king_square(!get_turn())) {
-					moves.push_back(Move(from, to, get_turn(), type, get_type(to)));
+				if (is_opponent(to)) {
+					if (to != get_king_square(!get_turn())) {
+						moves.push_back(Move(from, to, get_turn(), type, get_type(to)));
+					}
 					break; // searching this ray is done
 				}
 				else if (is_friend(to)) {
@@ -1380,8 +1382,10 @@ std::vector<Move> Position::BASIC_pl_pawn_move_gen(Square from) {
 			to = search.get_current();
 
 			if (is_opponent(to)) { // std capture move
-				Move move = Move(from, to, turn, type, get_type(to));
-				save_moves(move);
+				if (to != get_king_square(!turn)) { // excluding king captures
+					Move move = Move(from, to, turn, type, get_type(to));
+					save_moves(move);
+				}
 			}
 			else if (to == epsq) { // e.p. capture move
 				if (turn == Colors::WHITE) { special = to << 8; }
