@@ -104,15 +104,15 @@ public:
 	bool get_castling_right(Colors color, CastleSide side);
 	bool is_in_check();
 	bool square_covered(Square sq, Colors attacker);
-	bool attacked_by_piece(Square sq, Types piece_type, Colors attacker);
+	std::vector<Square> find_attackers(Square sq, Types piece_type, Colors attacker);
 	void king_threats();
 	void set_in_check(bool set);
 	void disp_bitboards();
 	void disp_castling();
 	void disp_epsq();
 	void disp_plys();
-	void disp(bool show_all);
-	void disp() { disp(false); };
+	void disp_move(Move move);
+	void disp(bool show_all = false);
 	Position& make_move(Move move);
 	Position& undo();
 	//void perft(unsigned int depth, perft_moves& counts);

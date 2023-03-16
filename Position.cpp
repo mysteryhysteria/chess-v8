@@ -309,15 +309,100 @@ void Position::disp_epsq() {
 	else {
 		square_an = "None";
 	}
-	std::cout << "  Available? - " << available << "\n";
-	std::cout << "  En Passant Square - " << square_an << "\n";
+	std::cout << "  Available? - " << available << std::endl;
+	std::cout << "  En Passant Square - " << square_an << std::endl;
 }
 
 void Position::disp_plys() {
-	std::cout << "\nPlys\n";
-	std::cout << "  Ply Count - " << ply << "\n";
-	std::cout << "  50 Move Clock - " << ply_clock << "\n";
-	std::cout << "  Turn - " << get_turn() << "\n";
+	std::cout << std::endl << "Plys" << std::endl;
+	std::cout << "  Ply Count - " << ply << std::endl;
+	std::cout << "  50 Move Clock - " << ply_clock << std::endl;
+	std::cout << "  Turn - " << get_turn() << std::endl;
+}
+
+// This function will display each move in the PGN Short Algebraic Notation format.
+void Position::disp_move(Move move) {
+	SpecialMoves move_type = move.get_move_type();
+	Types piece_type = move.get_type();
+	Types capt_type = move.get_capt_type();
+	Square from = move.get_from();
+	Square to = move.get_to();
+	Colors player = move.get_color();
+	std::vector<Square> attackers;
+	
+	// special case for castling
+	if (move_type == SpecialMoves::CASTLE) { // if the move is a castling move...
+		std::cout << "O-O";
+		if (from + Directions::KING_QUEENSIDE_CASTLE == to) { // if it is a queenside castle...
+			std::cout << "-O";
+		}
+	}
+	else {
+		// Label moved piece.
+		// pawns do not get a label
+		if (piece_type != Types::PAWN) { // if the moved piece is not a pawn:
+			std::cout << TypestoChar(piece_type); // output the letter representing this piece
+		}
+		
+		// Disambiguate moves.
+		// pawn captures are always disambiguated with the file
+		if (piece_type == Types::PAWN && capt_type != Types::NONE) { // if the move is a pawn capture:
+			std::cout << from.p2an()[0]; // output the file of the pawn
+		}
+		else {
+			// Determine if disambiguation is necessary at all.
+			// find all other pieces of the same type as the moved piece which could move to the destination square.
+			attackers = find_attackers(to, piece_type, player);
+
+			if (attackers.size() > 0) { // if there are any pieces found...
+				// then compare the file of each found piece to the file of the starting square of the moved piece.
+				bool unique_file = true;
+				char start_file = from.p2an()[0];
+				for (auto attacker : attackers) {
+					if (attacker.p2an()[0] == start_file) { unique_file = false; };
+				}
+				if (unique_file) { // if none of the found pieces' files match the moved piece...
+					std::cout << start_file; // print the starting file of the moved piece to disambiguate the move.
+				}
+				else { // if comparing files is not sufficient to disambiguate the move...
+					// then compare the rank of each found piece to the rank of the original square of the moved piece
+					bool unique_rank = true;
+					char start_rank = from.p2an()[1];
+					for (auto attacker : attackers) {
+						if (attacker.p2an()[1] == start_rank) { unique_rank = false; };
+					}
+					if (unique_rank) { // if none of the found pieces' ranks match the moved piece...
+						std::cout << start_rank; // print the starting rank of the moved piece to disambiguate the move.
+					}
+					else { // if neither comparing files nor comparing ranks is sufficient to disambiguate the move...
+						std::cout << start_file << start_rank; // print both the starting file and rank.
+					}
+				}
+			}
+		}
+		if (capt_type != Types::NONE) { // if this is a capture move...
+			std::cout << 'x'; // print the 'x' character to denote the move is a capture.
+		}
+		std::cout << to.p2an(); // print the destination square.
+		if (move_type == SpecialMoves::EN_PASSANT) { // if the move is an en passant capture...
+			std::cout << " e.p."; // label the move as such.
+		}
+		else if (move_type == SpecialMoves::PROMOTION) { // if the move is a promotion...
+			std::cout << '=' << TypestoChar(capt_type); // show the promotion piece.
+		}
+	}
+	// TODO: implement the rest of this stuff.
+	// if the move results in a check:
+		// if the move results in a checkmate:
+			// print '#'.
+		// else:
+			// print '+'.
+			// if the move results in a double check:
+				// print '+'.
+			// end if.
+		// end if.
+	// end if.
+	std::cout << std::endl;
 }
 
 void Position::set_castling_right(Colors color, CastleSide side, bool set) {
@@ -778,12 +863,12 @@ bool Position::is_friend(Square sq) {
 	return pieces_by_color[get_turn()].contains(sq);
 }
 
-// TODO Consider deleting and integrating into square covered
-bool Position::attacked_by_piece(Square sq, Types piece_type, Colors attacker) {
+std::vector<Square> Position::find_attackers(Square sq, Types piece_type, Colors attacker) {
 	Ray search_path = Ray(sq);
 	Square to;
 	int max_distance;
 	std::vector<Directions> directions;
+	std::vector<Square> attackers;
 
 	if (piece_type == PAWN || piece_type == KNIGHT || piece_type == KING) { 
 		max_distance = 1;
@@ -809,10 +894,9 @@ bool Position::attacked_by_piece(Square sq, Types piece_type, Colors attacker) {
 		search_path.reset(dir, max_distance);
 		while (!search_path.end()) {
 			to = (++search_path).get_current();
-			if (pieces_by_color[attacker].contains(to)) { // found an opponent's piece
-				if (is_type(to, piece_type)) { //
-					return true;
-				}
+			if (pieces_by_color[attacker].contains(to) && is_type(to, piece_type)) { // found an opponent's piece of the correct type
+				attackers.push_back(to);
+				break;
 			}
 			else if (pieces_by_color[!attacker].contains(to)) { // found a friendly piece, which blocks enemy pieces!
 				break;
@@ -820,12 +904,12 @@ bool Position::attacked_by_piece(Square sq, Types piece_type, Colors attacker) {
 			// otherwise continue the search
 		}
 	}
-	return false;
+	return attackers;
 }
 
 bool Position::square_covered(Square sq, Colors attacker) {
 	for (int i = 0; i < 6; ++i) {
-		if (attacked_by_piece(sq, static_cast<Types>(i), attacker)) {
+		if (!find_attackers(sq, static_cast<Types>(i), attacker).empty()) {
 			return true;
 		}
 	}
@@ -1365,6 +1449,9 @@ std::vector<Move> Position::BASIC_move_gen() {
 
 	// lambda function for filtering illegal moves.
 	auto illegal_move = [&](Move& pl_move) -> bool {
+		if (pl_move.get_capt_type() == Types::KING) {
+			return true;
+		}
 		Position next = Position(*this);
 		next.make_move(pl_move);
 		//next.check_integrity();
@@ -1431,13 +1518,17 @@ void MoveIntegrityChecker::get_after_stats(Position pos, Colors turn) {
 
 void MoveIntegrityChecker::check_move_integrity(Position pos, Colors turn, Move move) {
 	get_after_stats(pos, turn);
-	bool capture_move = pos.is_capture_move(move);
 	Types capt_type = move.get_capt_type();
 	Types promo_type = move.get_promote_type();
 	SpecialMoves move_type = move.get_move_type();
 	uint64_t special = move.get_special().get_u64();
 	uint64_t to = move.get_to().get_u64();
 	uint64_t from = move.get_from().get_u64();
+	bool capture_move = (capt_type != Types::NONE);
+
+	pos.disp();
+	std::cout << move << std::endl;
+	pos.disp_move(move);
 
 	assert(friendly_piece_count_before == friendly_piece_count_after);
 	assert(king_piece_count_before == king_piece_count_after);
@@ -1454,30 +1545,35 @@ void MoveIntegrityChecker::check_move_integrity(Position pos, Colors turn, Move 
 				assert(bishop_piece_count_before == bishop_piece_count_after);
 				assert(rook_piece_count_before == rook_piece_count_after);
 				assert(queen_piece_count_before == queen_piece_count_after);
+				break;
 			case Types::KNIGHT:
 				assert(pawn_piece_count_before == pawn_piece_count_after);
 				assert(knight_piece_count_before == knight_piece_count_after + 1);
 				assert(bishop_piece_count_before == bishop_piece_count_after);
 				assert(rook_piece_count_before == rook_piece_count_after);
 				assert(queen_piece_count_before == queen_piece_count_after);
+				break;
 			case Types::BISHOP:
 				assert(pawn_piece_count_before == pawn_piece_count_after);
 				assert(knight_piece_count_before == knight_piece_count_after);
 				assert(bishop_piece_count_before == bishop_piece_count_after + 1);
 				assert(rook_piece_count_before == rook_piece_count_after);
 				assert(queen_piece_count_before == queen_piece_count_after);
+				break;
 			case Types::ROOK:
 				assert(pawn_piece_count_before == pawn_piece_count_after);
 				assert(knight_piece_count_before == knight_piece_count_after);
 				assert(bishop_piece_count_before == bishop_piece_count_after);
 				assert(rook_piece_count_before == rook_piece_count_after + 1);
 				assert(queen_piece_count_before == queen_piece_count_after);
+				break;
 			case Types::QUEEN:
 				assert(pawn_piece_count_before == pawn_piece_count_after);
 				assert(knight_piece_count_before == knight_piece_count_after);
 				assert(bishop_piece_count_before == bishop_piece_count_after);
 				assert(rook_piece_count_before == rook_piece_count_after);
 				assert(queen_piece_count_before == queen_piece_count_after + 1);
+				break;
 			}
 		}
 		else {
