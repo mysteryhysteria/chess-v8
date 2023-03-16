@@ -47,13 +47,13 @@ public:
 		// special must not be empty if the move type is en_passant
 		assert((move_type == SpecialMoves::EN_PASSANT) ? (special.popcount() == 1) : true);
 		// special must be on the 6th rank if move type is en passant and the color is white
-		assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::WHITE) ? (special.get_u64() & FIFTH_RANK != 0ULL) : true);
+		assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::WHITE) ? ((special.get_u64() & FIFTH_RANK) != 0ULL) : true);
 		// special must be on the 3rd rank if move type is en passant and the color is black
-		assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::BLACK) ? (special.get_u64() & FOURTH_RANK != 0ULL) : true);
+		assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::BLACK) ? ((special.get_u64() & FOURTH_RANK) != 0ULL) : true);
 		// special must be either a1 or h1 if move type is castle and the color is white
-		assert((move_type == SpecialMoves::CASTLE && color == Colors::WHITE) ? (special.get_u64() & WHITE_ROOKS_STARTING_POS != 0ULL) : true);
+		assert((move_type == SpecialMoves::CASTLE && color == Colors::WHITE) ? ((special.get_u64() & WHITE_ROOKS_STARTING_POS) != 0ULL) : true);
 		// special must be either a8 or h8 if move type is castle and the color is black
-		assert((move_type == SpecialMoves::CASTLE && color == Colors::BLACK) ? (special.get_u64() & BLACK_ROOKS_STARTING_POS != 0ULL) : true);
+		assert((move_type == SpecialMoves::CASTLE && color == Colors::BLACK) ? ((special.get_u64() & BLACK_ROOKS_STARTING_POS) != 0ULL) : true);
 		// special must be empty if the move type is std
 		assert((move_type == SpecialMoves::STD)		  ? (special.popcount() == 0) : true);
 		// special must be empty if the move type is promotion
@@ -90,7 +90,7 @@ public:
 	// for standard positional moves
 	Move(Square from, Square to, Colors color, Types type) : Move(from, to, color, type, Types::NONE) {}
 
-	Move() : Move(Square(), Square(), Colors::WHITE, Types::NONE) {}
+	Move() = delete; // testing out not having a default constructor.
 
 	// general purpose
 	Move& set_special(Square special) { this->special = special; return *this; }

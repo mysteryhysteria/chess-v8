@@ -471,17 +471,22 @@ Position& Position::make_move(Move move) {
 	auto move_type = move.get_move_type();
 	Colors turn = get_turn();
 	Types type = move.get_type();
-	assert(type != Types::NONE); // gotta have something to move
-
 	Types capt_type = move.get_capt_type();
-	assert(capt_type != Types::KING); // no capturing kings
-
 	Types promote_type = move.get_promote_type();
-	assert(promote_type != Types::KING && promote_type != Types::PAWN); // no promoting to kings or pawns
-
 	Square from = move.get_from();
 	Square to = move.get_to();
 	Square special = move.get_special();
+
+	// to square cannot be a king
+	assert((to.get_u64() & pieces_by_type[Types::KING].get_u64()) == 0ULL);
+	// from square must contain a piece
+	assert((from.get_u64() & get_occupied().get_u64()) != 0ULL);
+	// from square must contain a piece of the correct color
+	assert((from.get_u64() & pieces_by_color[turn].get_u64()) != 0ULL);
+	// from square must contain a piece of the correct type
+	assert((from.get_u64() & pieces_by_type[type].get_u64()) != 0ULL);
+	// if there is no capture type, the destination square must be empty. otherwise the capture type must match the type in the destination square.
+	assert((capt_type == Types::NONE) ? ((to.get_u64() & get_occupied().get_u64()) == 0ULL) : ((to.get_u64() & pieces_by_type[capt_type].get_u64()) != 0ULL));
 
 	// create integrity checker
 	MoveIntegrityChecker oracle = MoveIntegrityChecker(*this, turn);
@@ -1141,7 +1146,6 @@ std::vector<Move> Position::move_gen_p(Square from) {
 	ASSERT_ONE_SQUARE(from);
 	std::vector<Move> pl_moves, moves, temp_moves;
 	Bitboard attack_vector;
-	Move promote_move;
 	unsigned int max_distance;
 	Colors turn = get_turn();
 
@@ -1160,7 +1164,7 @@ std::vector<Move> Position::move_gen_p(Square from) {
 	int old_size = pl_moves.size();
 	for (int i = 0; i < old_size; ++i) {
 		if (pl_moves[i].get_to().on_promote_rank(turn)) {
-			promote_move = pl_moves[i].set_move_type(PROMOTION);
+			Move promote_move = pl_moves[i].set_move_type(PROMOTION);
 			for (int j = 1; j < 5; ++j) {
 				promote_move.set_promote_type(static_cast<Types>(j));
 				if (j == 1) {
@@ -1303,7 +1307,7 @@ std::vector<Move> Position::BASIC_pl_std_move_gen(Square from) {
 				moves.push_back(Move(from, to, get_turn(), type));
 			}
 			else {
-				if (is_opponent(to)) {
+				if (is_opponent(to) && to != get_king_square(!get_turn())) {
 					moves.push_back(Move(from, to, get_turn(), type, get_type(to)));
 					break; // searching this ray is done
 				}
@@ -1323,7 +1327,6 @@ std::vector<Move> Position::BASIC_pl_std_move_gen(Square from) {
 
 std::vector<Move> Position::BASIC_pl_pawn_move_gen(Square from) {
 	std::vector<Move> moves = {};
-	Move move;
 	Types type = get_type(from);
 	Square to, special;
 	Ray search = Ray(from);
@@ -1337,7 +1340,7 @@ std::vector<Move> Position::BASIC_pl_pawn_move_gen(Square from) {
 
 	// This lambda takes the calculated move and determines if it is eligible for promotion. 
 	// It then decides to either store the set of promotions or just the plain move.
-	auto save_moves = [&]() -> void {
+	auto save_moves = [&](Move move) -> void {
 		if ((turn == Colors::WHITE && to.on_nth_rank(7)) || (turn == Colors::BLACK && to.on_nth_rank(0))) {
 			for (int i = 0; i < 6; ++i) {
 				move.set_move_type(SpecialMoves::PROMOTION);
@@ -1361,8 +1364,8 @@ std::vector<Move> Position::BASIC_pl_pawn_move_gen(Square from) {
 
 		// determine what is on the test square and do something about it.
 		if (is_open(to)) {
-			move = Move(from, to, turn, type);
-			save_moves();
+			Move move = Move(from, to, turn, type);
+			save_moves(move);
 		}
 		else {
 			break; // occupied squares are not available for pawn pushes
@@ -1377,14 +1380,14 @@ std::vector<Move> Position::BASIC_pl_pawn_move_gen(Square from) {
 			to = search.get_current();
 
 			if (is_opponent(to)) { // std capture move
-				move = Move(from, to, turn, type, get_type(to));
-				save_moves();
+				Move move = Move(from, to, turn, type, get_type(to));
+				save_moves(move);
 			}
 			else if (to == epsq) { // e.p. capture move
 				if (turn == Colors::WHITE) { special = to << 8; }
 				else if (turn == Colors::BLACK) { special = to >> 8; }
 				else { assert(false); }
-				move = Move(from, to, special, turn, type, Types::PAWN, Types::NONE, SpecialMoves::EN_PASSANT);
+				Move move = Move(from, to, special, turn, type, Types::PAWN, Types::NONE, SpecialMoves::EN_PASSANT);
 				moves.push_back(move); // Dont need to call save_moves() here since an en passant could never be a promotion.
 			}
 		}
@@ -1398,7 +1401,6 @@ std::vector<Move> Position::BASIC_pl_castle_move_gen(Square from) {
 		return std::vector<Move>();
 	}
 
-	Move move;
 	std::vector<Move> moves;
 	Colors turn = get_turn();
 	Bitboard between_q, between_k;
@@ -1420,7 +1422,7 @@ std::vector<Move> Position::BASIC_pl_castle_move_gen(Square from) {
 	if (Q_castling_right()) { // do we have the right to castle?
 		if ((get_occupied() & between_q).is_empty()) { // are the squares between the king and rook empty?
 			if (!square_covered(sq_k >> 1, !turn) && !square_covered(sq_k >> 2, !turn)) { // are the squares the king moves through attacked?
-				move = Move(sq_k, sq_k >> 2, sq_k >> 4, turn, Types::KING, Types::NONE, Types::NONE, SpecialMoves::CASTLE);
+				Move move = Move(sq_k, sq_k >> 2, sq_k >> 4, turn, Types::KING, Types::NONE, Types::NONE, SpecialMoves::CASTLE);
 				moves.push_back(move);
 			}
 		}
@@ -1430,7 +1432,7 @@ std::vector<Move> Position::BASIC_pl_castle_move_gen(Square from) {
 	if (K_castling_right()) { // do we have the right to castle?
 		if ((get_occupied() & between_k).is_empty()) { // are the squares between the king and rook empty?
 			if (!square_covered(sq_k << 1, !turn) && !square_covered(sq_k << 2, !turn)) { // are the squares the king moves through attacked?
-				move = Move(sq_k, sq_k << 2, sq_k << 3, turn, Types::KING, Types::NONE, Types::NONE, SpecialMoves::CASTLE);
+				Move move = Move(sq_k, sq_k << 2, sq_k << 3, turn, Types::KING, Types::NONE, Types::NONE, SpecialMoves::CASTLE);
 				moves.push_back(move);
 			}
 		}
@@ -1525,10 +1527,6 @@ void MoveIntegrityChecker::check_move_integrity(Position pos, Colors turn, Move 
 	uint64_t to = move.get_to().get_u64();
 	uint64_t from = move.get_from().get_u64();
 	bool capture_move = (capt_type != Types::NONE);
-
-	pos.disp();
-	std::cout << move << std::endl;
-	pos.disp_move(move);
 
 	assert(friendly_piece_count_before == friendly_piece_count_after);
 	assert(king_piece_count_before == king_piece_count_after);
@@ -1760,35 +1758,35 @@ void MoveIntegrityChecker::check_move_integrity(Position pos, Colors turn, Move 
 	// checking piece coverage
 	switch (move_type) {
 	case SpecialMoves::EN_PASSANT:
-		assert(covered_squares_before ^ from ^ special ^ to == covered_squares_after);
+		assert((covered_squares_before ^ from ^ special ^ to) == covered_squares_after);
 		break;
 	case SpecialMoves::CASTLE:
 		if (turn == Colors::WHITE) {
 			if (special == WHITE_QUEENSIDE_ROOK_STARTING_SQUARE.get_u64()) {
-				assert(covered_squares_before ^ from ^ to ^ special ^ (from >> 1) == covered_squares_after);
+				assert((covered_squares_before ^ from ^ to ^ special ^ (from >> 1)) == covered_squares_after);
 			}
 			else if (special == WHITE_KINGSIDE_ROOK_STARTING_SQUARE.get_u64()) {
-				assert(covered_squares_before ^ from ^ to ^ special ^ (from << 1) == covered_squares_after);
+				assert((covered_squares_before ^ from ^ to ^ special ^ (from << 1)) == covered_squares_after);
 			}
 		}
 		else if (turn == Colors::BLACK) {
 			if (special == BLACK_QUEENSIDE_ROOK_STARTING_SQUARE.get_u64()) {
-				assert(covered_squares_before ^ from ^ to ^ special ^ (from >> 1) == covered_squares_after);
+				assert((covered_squares_before ^ from ^ to ^ special ^ (from >> 1)) == covered_squares_after);
 
 			}
 			else if (special == BLACK_KINGSIDE_ROOK_STARTING_SQUARE.get_u64()) {
-				assert(covered_squares_before ^ from ^ to ^ special ^ (from << 1) == covered_squares_after);
+				assert((covered_squares_before ^ from ^ to ^ special ^ (from << 1)) == covered_squares_after);
 
 			}
 		}
 		break;
 	case SpecialMoves::PROMOTION:
-		if (capture_move) {	assert(covered_squares_before ^ from == covered_squares_after); }
-		else { assert(covered_squares_before ^ from ^ to == covered_squares_after); }
+		if (capture_move) {	assert((covered_squares_before ^ from) == covered_squares_after); }
+		else { assert((covered_squares_before ^ from ^ to) == covered_squares_after); }
 		break;
 	case SpecialMoves::STD:
-		if (capture_move) {	assert(covered_squares_before ^ from == covered_squares_after);	}
-		else { assert(covered_squares_before ^ from ^ to == covered_squares_after); }
+		if (capture_move) {	assert((covered_squares_before ^ from) == covered_squares_after);	}
+		else { assert((covered_squares_before ^ from ^ to) == covered_squares_after); }
 		break;
 	}
 }

@@ -207,7 +207,7 @@ std::optional<Square> Square::previous(unsigned int skip) {
 
 Square& Square::first() { this->bitboard = (uint64_t) 1; return *this; }
 
-int Square::popcount() { ASSERT_ONE_SQUARE(*this); return 1; }
+int Square::popcount() { return std::bitset<64>(this->get_u64()).count(); }
 
 int Square::direction_from(Square from)
 {
