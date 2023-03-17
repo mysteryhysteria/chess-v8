@@ -507,19 +507,21 @@ Position& Position::make_move(Move move) {
 	assert((from.get_u64() & pieces_by_type[type].get_u64()) != 0ULL);
 
 	if (move_type == SpecialMoves::EN_PASSANT) {
+		// the special square must contain a piece
+		assert((special.get_u64() & get_occupied().get_u64()) != 0ULL);
 		// the special square must be a pawn
 		assert((special.get_u64() & pieces_by_type[Types::PAWN].get_u64()) != 0ULL);
 		// the special square must be an opponent
 		assert((special.get_u64() & pieces_by_color[!turn].get_u64()) != 0ULL);
 	}
 	else if (move_type == SpecialMoves::CASTLE) {
+		// special square must contain a piece
+		assert((special.get_u64() & get_occupied().get_u64()) != 0ULL);
 		// special square must be a rook
 		assert((special.get_u64() & pieces_by_type[Types::ROOK].get_u64()) != 0ULL);
 		// special square must be a friend
 		assert((special.get_u64() & pieces_by_color[turn].get_u64()) != 0ULL);
-	}
-	// if the move is a castle
-	
+	}	
 
 	// create integrity checker
 	MoveIntegrityChecker oracle = MoveIntegrityChecker(*this, turn);
@@ -865,7 +867,13 @@ Types Position::get_type(Square sq) {
 	return NONE;
 }
 
-Square Position::get_king_square(Colors color) { return pieces_by_type[Types::KING] & pieces_by_color[color]; };
+Square Position::get_king_square(Colors color) {
+	Square king_sq;
+	king_sq = pieces_by_type[Types::KING] & pieces_by_color[color];
+	assert(pieces_by_color[color].contains(king_sq));
+	assert(pieces_by_type[Types::KING].contains(king_sq));
+	return king_sq;
+};
 
 bool Position::is_type(Square sq, Types type) {
 	return pieces_by_type[type].contains(sq);
@@ -1479,24 +1487,18 @@ std::vector<Move> Position::BASIC_pl_castle_move_gen(Square from) {
 
 std::vector<Move> Position::BASIC_move_gen() {
 	std::vector<Move> moves;
-	
-	Square king_sq = pieces_by_color[get_turn()] & pieces_by_type[Types::KING];
-	assert(get_type(king_sq) == Types::KING);
-	assert(pieces_by_color[get_turn()].contains(king_sq));
+	Colors turn = get_turn();
 
 	moves = BASIC_pl_move_gen(); // Get all the pseudo-legal moves in the position.
 
 	// lambda function for filtering illegal moves.
 	auto illegal_move = [&](Move& pl_move) -> bool {
-		if (pl_move.get_capt_type() == Types::KING) {
-			return true;
-		}
 		Position next = Position(*this);
 		next.make_move(pl_move);
 		//next.check_integrity();
 		std::vector<Move> counter_moves = next.BASIC_pl_move_gen();
 		for (auto counter_move : counter_moves) {
-			if (counter_move.get_to() == king_sq) {
+			if (counter_move.get_to() == get_king_square(turn)) {
 				return true;
 			}
 		}

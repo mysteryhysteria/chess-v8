@@ -43,83 +43,86 @@ public:
 		this->promote_type = promote_type;
 		this->move_type = move_type;
 
-		// input checking - these checks are not fully comprehensive as the move object doesn't have any information about the board.
-		// In order to make fully comprehensive checks, the current position of the board needs to be taken into consideration.
+		{ // assertion hell
 
-		// from can never be empty
-		assert(from.popcount() == 1);
-		// from must be the king starting square if the move is castling
-		assert((move_type == SpecialMoves::CASTLE && color == Colors::WHITE) ? (from.get_u64() == WHITE_KING_STARTING_POS) : true);
-		assert((move_type == SpecialMoves::CASTLE && color == Colors::BLACK) ? (from.get_u64() == BLACK_KING_STARTING_POS) : true);
-		// from must be on the fifth rank if the move is en passant and the color is white
-		assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::WHITE) ? ((from.get_u64() & FIFTH_RANK) != 0ULL) : true);
-		// from must be on the fourth rank if the move is en passant and the color is black
-		assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::BLACK) ? ((from.get_u64() & FOURTH_RANK) != 0ULL) : true);
-		// from must be on the seventh rank if the move is promotion and the color is white
-		assert((move_type == SpecialMoves::PROMOTION && color == Colors::WHITE) ? ((from.get_u64() & SEVENTH_RANK) != 0ULL) : true);
-		// from must be on the second rank if the move is promotion and the color is black
-		assert((move_type == SpecialMoves::PROMOTION && color == Colors::BLACK) ? ((from.get_u64() & SECOND_RANK) != 0ULL) : true);
+			// input checking - these checks are not fully comprehensive as the move object doesn't have any information about the board.
+			// In order to make fully comprehensive checks, the current position of the board needs to be taken into consideration.
 
-		// to can never be empty
-		assert(to.popcount() == 1);
-		// to must be c1 or g1 if the move is castling and the color is white
-		assert((move_type == SpecialMoves::CASTLE && color == Colors::WHITE) ? ((to.get_u64() & WHITE_KING_AFTER_CASTLE) != 0ULL) : true);
-		// to must be c8 or g8 if the move is castling and the color is black
-		assert((move_type == SpecialMoves::CASTLE && color == Colors::BLACK) ? ((to.get_u64() & BLACK_KING_AFTER_CASTLE) != 0ULL) : true);
-		// to must be on the sixth rank if the move is en passant and the color is white
-		assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::WHITE) ? ((to.get_u64() & SIXTH_RANK) != 0ULL) : true);
-		// to must be on the third rank if the move is en passant and the color is black
-		assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::BLACK) ? ((to.get_u64() & THIRD_RANK) != 0ULL) : true);
-		// to must be on the eighth rank if the move is promotion and the color is white
-		assert((move_type == SpecialMoves::PROMOTION && color == Colors::WHITE) ? ((to.get_u64() & EIGHTH_RANK) != 0ULL) : true);
-		// to must be on the first rank if the move is promotion and the color is black
-		assert((move_type == SpecialMoves::PROMOTION && color == Colors::BLACK) ? ((to.get_u64() & FIRST_RANK) != 0ULL) : true);
+			// from can never be empty
+			assert(from.popcount() == 1);
+			// from must be the king starting square if the move is castling
+			assert((move_type == SpecialMoves::CASTLE && color == Colors::WHITE) ? (from.get_u64() == WHITE_KING_STARTING_POS) : true);
+			assert((move_type == SpecialMoves::CASTLE && color == Colors::BLACK) ? (from.get_u64() == BLACK_KING_STARTING_POS) : true);
+			// from must be on the fifth rank if the move is en passant and the color is white
+			assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::WHITE) ? ((from.get_u64() & FIFTH_RANK) != 0ULL) : true);
+			// from must be on the fourth rank if the move is en passant and the color is black
+			assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::BLACK) ? ((from.get_u64() & FOURTH_RANK) != 0ULL) : true);
+			// from must be on the seventh rank if the move is promotion and the color is white
+			assert((move_type == SpecialMoves::PROMOTION && color == Colors::WHITE) ? ((from.get_u64() & SEVENTH_RANK) != 0ULL) : true);
+			// from must be on the second rank if the move is promotion and the color is black
+			assert((move_type == SpecialMoves::PROMOTION && color == Colors::BLACK) ? ((from.get_u64() & SECOND_RANK) != 0ULL) : true);
 
-		// special must not be empty if the move type is castle
-		assert((move_type == SpecialMoves::CASTLE)	   ? (special.popcount() == 1) : true);
-		// special must not be empty if the move type is en_passant
-		assert((move_type == SpecialMoves::EN_PASSANT) ? (special.popcount() == 1) : true);
-		// special must be on the 5th rank if move type is en passant and the color is white
-		assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::WHITE) ? ((special.get_u64() & FIFTH_RANK) != 0ULL) : true);
-		// special must be on the 4th rank if move type is en passant and the color is black
-		assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::BLACK) ? ((special.get_u64() & FOURTH_RANK) != 0ULL) : true);
-		// special must be one square below the destination square
-		assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::WHITE) ? ((special + Directions::WHITE_PAWN_PUSH).get_u64() == to.get_u64()) : true);
-		// special must be one square below the destination square
-		assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::BLACK) ? ((special + Directions::BLACK_PAWN_PUSH).get_u64() == to.get_u64()) : true);
-		// special must be either a1 or h1 if move type is castle and the color is white
-		assert((move_type == SpecialMoves::CASTLE && color == Colors::WHITE) ? ((special.get_u64() & WHITE_ROOKS_STARTING_POS) != 0ULL) : true);
-		// special must be either a8 or h8 if move type is castle and the color is black
-		assert((move_type == SpecialMoves::CASTLE && color == Colors::BLACK) ? ((special.get_u64() & BLACK_ROOKS_STARTING_POS) != 0ULL) : true);
-		// special must be empty if the move type is std
-		assert((move_type == SpecialMoves::STD)		  ? (special.popcount() == 0) : true);
-		// special must be empty if the move type is promotion
-		assert((move_type == SpecialMoves::PROMOTION) ? (special.popcount() == 0) : true);
-		
-		// color can be any valid color.
+			// to can never be empty
+			assert(to.popcount() == 1);
+			// to must be c1 or g1 if the move is castling and the color is white
+			assert((move_type == SpecialMoves::CASTLE && color == Colors::WHITE) ? ((to.get_u64() & WHITE_KING_AFTER_CASTLE) != 0ULL) : true);
+			// to must be c8 or g8 if the move is castling and the color is black
+			assert((move_type == SpecialMoves::CASTLE && color == Colors::BLACK) ? ((to.get_u64() & BLACK_KING_AFTER_CASTLE) != 0ULL) : true);
+			// to must be on the sixth rank if the move is en passant and the color is white
+			assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::WHITE) ? ((to.get_u64() & SIXTH_RANK) != 0ULL) : true);
+			// to must be on the third rank if the move is en passant and the color is black
+			assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::BLACK) ? ((to.get_u64() & THIRD_RANK) != 0ULL) : true);
+			// to must be on the eighth rank if the move is promotion and the color is white
+			assert((move_type == SpecialMoves::PROMOTION && color == Colors::WHITE) ? ((to.get_u64() & EIGHTH_RANK) != 0ULL) : true);
+			// to must be on the first rank if the move is promotion and the color is black
+			assert((move_type == SpecialMoves::PROMOTION && color == Colors::BLACK) ? ((to.get_u64() & FIRST_RANK) != 0ULL) : true);
 
-		// type cannot be none
-		assert(type != Types::NONE);
-		// type must be pawn if move type is promotion
-		assert((move_type == SpecialMoves::PROMOTION) ? (type == Types::PAWN) : true);
-		// type must be king if move type is castle
-		assert((move_type == SpecialMoves::CASTLE) ? (type == Types::KING) : true);
-		// type must be pawn if move type is en passant
-		assert((move_type == SpecialMoves::EN_PASSANT) ? (type == Types::PAWN) : true);
+			// special must not be empty if the move type is castle
+			assert((move_type == SpecialMoves::CASTLE) ? (special.popcount() == 1) : true);
+			// special must not be empty if the move type is en_passant
+			assert((move_type == SpecialMoves::EN_PASSANT) ? (special.popcount() == 1) : true);
+			// special must be on the 5th rank if move type is en passant and the color is white
+			assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::WHITE) ? ((special.get_u64() & FIFTH_RANK) != 0ULL) : true);
+			// special must be on the 4th rank if move type is en passant and the color is black
+			assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::BLACK) ? ((special.get_u64() & FOURTH_RANK) != 0ULL) : true);
+			// special must be one square below the destination square
+			assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::WHITE) ? ((special + Directions::WHITE_PAWN_PUSH).get_u64() == to.get_u64()) : true);
+			// special must be one square below the destination square
+			assert((move_type == SpecialMoves::EN_PASSANT && color == Colors::BLACK) ? ((special + Directions::BLACK_PAWN_PUSH).get_u64() == to.get_u64()) : true);
+			// special must be either a1 or h1 if move type is castle and the color is white
+			assert((move_type == SpecialMoves::CASTLE && color == Colors::WHITE) ? ((special.get_u64() & WHITE_ROOKS_STARTING_POS) != 0ULL) : true);
+			// special must be either a8 or h8 if move type is castle and the color is black
+			assert((move_type == SpecialMoves::CASTLE && color == Colors::BLACK) ? ((special.get_u64() & BLACK_ROOKS_STARTING_POS) != 0ULL) : true);
+			// special must be empty if the move type is std
+			assert((move_type == SpecialMoves::STD) ? (special.popcount() == 0) : true);
+			// special must be empty if the move type is promotion
+			assert((move_type == SpecialMoves::PROMOTION) ? (special.popcount() == 0) : true);
 
-		// capt_type cannot be a king
-		assert(capt_type != Types::KING);
-		// capt_type must be a pawn if move type is en passant
-		assert((move_type == SpecialMoves::EN_PASSANT) ? (capt_type == Types::PAWN) : true);
+			// color can be any valid color.
 
-		// promote type cannot be a king
-		assert(promote_type != Types::KING);
-		// promote type cannot be a pawn
-		assert(promote_type != Types::PAWN);
-		// promote type must be none if move type is not promotion
-		assert((move_type != SpecialMoves::PROMOTION) ? (promote_type == Types::NONE) : true);
-		// promote type must not be none if move type is promotion
-		assert((move_type == SpecialMoves::PROMOTION) ? (promote_type != Types::NONE) : true);
+			// type cannot be none
+			assert(type != Types::NONE);
+			// type must be pawn if move type is promotion
+			assert((move_type == SpecialMoves::PROMOTION) ? (type == Types::PAWN) : true);
+			// type must be king if move type is castle
+			assert((move_type == SpecialMoves::CASTLE) ? (type == Types::KING) : true);
+			// type must be pawn if move type is en passant
+			assert((move_type == SpecialMoves::EN_PASSANT) ? (type == Types::PAWN) : true);
+
+			// capt_type cannot be a king
+			assert(capt_type != Types::KING);
+			// capt_type must be a pawn if move type is en passant
+			assert((move_type == SpecialMoves::EN_PASSANT) ? (capt_type == Types::PAWN) : true);
+
+			// promote type cannot be a king
+			assert(promote_type != Types::KING);
+			// promote type cannot be a pawn
+			assert(promote_type != Types::PAWN);
+			// promote type must be none if move type is not promotion
+			assert((move_type != SpecialMoves::PROMOTION) ? (promote_type == Types::NONE) : true);
+			// promote type must not be none if move type is promotion
+			assert((move_type == SpecialMoves::PROMOTION) ? (promote_type != Types::NONE) : true);
+		}
 	}
 	// for standard capture moves
 	Move(Square from, Square to, Colors color, Types type, Types capt_type) : Move(from, to, Square(), color, type, capt_type, Types::NONE, SpecialMoves::STD) {}
