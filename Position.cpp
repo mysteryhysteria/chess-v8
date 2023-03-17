@@ -479,14 +479,47 @@ Position& Position::make_move(Move move) {
 
 	// to square cannot be a king
 	assert((to.get_u64() & pieces_by_type[Types::KING].get_u64()) == 0ULL);
+	
+	if (capt_type == Types::NONE) {
+		// the to square must be empty.
+		assert((to.get_u64() & get_occupied().get_u64()) == 0ULL);
+	}
+	else { // is a capture
+		if (move_type == SpecialMoves::EN_PASSANT) {
+			// if there is a capture type and the move_type is en_passant, the destination square must be empty.
+			assert((to.get_u64() & get_occupied().get_u64()) == 0ULL);
+		}
+		else {
+			// the to square must be occupied.
+			assert((to.get_u64() & get_occupied().get_u64()) != 0ULL);
+			// the to square must contain the capture type.
+			assert((to.get_u64() & pieces_by_type[capt_type].get_u64()) != 0ULL);
+			// the to square must be an opponent.
+			assert((to.get_u64() & pieces_by_color[!turn].get_u64()) != 0ULL);
+		}
+	}
+	
 	// from square must contain a piece
 	assert((from.get_u64() & get_occupied().get_u64()) != 0ULL);
 	// from square must contain a piece of the correct color
 	assert((from.get_u64() & pieces_by_color[turn].get_u64()) != 0ULL);
 	// from square must contain a piece of the correct type
 	assert((from.get_u64() & pieces_by_type[type].get_u64()) != 0ULL);
-	// if there is no capture type, the destination square must be empty. otherwise the capture type must match the type in the destination square.
-	assert((capt_type == Types::NONE) ? ((to.get_u64() & get_occupied().get_u64()) == 0ULL) : ((to.get_u64() & pieces_by_type[capt_type].get_u64()) != 0ULL));
+
+	if (move_type == SpecialMoves::EN_PASSANT) {
+		// the special square must be a pawn
+		assert((special.get_u64() & pieces_by_type[Types::PAWN].get_u64()) != 0ULL);
+		// the special square must be an opponent
+		assert((special.get_u64() & pieces_by_color[!turn].get_u64()) != 0ULL);
+	}
+	else if (move_type == SpecialMoves::CASTLE) {
+		// special square must be a rook
+		assert((special.get_u64() & pieces_by_type[Types::ROOK].get_u64()) != 0ULL);
+		// special square must be a friend
+		assert((special.get_u64() & pieces_by_color[turn].get_u64()) != 0ULL);
+	}
+	// if the move is a castle
+	
 
 	// create integrity checker
 	MoveIntegrityChecker oracle = MoveIntegrityChecker(*this, turn);
