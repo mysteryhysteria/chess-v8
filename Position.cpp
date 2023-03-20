@@ -1495,14 +1495,7 @@ std::vector<Move> Position::BASIC_move_gen() {
 	auto illegal_move = [&](Move& pl_move) -> bool {
 		Position next = Position(*this);
 		next.make_move(pl_move);
-		//next.check_integrity();
-		std::vector<Move> counter_moves = next.BASIC_pl_move_gen();
-		for (auto counter_move : counter_moves) {
-			if (counter_move.get_to() == get_king_square(turn)) {
-				return true;
-			}
-		}
-		return false;
+		return next.square_covered(next.get_king_square(turn), !turn);
 	};
 
 
