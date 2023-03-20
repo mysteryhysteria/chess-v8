@@ -940,8 +940,12 @@ std::vector<Square> Position::find_attackers(Square sq, Types piece_type, Colors
 		search_path.reset(dir, max_distance);
 		while (!search_path.end()) {
 			to = (++search_path).get_current();
-			if (pieces_by_color[attacker].contains(to) && is_type(to, piece_type)) { // found an opponent's piece of the correct type
-				attackers.push_back(to);
+			if (pieces_by_color[attacker].contains(to)) {
+				if (is_type(to, piece_type)) { // found an opponent's piece of the correct type
+					attackers.push_back(to);
+					break;
+				}
+				// enemy piece was found, but not of the correct type, so we should stop the search.
 				break;
 			}
 			else if (pieces_by_color[!attacker].contains(to)) { // found a friendly piece, which blocks enemy pieces!
