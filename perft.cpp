@@ -13,11 +13,17 @@ std::ostream& operator<<(std::ostream& out, PerftCounts counts) {
 	out << "Double Checks count: " << counts.double_checks << std::endl;
 	out << "Final Position counts:" << std::endl;
 
-	for (int i = 0; i < counts.positions.size(); i++) {
-		if (counts.positions[i] != 0) {
-			out << "\t" << idx2an(i).value() << ": " << counts.positions[i] << std::endl;
-		}
+	//for (int i = 0; i < counts.end_positions.size(); i++) {
+	//	if (counts.end_positions[i] != 0) {
+	//		out << "\t" << idx2an(i).value() << ": " << counts.end_positions[i] << std::endl;
+	//	}
+	//}
+
+	out << "Starting Move counts:" << std::endl;
+	for (auto start_move : counts.start_moves) {
+		out << "\t" << start_move.first << ": " << start_move.second << std::endl;
 	}
+
 	return out;
 }
 
@@ -40,6 +46,15 @@ void Perft::run() {
 	std::cout << *this << std::endl;
 }
 
+inline void PerftCounts::add_start_move(std::string start_move_SAN) {
+	if (start_moves.contains(start_move_SAN)) {
+		start_moves[start_move_SAN]++;
+	}
+	else {
+		start_moves[start_move_SAN] = 1;
+	}
+}
+
 void Perft::perft_core(unsigned int depth) {
 	if (depth == 0) {
 		counts.move();
@@ -47,6 +62,7 @@ void Perft::perft_core(unsigned int depth) {
 			counts.check();
 		}
 		auto prev_move = move_history.back();
+		auto first_move = move_history.front();
 		switch (prev_move.get_move_type()) {
 		case STD:
 			if (prev_move.get_capt_type() != NONE) {
@@ -66,7 +82,9 @@ void Perft::perft_core(unsigned int depth) {
 		default:
 			break;
 		}
-		counts.add_position(prev_move.get_to());
+		counts.add_end_position(prev_move.get_to());
+		std::string start_move = "";
+		counts.add_start_move(start_move + first_move.get_from().p2an() + first_move.get_to().p2an());
 	}
 	else {
 		for (auto& move : cur_pos.BASIC_move_gen()) {

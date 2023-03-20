@@ -9,7 +9,8 @@
 // end on that particular square.
 // 0 -> a1 ...
 // 63 -> h8
-typedef std::array<unsigned int, 64> position_counts;
+typedef std::array<unsigned int, 64> end_position_counts;
+typedef std::unordered_map<std::string, int> start_move_counts;
 
 class PerftCounts {
 private:
@@ -23,7 +24,8 @@ private:
 	int stalemates;
 	int discoveries;
 	int double_checks;
-	position_counts positions;
+	end_position_counts end_positions;
+	start_move_counts start_moves;
 
 public:
 	PerftCounts() { this->clear(); };
@@ -38,9 +40,10 @@ public:
 	inline void mate() { this->checkmates++; };
 	inline void discover() { this->discoveries++; };
 	inline void dblcheck() { this->double_checks++; };
-	inline void add_position(std::string an) { this->positions[an2idx(an).value()]++; };
-	inline void add_position(unsigned int idx) { this->positions[idx]++; };
-	inline void add_position(Square sq) { add_position(sq.convert_to_index()); }
+	inline void add_end_position(std::string an) { this->end_positions[an2idx(an).value()]++; };
+	inline void add_end_position(unsigned int idx) { this->end_positions[idx]++; };
+	inline void add_end_position(Square sq) { add_end_position(sq.convert_to_index()); };
+	inline void add_start_move(std::string start_move_SAN);
 	inline void clear() {
 		moves = 0;
 		captures = 0;
@@ -52,7 +55,7 @@ public:
 		stalemates = 0;
 		discoveries = 0;
 		double_checks = 0;
-		positions.fill(0);
+		end_positions.fill(0);
 	}
 
 	friend std::ostream& operator<<(std::ostream& out, PerftCounts counts);
