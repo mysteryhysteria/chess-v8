@@ -546,7 +546,7 @@ Position& Position::make_move(Move move) {
 	}
 
 	// update the castling rights
-	if (flags & CASTLING_RIGHTS_MASK != 0) { //Check if any castling rights remain
+	if ((flags & CASTLING_RIGHTS_MASK) != 0) { //Check if any castling rights remain
 		
 		// integrity check
 		oracle.check_castling_rights(*this);
