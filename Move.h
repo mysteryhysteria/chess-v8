@@ -133,6 +133,8 @@ public:
 	Move() = delete; // testing out not having a default constructor.
 
 	// general purpose
+	// FIXME: this interface of modifying private members individually is error prone as it circumvents the assertions which 
+	// ensure a move is valid, thus allowing invalid moves to be created.
 	Move& set_special(Square special) { this->special = special; return *this; }
 	Move& set_move_type(SpecialMoves move_type) { this->move_type = move_type; return *this; }
 	Move& set_promote_type(Types promote_type) { this->promote_type = promote_type; return *this; }

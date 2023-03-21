@@ -1389,10 +1389,11 @@ std::vector<Move> Position::BASIC_pl_pawn_move_gen(Square from) {
 	// It then decides to either store the set of promotions or just the plain move.
 	auto save_moves = [&](Move move) -> void {
 		if ((turn == Colors::WHITE && to.on_nth_rank(7)) || (turn == Colors::BLACK && to.on_nth_rank(0))) {
-			for (int i = 0; i < 6; ++i) {
-				move.set_move_type(SpecialMoves::PROMOTION);
-				move.set_promote_type(static_cast<Types> (i));
-				moves.push_back(move);
+			for (int i = 1; i < 5; ++i) {
+				auto promote_move = move;
+				promote_move.set_move_type(SpecialMoves::PROMOTION);
+				promote_move.set_promote_type(static_cast<Types> (i));
+				moves.push_back(promote_move);
 			}
 		}
 		else {
