@@ -64,19 +64,19 @@ void Perft::perft_core(unsigned int depth) {
 		auto prev_move = move_history.back();
 		auto first_move = move_history.front();
 		switch (prev_move.get_move_type()) {
-		case STD:
-			if (prev_move.get_capt_type() != NONE) {
+		case SpecialMoves::STD:
+			if (prev_move.get_capt_type() != Types::NONE) {
 				counts.capture();
 			}
 			break;
-		case EN_PASSANT:
+		case SpecialMoves::EN_PASSANT:
 			counts.capture();
 			counts.ep();
 			break;
-		case PROMOTION:
+		case SpecialMoves::PROMOTION:
 			counts.promote();
 			break;
-		case CASTLE:
+		case SpecialMoves::CASTLE:
 			counts.castle();
 			break;
 		default:

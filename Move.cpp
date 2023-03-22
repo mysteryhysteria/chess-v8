@@ -11,9 +11,9 @@ std::ostream& operator<<(std::ostream& out, Move move)
 					to = move.get_to().p2an();
 
 	switch (move_type) {
-	case EN_PASSANT:
+	case SpecialMoves::EN_PASSANT:
 		return out << piece_type << '=' << from << " > " << to << " X " << capt_type << '=' << move.get_special().p2an();
-	case CASTLE:
+	case SpecialMoves::CASTLE:
 		if (move.get_to().on_nth_file(2)) {
 			side = 'Q';
 		}
@@ -21,10 +21,10 @@ std::ostream& operator<<(std::ostream& out, Move move)
 			side = 'K';
 		}
 		return out << piece_type << '=' << from << " > " << to << " : " << side;
-	case PROMOTION:
+	case SpecialMoves::PROMOTION:
 		return out << piece_type << '=' << from << " > " << to << " ^ " << promote_type;
 	default:
-		if (move.get_capt_type() == NONE) {
+		if (move.get_capt_type() == Types::NONE) {
 			return out << piece_type << '=' << from << " > " << to;
 		}
 		else {

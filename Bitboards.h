@@ -171,24 +171,24 @@ bool operator==(int lhs, Directions rhs);
 bool operator==(Directions lhs, Directions rhs);
 
 const std::unordered_map<Directions, Bitboard> move_masks = { // map of move directions to bitmasks for the move generation
-		{Directions::NNW, Bitboard(~0x010101010101ffff)},
-		{Directions::NNE, Bitboard(~0x808080808080ffff)},
-		{Directions::WNW, Bitboard(~0x03030303030303ff)},
-		{Directions::NW,  Bitboard(~0x01010101010101ff)},
-		{Directions::N,   Bitboard(~0x00000000000000ff)},
-		{Directions::NE,  Bitboard(~0x80808080808080ff)},
-		{Directions::ENE, Bitboard(~0xc0c0c0c0c0c0c0ff)},
-		{Directions::WW,  Bitboard(~0x0303030303030303)},
-		{Directions::W,   Bitboard(~0x0101010101010101)},
-		{Directions::E,   Bitboard(~0x8080808080808080)},
-		{Directions::EE,  Bitboard(~0xc0c0c0c0c0c0c0c0)},
-		{Directions::WSW, Bitboard(~0xff03030303030303)},
-		{Directions::SW,  Bitboard(~0xff01010101010101)},
-		{Directions::S,   Bitboard(~0xff00000000000000)},
-		{Directions::SE,  Bitboard(~0xff80808080808080)},
-		{Directions::ESE, Bitboard(~0xffc0c0c0c0c0c0c0)},
-		{Directions::SSW, Bitboard(~0xffff010101010101)},
-		{Directions::SSE, Bitboard(~0xffff808080808080)}
+		{Directions::NNW, Bitboard(~0x010101010101ffffULL)},
+		{Directions::NNE, Bitboard(~0x808080808080ffffULL)},
+		{Directions::WNW, Bitboard(~0x03030303030303ffULL)},
+		{Directions::NW,  Bitboard(~0x01010101010101ffULL)},
+		{Directions::N,   Bitboard(~0x00000000000000ffULL)},
+		{Directions::NE,  Bitboard(~0x80808080808080ffULL)},
+		{Directions::ENE, Bitboard(~0xc0c0c0c0c0c0c0ffULL)},
+		{Directions::WW,  Bitboard(~0x0303030303030303ULL)},
+		{Directions::W,   Bitboard(~0x0101010101010101ULL)},
+		{Directions::E,   Bitboard(~0x8080808080808080ULL)},
+		{Directions::EE,  Bitboard(~0xc0c0c0c0c0c0c0c0ULL)},
+		{Directions::WSW, Bitboard(~0xff03030303030303ULL)},
+		{Directions::SW,  Bitboard(~0xff01010101010101ULL)},
+		{Directions::S,   Bitboard(~0xff00000000000000ULL)},
+		{Directions::SE,  Bitboard(~0xff80808080808080ULL)},
+		{Directions::ESE, Bitboard(~0xffc0c0c0c0c0c0c0ULL)},
+		{Directions::SSW, Bitboard(~0xffff010101010101ULL)},
+		{Directions::SSE, Bitboard(~0xffff808080808080ULL)}
 };
 
 uint64_t operator&=(uint64_t lhs, Square rhs);

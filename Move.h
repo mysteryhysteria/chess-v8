@@ -135,9 +135,9 @@ public:
 	// general purpose
 	// FIXME: this interface of modifying private members individually is error prone as it circumvents the assertions which 
 	// ensure a move is valid, thus allowing invalid moves to be created.
-	Move& set_special(Square special) { this->special = special; return *this; }
-	Move& set_move_type(SpecialMoves move_type) { this->move_type = move_type; return *this; }
-	Move& set_promote_type(Types promote_type) { this->promote_type = promote_type; return *this; }
+	Move& set_special(Square _special) { this->special = _special; return *this; }
+	Move& set_move_type(SpecialMoves _move_type) { this->move_type = _move_type; return *this; }
+	Move& set_promote_type(Types _promote_type) { this->promote_type = _promote_type; return *this; }
 	Square get_from() { return this->from; }
 	Square get_to() { return this->to; }
 	Square get_special() { return this->special; }

@@ -17,9 +17,9 @@
 
 // TODO: change methods which have a "void" return type to instead return the Position object which they are called on if they mutate the state of the Position object.
 
-const enum MoveOptions { PLACE = 1, CAPT = 2, SELF_CAPT = 4 };
+const enum class MoveOptions { PLACE = 1, CAPT = 2, SELF_CAPT = 4 };
 
-const enum CastleSide {KINGSIDE = 0, QUEENSIDE = 1};
+const enum class CastleSide {KINGSIDE = 0, QUEENSIDE = 1};
 
 MoveOptions operator|(MoveOptions lhs, MoveOptions rhs);
 
@@ -41,6 +41,8 @@ const Square WHITE_QUEENSIDE_ROOK_STARTING_SQUARE = Square(0, 0);
 const Square WHITE_KINGSIDE_ROOK_STARTING_SQUARE = Square(0, 7);
 const Square BLACK_QUEENSIDE_ROOK_STARTING_SQUARE = Square(7, 0);
 const Square BLACK_KINGSIDE_ROOK_STARTING_SQUARE = Square(7, 7);
+
+
 
 class Position {
 private:

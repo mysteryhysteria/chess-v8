@@ -156,8 +156,14 @@ bool Square::on_nth_file(unsigned int n) {
 
 bool Square::on_pawn_start_rank(Colors turn) {
 	unsigned int n;
-	!(turn) ? n = 1 : n = 6;
-	return this->on_nth_rank(n);
+	switch (turn) {
+	case Colors::WHITE:
+		return this->on_nth_rank(6);
+	case Colors::BLACK:
+		return this->on_nth_rank(1);
+	default:
+		assert(false);
+	}
 }
 
 bool Square::on_promote_rank(Colors turn) {

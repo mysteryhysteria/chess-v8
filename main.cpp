@@ -14,16 +14,24 @@ enum class MoveTypes {NONE = -1, CAPTURE, EN_PASSANT, N_PROMOTION, B_PROMOTION, 
 enum class MoveResults {NONE = -1, CHECKMATE, STALEMATE, DISCOVERY, DOUBLE_CHECK };
 
 int main() {
+	// Initial position
+	//int depth = 5;
+	//Perft perft = Perft(Position(), depth);
+	//perft.run();
+	//perft = Perft(Position().mirror_position(),depth);
+	//perft.run();
 
-	int depth = 2;
+	// Kiwipete
+	int depth = 4;
 	Perft perft = Perft(Position("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"), depth);
 	perft.run();
-	perft = Perft(Position("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1").mirror_position(), depth);
-	perft.run();
+	//perft = Perft(Position("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1").mirror_position(), depth);
+	//perft.run();
 
 	//using namespace std;
 	//string token;
 	//bool quit = false;
+
 
 	//// welcome message
 	//cout << "V8 by Colin Nordquist" << endl;

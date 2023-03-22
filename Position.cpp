@@ -190,18 +190,18 @@ void Position::disp_bitboard(Bitboard bitboard) {
 }
 
 bool Position::is_castling_legal(CastleSide side) {
-	Square king_sq = pieces_by_color[get_turn()] & pieces_by_type[KING];
+	Square king_sq = pieces_by_color[get_turn()] & pieces_by_type[Types::KING];
 	std::vector<Square> be_empty, be_safe;
-	Bitboard all_pieces = pieces_by_color[WHITE] | pieces_by_color[BLACK];
+	Bitboard all_pieces = pieces_by_color[Colors::WHITE] | pieces_by_color[Colors::BLACK];
 
-	assert(side == QUEENSIDE || side == KINGSIDE);
+	assert(side == CastleSide::QUEENSIDE || side == CastleSide::KINGSIDE);
 
 	// calculate the empty and safe squares based on which way you are castling
-	if (side == QUEENSIDE) {
+	if (side == CastleSide::QUEENSIDE) {
 		be_empty = { Square(king_sq >> 1), Square(king_sq >> 2), Square(king_sq >> 3) };
 		be_safe = { Square(king_sq >> 1), Square(king_sq >> 2) };
 	}
-	else if (side == KINGSIDE) {
+	else if (side == CastleSide::KINGSIDE) {
 		be_empty = { Square(king_sq << 1), Square(king_sq << 2) };
 		be_safe = be_empty;
 	}
@@ -416,7 +416,7 @@ void Position::set_castling_right(Colors color, CastleSide side, bool set) {
 
 void Position::disp(bool show_all) {
 	Bitboard	bitboard,
-				all = pieces_by_color[WHITE] | pieces_by_color[BLACK];
+				all = pieces_by_color[Colors::WHITE] | pieces_by_color[Colors::BLACK];
 	std::optional<Square> test_sq = Square().first();
 	Colors color;
 	Types type;
@@ -428,21 +428,21 @@ void Position::disp(bool show_all) {
 	for (unsigned int sq = 0; sq < 64; ++sq) {
 		if (sq % 8 == 0) { std::cout << "|"; };
 		if (all.contains(test_sq.value())) { // if there is a piece in this square...
-			color = WHITE;
+			color = Colors::WHITE;
 			for (int i = 0; i < pieces_by_color.size(); ++i) {
 				if (pieces_by_color[i].contains(test_sq.value())) {
 					color = static_cast<Colors> (i);
 					break;
 				}
 			}
-			type = NONE;
+			type = Types::NONE;
 			for (int i = 0; i < pieces_by_type.size(); ++i) {
 				if (pieces_by_type[i].contains(test_sq.value())) {
 					type = static_cast<Types> (i);
 					break;
 				}
 			}
-			std::cout << " " << (color == BLACK ? char (tolower(type_c[type])) : char (type_c[type]));
+			std::cout << " " << (color == Colors::BLACK ? char (tolower(type_c[type])) : char (type_c[type]));
 		}
 		else {
 		std::cout << "  ";
@@ -541,7 +541,7 @@ Position& Position::make_move(Move move) {
 		break;
 	}
 
-	if (type == PAWN && from.on_pawn_start_rank(turn) && from + double_push_dir == to) {
+	if (type == Types::PAWN && from.on_pawn_start_rank(turn) && from + double_push_dir == to) {
 		epsq = from + single_push_dir;
 	}
 
@@ -664,8 +664,8 @@ Position& Position::make_move(Move move) {
 	set_in_check(square_covered(get_king_square(!turn), turn));
 
 	// update the ply clock
-	if (type == Types::PAWN || move_type == MoveOptions::CAPT) {
-		ply_clock = 0;
+	if (type == Types::PAWN || capt_type != Types::NONE) {
+		ply_clock = 0; // reset if a pawn moves or a capture is made
 	}
 	else {
 		ply_clock++;
@@ -864,7 +864,7 @@ Types Position::get_type(Square sq) {
 	for (int i = 0; i < pieces_by_type.size(); ++i) {
 		if (pieces_by_type[i].contains(sq)) { return static_cast<Types>(i); }
 	}
-	return NONE;
+	return Types::NONE;
 }
 
 Square Position::get_king_square(Colors color) {
@@ -916,10 +916,10 @@ std::vector<Square> Position::find_attackers(Square sq, Types piece_type, Colors
 	std::vector<Directions> directions;
 	std::vector<Square> attackers;
 
-	if (piece_type == PAWN || piece_type == KNIGHT || piece_type == KING) { 
+	if (piece_type == Types::PAWN || piece_type == Types::KNIGHT || piece_type == Types::KING) {
 		max_distance = 1;
 
-		if (piece_type == PAWN) {
+		if (piece_type == Types::PAWN) {
 			// the pawn capture directions need to be from the perspective of the defending player, since we are searching for 
 			// attackers from the perspective of the square that is under attack.
 			// Another way to think about it:
@@ -967,7 +967,7 @@ bool Position::square_covered(Square sq, Colors attacker) {
 }
 
 void Position::king_threats() {
-	auto king_sq = (pieces_by_type[KING] & pieces_by_color[get_turn()]).pop_occupied();
+	auto king_sq = (pieces_by_type[Types::KING] & pieces_by_color[get_turn()]).pop_occupied();
 	assert(!king_sq.is_empty());
 
 	Ray search_path = Ray(king_sq);
@@ -986,15 +986,15 @@ void Position::king_threats() {
 	for (int i = 0; i < 6; ++i) {
 		auto piece_type = static_cast<Types>(i);
 		switch (piece_type) {
-		case PAWN:
+		case Types::PAWN:
 			max_distance = 1;
 			directions = pawn_capt_directions[get_turn()];
 			break;
-		case KNIGHT:
+		case Types::KNIGHT:
 			max_distance = 1;
 			directions = move_directions[piece_type];
 			break;
-		case KING:
+		case Types::KING:
 			continue;
 		default:
 			max_distance = NO_MAX;
@@ -1061,7 +1061,7 @@ std::vector<Move> Position::move_gen_generic(Square from, std::vector<Directions
 			// the condition evaluates if the "to" square intersects with its own pieces. if so, this move is illegal and no more moves in this direction are legal.
 			if (pieces_by_color[get_turn()].contains(to)) {
 				assert(get_type(to) != NONE);
-				if (move_opts & MoveOptions::SELF_CAPT) {
+				if (move_opts == MoveOptions::SELF_CAPT) {
 					moves.push_back(Move(from, to, get_turn(), from_type, get_type(to)));
 				}
 				break;
@@ -1070,14 +1070,14 @@ std::vector<Move> Position::move_gen_generic(Square from, std::vector<Directions
 			// the condition evaluates if the "to" square intersects with the opponents pieces. if so, this move is a capture and no more moves in this direction are legal.
 			if (pieces_by_color[!get_turn()].contains(to)) {
 				assert(get_type(to) != NONE); // make sure that we arent capturing a none type
-				if (move_opts & MoveOptions::CAPT) {
+				if (move_opts == MoveOptions::CAPT) {
 					moves.push_back(Move(from, to, get_turn(), from_type, get_type(to)));
 				}
 				break;
 			}
 
 			// if neither previous condition evaluates true, then this move is legal and we can continue in this direction.
-			if (move_opts & MoveOptions::PLACE) {
+			if (move_opts == MoveOptions::PLACE) {
 				moves.push_back(Move(from, to, get_turn(), from_type));
 			}
 		}
@@ -1157,10 +1157,10 @@ std::vector<Move> Position::move_gen_sliders(Square from, Types type) {
 
 std::vector<Move> Position::move_gen_k(Square from)
 {
-	assert(pieces_by_type[KING].contains(from)); //ensure that this piece is a king
+	assert(pieces_by_type[Types::KING].contains(from)); //ensure that this piece is a king
 	std::vector<Move> moves, temp_moves;
 
-	temp_moves = move_gen_generic(from, move_directions[KING], 1);	// Get king's psuedolegal moves
+	temp_moves = move_gen_generic(from, move_directions[Types::KING], 1);	// Get king's psuedolegal moves
 	for (auto& temp_move : temp_moves) {							// for each psuedolegal move...
 		if (!square_covered(temp_move.get_to(), !get_turn())) {					// if the move is to an unattacked square...
 			moves.push_back(temp_move);								// add it to the legal move list
@@ -1168,19 +1168,19 @@ std::vector<Move> Position::move_gen_k(Square from)
 	}
 
 	if (!is_in_check()) { // if not in check...
-		if (K_castling_right() && is_castling_legal(KINGSIDE)) { // see if we have the right to castle kingside
+		if (K_castling_right() && is_castling_legal(CastleSide::KINGSIDE)) { // see if we have the right to castle kingside
 			temp_moves = move_gen_generic(from, { Directions::KING_KINGSIDE_CASTLE }, 1); 
 			assert(temp_moves.size() == 1);
 
 			// update move to be the more specific move type of castling
-			temp_moves[0].set_move_type(CASTLE).set_special(from << 3); // changes to a castle move and adds the King's rook square to the special field
+			temp_moves[0].set_move_type(SpecialMoves::CASTLE).set_special(from << 3); // changes to a castle move and adds the King's rook square to the special field
 			moves.push_back(temp_moves[0]);
 		}
-		if (Q_castling_right() && is_castling_legal(QUEENSIDE)) { // see if we have the right to castle queenside
+		if (Q_castling_right() && is_castling_legal(CastleSide::QUEENSIDE)) { // see if we have the right to castle queenside
 			temp_moves = move_gen_generic(from, { Directions::KING_QUEENSIDE_CASTLE }, 1);
 			assert(temp_moves.size() == 1);
 
-			temp_moves[0].set_move_type(CASTLE).set_special(from >> 4); // changes to a castle move and adds the Queen's rook square to the special field
+			temp_moves[0].set_move_type(SpecialMoves::CASTLE).set_special(from >> 4); // changes to a castle move and adds the Queen's rook square to the special field
 			moves.push_back(temp_moves[0]);
 		}
 	}
@@ -1199,7 +1199,7 @@ std::vector<Move> Position::move_gen_p(Square from) {
 
 	// Get pawn push moves
 	(from.on_pawn_start_rank(turn)) ? (max_distance = 2) : (max_distance = 1);
-	pl_moves = move_gen_generic(from, { move_directions[PAWN][turn] }, max_distance, MoveOptions::PLACE);
+	pl_moves = move_gen_generic(from, { move_directions[Types::PAWN][turn] }, max_distance, MoveOptions::PLACE);
 
 	// Get standard pawn capture moves
 	temp_moves = move_gen_generic(from, pawn_capt_directions[turn], 1, MoveOptions::CAPT);
@@ -1209,7 +1209,7 @@ std::vector<Move> Position::move_gen_p(Square from) {
 	int old_size = pl_moves.size();
 	for (int i = 0; i < old_size; ++i) {
 		if (pl_moves[i].get_to().on_promote_rank(turn)) {
-			Move promote_move = pl_moves[i].set_move_type(PROMOTION);
+			Move promote_move = pl_moves[i].set_move_type(SpecialMoves::PROMOTION);
 			for (int j = 1; j < 5; ++j) {
 				promote_move.set_promote_type(static_cast<Types>(j));
 				if (j == 1) {
@@ -1226,18 +1226,18 @@ std::vector<Move> Position::move_gen_p(Square from) {
 	if (!epsq.is_empty()) {
 		if (turn == WHITE) {
 			if ((from >> 7) == epsq && !from.on_nth_file(7)) {
-				pl_moves.push_back(Move(from, epsq, from << 1, turn, PAWN, PAWN, NONE, EN_PASSANT));
+				pl_moves.push_back(Move(from, epsq, from << 1, turn, PAWN, PAWN, NONE, SpecialMoves::EN_PASSANT));
 			}
 			if ((from >> 9) == epsq && !from.on_nth_file(0)) {
-				pl_moves.push_back(Move(from, epsq, from >> 1, turn, PAWN, PAWN, NONE, EN_PASSANT));
+				pl_moves.push_back(Move(from, epsq, from >> 1, turn, PAWN, PAWN, NONE, SpecialMoves::EN_PASSANT));
 			}
 		}
 		else {
 			if ((from << 7) == epsq && !from.on_nth_file(0)) {
-				pl_moves.push_back(Move(from, epsq, from >> 1, turn, PAWN, PAWN, NONE, EN_PASSANT));
+				pl_moves.push_back(Move(from, epsq, from >> 1, turn, PAWN, PAWN, NONE, SpecialMoves::EN_PASSANT));
 			}
 			if ((from << 9) == epsq && !from.on_nth_file(7)) {
-				pl_moves.push_back(Move(from, epsq, from << 1, turn, PAWN, PAWN, NONE, EN_PASSANT));
+				pl_moves.push_back(Move(from, epsq, from << 1, turn, PAWN, PAWN, NONE, SpecialMoves::EN_PASSANT));
 			}
 		}
 	}
