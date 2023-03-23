@@ -42,8 +42,6 @@ const Square WHITE_KINGSIDE_ROOK_STARTING_SQUARE = Square(0, 7);
 const Square BLACK_QUEENSIDE_ROOK_STARTING_SQUARE = Square(7, 0);
 const Square BLACK_KINGSIDE_ROOK_STARTING_SQUARE = Square(7, 7);
 
-
-
 class Position {
 private:
 	// index these bitboard arrays with the enums defined above!
@@ -79,12 +77,13 @@ private:
 	friend class MoveIntegrityChecker;
 
 public:
+	friend Position parse_fen(std::string fen);
+
 	// Constructors
 	Position(std::string fen) { parse_fen(fen); }
 	Position() : Position("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") {} // default standard starting position for chess, in FEN notation
 
 	// Methods
-	void parse_fen(std::string fen);
 	//TODO std::string gen_fen();
 	std::vector<Move> move_gen();
 	// TODO remove static keyword; I dont think it does what you think it does ;)
@@ -129,6 +128,7 @@ public:
 	bool is_position_illegal(); // calculates whether the opponent's king can be captured from this position, which implies the last move was illegal.
 
 };
+
 
 class MoveIntegrityChecker {
 

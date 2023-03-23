@@ -20,140 +20,6 @@ MoveOptions operator|(MoveOptions lhs, MoveOptions rhs) {
 	return static_cast<MoveOptions> (int (lhs) | int (rhs));
 }
 
-void Position::parse_fen(std::string fen) {
-	//TODO: implement a way to backup the values so if a parse error occurs, we can revert the position.
-
-	unsigned int sq_counter = 0, char_index = 0, file, rank;
-	bool turn;
-	char c, file_c, rank_c;
-	std::string s;
-	std::optional<Square> cur_sq = Square(1); // initialize to the first square
-	Colors color;
-	Types type;
-
-	// clean slate bitboards
-	for (auto& bb : pieces_by_color) { bb = Bitboard(); };
-	for (auto& bb : pieces_by_type) { bb = Bitboard(); };
-	epsq = Square();
-
-	// clean slate flags
-	flags = 0;  // Unset the flags to clear the slate
-
-	while (sq_counter < 64 && cur_sq.has_value()) {								// iterate over characters that "setup" the board
-		c = fen[char_index++];								// consume a character
-
-		if (isdigit(c)) {									// if char is a digit, then there are empty squares
-			unsigned int empty_sqs = c - '0';				// subtract ascii value of '0' from c. Ex. if c is '7' then this will be 55 - 48 = 7.
-			if (empty_sqs < 1 || empty_sqs > 8) {			// only 1-8 are valid
-				// TODO: exception case - not a recognized number of empty squares!
-				return;
-			}
-			sq_counter += empty_sqs;						// skip the empty squares and do nothing with them
-			cur_sq = cur_sq->next(empty_sqs);
-		}
-		else if (isalpha(c)) {								//if char is alphabetical, then it must be a piece.
-
-			if (isupper(c)) { color = Colors::WHITE; }		// uppercase letters are for white
-			else			{ color = Colors::BLACK; }		// lowercase for black
-			c = tolower(c);									// convert to lowercase to simplify processing
-															// each character corresponds to a piece type
-			if		(c == 'p') { type = Types::PAWN; }
-			else if (c == 'n') { type = Types::KNIGHT; }
-			else if (c == 'b') { type = Types::BISHOP; }
-			else if (c == 'r') { type = Types::ROOK; }
-			else if (c == 'q') { type = Types::QUEEN; }
-			else if (c == 'k') { type = Types::KING; }
-			else {
-				// TODO: exception case - not a recognized piece!
-				return;
-			}
-
-			pieces_by_color[color].mark_square(cur_sq.value());		// mark the square were on with the color of the piece we parsed
-			pieces_by_type[type].mark_square(cur_sq.value());		// mark the square were on with the piece type we parsed
-			cur_sq = cur_sq->next();								// get the next square
-
-			++sq_counter;									// increment the square counter to the next square
-		}
-		else if (c == '/') {
-			// Currently there is no reason to do anything here, since we just ignore this character. However, should check that it was not misplaced for validity.
-		}
-		else if (c == ' ') { // Finished parsing the board setup portion
-			break;
-		}
-	}
-
-	while ((c = fen[char_index++]) == ' '); // Consume spaces
-
-		if (c == 'w') { turn = true; }
-		else if (c == 'b') { turn = false; }
-		else {
-			// TODO: Exception case - not a recognized player!
-			return;
-		}
-
-	while ((c = fen[char_index++]) == ' '); // Consume spaces
-
-	if (c == '-') {} // If the castling string is a dash, we can ignore it and move on
-	else {
-		do {
-			if (c == 'K') { flags |= (1 << 0); } // Set White Kingside castle
-			else if (c == 'Q') { flags |= (1 << 1); } // Set White Queenside castle
-			else if (c == 'k') { flags |= (1 << 2); } // Set Black Kingside castle
-			else if (c == 'q') { flags |= (1 << 3); } // Set Black Queenside castle
-			else {
-				// TODO: Exception case - not a recognized castling right!
-				return;
-			}
-		} while ((c = fen[char_index++]) != ' '); // Consume characters until there is a space
-	}
-
-	while ((c = fen[char_index++]) == ' '); // Consume spaces
-
-	if (c == '-') {} // again, ignore and move on
-	else { // otherwise...
-		// parse the square in algebraic notation
-		file_c = c;
-		rank_c = fen[char_index++];
-		// compute the numeric rank and file
-		file = file_c - 'a';
-		rank = rank_c - '1';
-		if (file >= 8 || rank >= 8) { // if either the rank or file is out of bounds...
-			// TODO: Exception case - parsed algebraic notation is not on board!
-			return;
-		}
-		else { // otherwise compute the bitboard of the en passant square
-			epsq = Square(rank, file); // Sets the en passant square to the computed rank and file
-		}
-	}
-
-	while ((c = fen[char_index++]) == ' '); // Consume spaces
-
-	do {
-		if (!isdigit(c)) {
-			// TODO: Exception case - not a numeric value!
-			return;
-		}
-		s.append(1, c); // append the digit characters to the string
-	} while ((c = fen[char_index++]) != ' '); // get the next character and check it against the space constant
-	ply_clock = std::stoi(s); // convert the string to an integer and store
-	s.clear();
-
-	while ((c = fen[char_index++]) == ' '); // Consume spaces
-
-	do {
-		if (!isdigit(c)) {
-			// TODO: Exception case - not a numeric value!
-			return;
-		}
-		s.append(1, c); // append the digit characters to the string
-	} while ((c = fen[char_index++]) != '\0'); // get the next character and check it against the end-of-string constant
-	ply = std::stoi(s) * 2 - (turn ? 1 : 0); // calculate the ply from the full turn count and whose move it is
-	
-	BASIC_king_threats();
-
-	return;
-}
-
 void Position::disp_bitboard(Bitboard bitboard, std::string title, char piece_c, char empty_c) {
 	if (title != "") {
 		std::cout << title << "\n";
@@ -1529,6 +1395,201 @@ bool Position::is_position_illegal()
 		}
 	}
 	return false;
+}
+
+Position parse_fen(std::string fen) {
+	Position setup;
+	unsigned int
+		sq_counter = 0,
+		char_index = 0,
+		segment_start_index = 0,
+		segment_end_index = 0,
+		file,
+		rank;
+	bool turn;
+	char c, file_c, rank_c;
+	std::optional<Square> cur_sq = Square(1); // initialize to the first square
+	Colors color;
+	Types type;
+
+	for (uint8_t row = 0; row < 8; row++) {
+		unsigned int col_counter = 0;
+		segment_start_index = char_index;
+		for (c = fen[char_index]; c == '/' || c == ' '; char_index++) {
+			if (isdigit(c)) { // if char is a digit, then there are empty squares
+				char empty_sqs = c - '0'; // subtract ascii value of '0' from c gives the actual number represented by the character. Ex. if c is '7' then this will be 55 - 48 = 7.
+				if (empty_sqs < 1 || empty_sqs > 8) { // only 1-8 are valid
+					std::string error_msg = "numeric value must be in range [1-8]";
+					segment_end_index = fen.find_first_of('/', segment_start_index);
+					if (segment_end_index == std::string::npos) {
+						segment_end_index = segment_start_index + (8 - col_counter);
+					}
+					unsigned int segment_length = segment_end_index - segment_start_index + 1;
+					std::cout << std::string(" ", segment_start_index) << "|" << std::string("~", segment_length - 2) << "|" << "----current segment" << std::endl;
+					std::cout << fen << std::endl;
+					std::cout << std::string(" ", char_index) << "|" << std::endl;
+					std::cout << std::string(" ", char_index) << "|----" << error_msg << std::endl;
+					return;
+				}
+				sq_counter += empty_sqs;
+				col_counter += empty_sqs;
+				cur_sq = cur_sq->next(empty_sqs);
+			}
+			else if (isalpha(c)) { // if char is alphabetical, then it must be a piece.
+				
+				// select color based on case of character
+				isupper(c) ? color = Colors::WHITE : color = Colors::BLACK;
+				
+				// convert to lowercase to simplify processing
+				c = tolower(c);	
+				
+				// each character corresponds to a piece type
+				switch (c) {
+				case 'p': { type = Types::PAWN; break; }
+				case 'n': { type = Types::KNIGHT; break; }
+				case 'b': { type = Types::BISHOP; break; }
+				case 'r': { type = Types::ROOK; break; }
+				case 'q': { type = Types::QUEEN; break; }
+				case 'k': { type = Types::KING; break; }
+				default: {
+					// TODO: pretty print the error.
+					return;
+					}
+				}
+
+				setup.pieces_by_color[color].mark_square(cur_sq.value());		// mark the square were on with the color of the piece we parsed
+				setup.pieces_by_type[type].mark_square(cur_sq.value());			// mark the square were on with the piece type we parsed
+				
+				cur_sq = cur_sq->next();
+				++sq_counter;
+				++col_counter;
+			}
+			if (col_counter > 8) {
+				// TODO: pretty print the error.
+				return;
+			}
+			if (sq_counter > 64) {
+				// TODO: pretty print the error.
+				return;
+			}
+		}
+		char_index++; //increment past the '/' character to start next row.
+	}
+
+	for (c = fen[char_index]; c != ' '; char_index++) {}; // Consume spaces
+
+	if (c == 'w') { turn = true; }
+	else if (c == 'b') { turn = false; }
+	else {
+		// TODO: Pretty print the error here
+		return;
+	}
+
+	for (c = fen[char_index]; c != ' '; char_index++) {}; // Consume spaces
+
+	if (c == '-') { // If the castling string is a dash, all castle rights are gone
+		setup.flags == 0;
+	}
+	else {
+		bool w_k_rights_set = false,
+			 w_q_rights_set = false,
+			 b_k_rights_set = false,
+			 b_q_rights_set = false;
+		for (c = fen[char_index]; c == ' '; char_index++) {
+			switch (c) {
+			case 'K':
+				if (!w_k_rights_set) {
+					setup.flags |= (1 << 0);
+					w_k_rights_set = true;
+					break;
+				}
+				else {
+					// TODO: pretty print error
+					return;
+				}
+			case 'Q':
+				if (!w_q_rights_set) {
+					setup.flags |= (1 << 1);
+					w_q_rights_set = true;
+					break;
+				}
+				else {
+					// TODO: pretty print error
+					return;
+				}
+			case 'k':
+				if (!b_k_rights_set) {
+					setup.flags |= (1 << 2);
+					b_k_rights_set = true;
+					break;
+				}
+				else {
+					// TODO: pretty print error
+					return;
+				}
+			case 'q':
+				if (!b_q_rights_set) {
+					setup.flags |= (1 << 3);
+					b_q_rights_set = true;
+					break;
+				}
+				else {
+					// TODO: pretty print error
+					return;
+				}
+			default:
+				// TODO: Pretty print the error
+				return;
+			}
+		}
+	}
+
+	for (c = fen[char_index]; c != ' '; char_index++) {}; // Consume spaces
+
+	if (c == '-') {} // again, ignore and move on
+	else { // otherwise...
+		// parse the square in algebraic notation
+		file_c = c;
+		rank_c = fen[char_index++];
+		// compute the numeric rank and file
+		file = file_c - 'a';
+		rank = rank_c - '1';
+		if (file >= 8 || rank >= 8) { // if either the rank or file is out of bounds...
+			// TODO: Exception case - parsed algebraic notation is not on board!
+			return;
+		}
+		else { // otherwise compute the bitboard of the en passant square
+			setup.epsq = Square(rank, file); // Sets the en passant square to the computed rank and file
+		}
+	}
+
+	for (c = fen[char_index]; c != ' '; char_index++) {}; // Consume spaces
+
+	std::string s;
+	for (c = fen[char_index]; c == ' '; char_index++) {
+		if (!isdigit(c)) {
+			// TODO: Exception case - not a numeric value!
+			return;
+		}
+		s.append(1, c); // append the digit characters to the string
+	}
+	setup.ply_clock = std::stoi(s); // convert the string to an integer and store
+	s.clear();
+
+	for (c = fen[char_index]; c != ' '; char_index++) {}; // Consume spaces
+
+	do {
+		if (!isdigit(c)) {
+			// TODO: Exception case - not a numeric value!
+			return;
+		}
+		s.append(1, c); // append the digit characters to the string
+	} while ((c = fen[char_index++]) != '\0'); // get the next character and check it against the end-of-string constant
+	setup.ply = std::stoi(s) * 2 - (turn ? 1 : 0); // calculate the ply from the full turn count and whose move it is
+
+	setup.BASIC_king_threats();
+
+	return;
 }
 
 void MoveIntegrityChecker::get_before_stats(Position pos, Colors turn) {
