@@ -42,8 +42,13 @@ const Square WHITE_KINGSIDE_ROOK_STARTING_SQUARE = Square(0, 7);
 const Square BLACK_QUEENSIDE_ROOK_STARTING_SQUARE = Square(7, 0);
 const Square BLACK_KINGSIDE_ROOK_STARTING_SQUARE = Square(7, 7);
 
+
+
 class Position {
 private:
+	// Default constructor
+	Position() = default;
+
 	// index these bitboard arrays with the enums defined above!
 	std::array<Bitboard, 2> pieces_by_color; // array of bitboards, [0] for white pieces, [1] for black pieces
 	std::array<Bitboard, 6> pieces_by_type; // array of bitboards, [0] pawns, [1] knights, [2] bishops, [3] rooks, [4] queens, [5] kings
@@ -75,13 +80,13 @@ private:
 	std::vector<Move> BASIC_pl_castle_move_gen(Square from);
 
 	friend class MoveIntegrityChecker;
+	friend std::istream& operator>>(std::istream& in, Position& pos);
 
 public:
-	friend Position parse_fen(std::string fen);
+	static Position setup_position(std::string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
-	// Constructors
-	Position(std::string fen) { parse_fen(fen); }
-	Position() : Position("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") {} // default standard starting position for chess, in FEN notation
+	// TODO: refactor this backwards compatibility hack out of the code.
+	Position(std::string fen) { *this = setup_position(fen); }
 
 	// Methods
 	//TODO std::string gen_fen();
@@ -129,6 +134,7 @@ public:
 
 };
 
+std::istream& operator>>(std::istream& in, Position& pos);
 
 class MoveIntegrityChecker {
 
