@@ -20,6 +20,27 @@ MoveOptions operator|(MoveOptions lhs, MoveOptions rhs) {
 	return static_cast<MoveOptions> (int (lhs) | int (rhs));
 }
 
+std::istream& operator>>(std::istream& in, Position& pos) {
+	std::string fen, temp;
+	for (auto i = 0; i < 6; i++) {
+		if (in.good()) {
+			in >> temp;
+			if (i != 0) {
+				fen.append(" ");
+			}
+			fen.append(temp);
+		}
+		else {
+			break;
+		}
+	}
+	if (!in.eof()) {
+		return in;
+	}
+	pos = Position::setup_position(fen);
+	return in;
+}
+
 void Position::disp_bitboard(Bitboard bitboard, std::string title, char piece_c, char empty_c) {
 	if (title != "") {
 		std::cout << title << "\n";
@@ -1397,7 +1418,8 @@ bool Position::is_position_illegal()
 	return false;
 }
 
-Position parse_fen(std::string fen) {
+Position Position::setup_position(std::string fen) {
+	// FIXME: all character consumers must check for the EOL, as currently if one is found the program crashes.
 	Position setup;
 	unsigned int
 		sq_counter = 0,
@@ -1412,37 +1434,44 @@ Position parse_fen(std::string fen) {
 	Colors color;
 	Types type;
 
+	auto pretty_print_error = [fen](unsigned int current, std::string msg) {
+		//unsigned int length = end - start + 1;
+		//std::cout << std::string(" ", start) << "|" << std::string("~", length - 2) << "|" << "----current segment" << std::endl;
+		std::cout << "input: \"" << fen << '"' << std::endl;
+		std::cout << std::string(current + 8, ' ') << "^" << std::endl;
+		std::cout << std::string(current + 8, ' ') << "|----" << msg << std::endl;
+	};
+
 	for (uint8_t row = 0; row < 8; row++) {
 		unsigned int col_counter = 0;
 		segment_start_index = char_index;
-		for (c = fen[char_index]; c == '/' || c == ' '; char_index++) {
+		for (c = fen[char_index]; c != '/' && c != ' '; c = fen[++char_index]) {
+			if (c == '\0') {
+				pretty_print_error(char_index, "fen string is incomplete");
+				return setup;
+			}
 			if (isdigit(c)) { // if char is a digit, then there are empty squares
 				char empty_sqs = c - '0'; // subtract ascii value of '0' from c gives the actual number represented by the character. Ex. if c is '7' then this will be 55 - 48 = 7.
 				if (empty_sqs < 1 || empty_sqs > 8) { // only 1-8 are valid
-					std::string error_msg = "numeric value must be in range [1-8]";
 					segment_end_index = fen.find_first_of('/', segment_start_index);
 					if (segment_end_index == std::string::npos) {
 						segment_end_index = segment_start_index + (8 - col_counter);
 					}
-					unsigned int segment_length = segment_end_index - segment_start_index + 1;
-					std::cout << std::string(" ", segment_start_index) << "|" << std::string("~", segment_length - 2) << "|" << "----current segment" << std::endl;
-					std::cout << fen << std::endl;
-					std::cout << std::string(" ", char_index) << "|" << std::endl;
-					std::cout << std::string(" ", char_index) << "|----" << error_msg << std::endl;
-					return;
+					pretty_print_error(char_index, "number must be in range [1-8]");
+					return setup;
 				}
 				sq_counter += empty_sqs;
 				col_counter += empty_sqs;
 				cur_sq = cur_sq->next(empty_sqs);
 			}
 			else if (isalpha(c)) { // if char is alphabetical, then it must be a piece.
-				
+
 				// select color based on case of character
 				isupper(c) ? color = Colors::WHITE : color = Colors::BLACK;
-				
+
 				// convert to lowercase to simplify processing
-				c = tolower(c);	
-				
+				c = tolower(c);
+
 				// each character corresponds to a piece type
 				switch (c) {
 				case 'p': { type = Types::PAWN; break; }
@@ -1452,41 +1481,65 @@ Position parse_fen(std::string fen) {
 				case 'q': { type = Types::QUEEN; break; }
 				case 'k': { type = Types::KING; break; }
 				default: {
-					// TODO: pretty print the error.
-					return;
+					if (color == Colors::WHITE) {
+						pretty_print_error(char_index, "pieces must be one of 'P', 'N', 'B', 'R', 'Q', or 'K'.");
 					}
+					else if (color == Colors::BLACK) {
+						pretty_print_error(char_index, "pieces must be one of 'p', 'n', 'b', 'r', 'q', or 'k'.");
+					}
+					return setup;
+				}
 				}
 
 				setup.pieces_by_color[color].mark_square(cur_sq.value());		// mark the square were on with the color of the piece we parsed
 				setup.pieces_by_type[type].mark_square(cur_sq.value());			// mark the square were on with the piece type we parsed
-				
+
 				cur_sq = cur_sq->next();
 				++sq_counter;
 				++col_counter;
 			}
 			if (col_counter > 8) {
-				// TODO: pretty print the error.
-				return;
-			}
-			if (sq_counter > 64) {
-				// TODO: pretty print the error.
-				return;
+				pretty_print_error(char_index, "more than 8 squares have been defined for this row");
+				return setup;
 			}
 		}
-		char_index++; //increment past the '/' character to start next row.
+		if (c == '/') {
+			char_index++; //increment past the '/' character to start next row.
+		}
+		if (col_counter < 8) {
+			pretty_print_error(char_index, "not enough squares have been defined for this row");
+			return setup;
+		}
+		if (sq_counter > 64) {
+			pretty_print_error(char_index, "more than 64 squares have been defined for the board");
+			return setup;
+		}
+	}
+	if (sq_counter < 64) {
+		pretty_print_error(char_index, "not enough squares have been defined for the board");
+		return setup;
 	}
 
-	for (c = fen[char_index]; c != ' '; char_index++) {}; // Consume spaces
+	for (c = fen[char_index]; c == ' '; c = fen[++char_index]) {}; // Consume spaces
 
+	if (c == '\0') {
+		pretty_print_error(char_index, "fen string is incomplete");
+		return setup;
+	}
 	if (c == 'w') { turn = true; }
 	else if (c == 'b') { turn = false; }
 	else {
-		// TODO: Pretty print the error here
-		return;
+		pretty_print_error(char_index, "the players turn must be one of 'w' or 'b'");
+		return setup;
 	}
+	++char_index;
 
-	for (c = fen[char_index]; c != ' '; char_index++) {}; // Consume spaces
+	for (c = fen[char_index]; c == ' '; c = fen[++char_index]) {}; // Consume spaces
 
+	if (c == '\0') {
+		pretty_print_error(char_index, "fen string is incomplete");
+		return setup;
+	}
 	if (c == '-') { // If the castling string is a dash, all castle rights are gone
 		setup.flags == 0;
 	}
@@ -1495,7 +1548,11 @@ Position parse_fen(std::string fen) {
 			 w_q_rights_set = false,
 			 b_k_rights_set = false,
 			 b_q_rights_set = false;
-		for (c = fen[char_index]; c == ' '; char_index++) {
+		for (c = fen[char_index]; c != ' '; c = fen[++char_index]) {
+			if (c == '\0') {
+				pretty_print_error(char_index, "fen string is incomplete");
+				return setup;
+			}
 			switch (c) {
 			case 'K':
 				if (!w_k_rights_set) {
@@ -1504,8 +1561,8 @@ Position parse_fen(std::string fen) {
 					break;
 				}
 				else {
-					// TODO: pretty print error
-					return;
+					pretty_print_error(char_index, "attempted to set white's king-side castling rights twice");
+					return setup;
 				}
 			case 'Q':
 				if (!w_q_rights_set) {
@@ -1514,8 +1571,8 @@ Position parse_fen(std::string fen) {
 					break;
 				}
 				else {
-					// TODO: pretty print error
-					return;
+					pretty_print_error(char_index, "attempted to set white's queen-side castling rights twice");
+					return setup;
 				}
 			case 'k':
 				if (!b_k_rights_set) {
@@ -1524,8 +1581,8 @@ Position parse_fen(std::string fen) {
 					break;
 				}
 				else {
-					// TODO: pretty print error
-					return;
+					pretty_print_error(char_index, "attempted to set black's king-side castling rights twice");
+					return setup;
 				}
 			case 'q':
 				if (!b_q_rights_set) {
@@ -1534,62 +1591,76 @@ Position parse_fen(std::string fen) {
 					break;
 				}
 				else {
-					// TODO: pretty print error
-					return;
+					pretty_print_error(char_index, "attempted to set black's queen-side castling rights twice");
+					return setup;
 				}
 			default:
-				// TODO: Pretty print the error
-				return;
+				pretty_print_error(char_index, "castling rights must be one of 'K', 'Q', 'k', or 'q'");
+				return setup;
 			}
 		}
 	}
 
-	for (c = fen[char_index]; c != ' '; char_index++) {}; // Consume spaces
+	for (c = fen[char_index]; c == ' '; c = fen[++char_index]) {}; // Consume spaces
 
+	if (c == '\0') {
+		pretty_print_error(char_index, "fen string is incomplete");
+		return setup;
+	}
 	if (c == '-') {} // again, ignore and move on
 	else { // otherwise...
 		// parse the square in algebraic notation
 		file_c = c;
-		rank_c = fen[char_index++];
+		c = fen[++char_index];
+		if (c == '\0') {
+			pretty_print_error(char_index, "fen string is incomplete");
+			return setup;
+		}
+		rank_c = c;
 		// compute the numeric rank and file
 		file = file_c - 'a';
 		rank = rank_c - '1';
 		if (file >= 8 || rank >= 8) { // if either the rank or file is out of bounds...
-			// TODO: Exception case - parsed algebraic notation is not on board!
-			return;
+			pretty_print_error(char_index, "the parsed square is not valid");
+			return setup;
 		}
 		else { // otherwise compute the bitboard of the en passant square
 			setup.epsq = Square(rank, file); // Sets the en passant square to the computed rank and file
 		}
 	}
+	char_index++;
 
-	for (c = fen[char_index]; c != ' '; char_index++) {}; // Consume spaces
+	for (c = fen[char_index]; c == ' '; c = fen[++char_index]) {}; // Consume spaces
 
 	std::string s;
-	for (c = fen[char_index]; c == ' '; char_index++) {
+	for (c = fen[char_index]; c != ' '; c = fen[++char_index]) {
+		if (c == '\0') {
+			pretty_print_error(char_index, "fen string is incomplete");
+			return setup;
+		}
 		if (!isdigit(c)) {
-			// TODO: Exception case - not a numeric value!
-			return;
+			pretty_print_error(char_index, "the parsed number is not valid");
+			return setup;
 		}
 		s.append(1, c); // append the digit characters to the string
 	}
 	setup.ply_clock = std::stoi(s); // convert the string to an integer and store
 	s.clear();
 
-	for (c = fen[char_index]; c != ' '; char_index++) {}; // Consume spaces
+	for (c = fen[char_index]; c == ' '; c = fen[++char_index]) {}; // Consume spaces
 
-	do {
+	for (c = fen[char_index]; c != ' ' && c != '\0'; c = fen[++char_index]) {
 		if (!isdigit(c)) {
-			// TODO: Exception case - not a numeric value!
-			return;
+			pretty_print_error(char_index, "the parsed number is not valid");
+			return setup;
 		}
 		s.append(1, c); // append the digit characters to the string
-	} while ((c = fen[char_index++]) != '\0'); // get the next character and check it against the end-of-string constant
+	}
 	setup.ply = std::stoi(s) * 2 - (turn ? 1 : 0); // calculate the ply from the full turn count and whose move it is
 
 	setup.BASIC_king_threats();
 
-	return;
+	return setup;
 }
 
 void MoveIntegrityChecker::get_before_stats(Position pos, Colors turn) {
