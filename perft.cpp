@@ -42,8 +42,6 @@ void Perft::run() {
 
 	std::chrono::duration<double> diff = t_end - t_start;
 	runtime = diff.count();
-
-	std::cout << *this << std::endl;
 }
 
 inline void PerftCounts::add_start_move(std::string start_move_SAN) {
