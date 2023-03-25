@@ -99,7 +99,7 @@ private:
 	void perft_core(unsigned int depth);
 public:
 	Perft(int max_depth = 1, bool show_positions = false) :
-		cur_pos(Position()),
+		cur_pos(Position::setup_position()),
 		max_depth(max_depth),
 		show_positions(show_positions)
 	{
