@@ -14,67 +14,79 @@ enum class MoveTypes {NONE = -1, CAPTURE, EN_PASSANT, N_PROMOTION, B_PROMOTION, 
 enum class MoveResults {NONE = -1, CHECKMATE, STALEMATE, DISCOVERY, DOUBLE_CHECK };
 
 int main() {
-	// Initial position
-	//int depth = 5;
-	//Perft perft = Perft(Position(), depth);
-	//perft.run();
-	//perft = Perft(Position().mirror_position(),depth);
-	//perft.run();
-
-	// Kiwipete
-	// int depth = 4;
-	// Perft perft = Perft(Position("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"), depth);
-	// perft.run();
-	//perft = Perft(Position("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1").mirror_position(), depth);
-	//perft.run();
-
-	Position current_position = Position();
-	std::string token;
+	Position current_position = Position::setup_position();
+	
 	bool running = true;
 
 	// welcome message
-	std::cout << "V8 by Colin Nordquist" << std::endl << std::endl;
+	std::cout << "V8 Chess Engine" << std::endl << "by Colin Nordquist" << std::endl << std::endl;
 
 	while (running) {
-		std::cout << "v8 > " << std::endl;
+		std::stringstream input;
+		std::string input_line, token, cmd, arg;
+		std::vector<std::string> tokens;
+		
+		std::cout << "V8 > ";
+		std::cin.clear();
 
-		std::cin >> token;
-		if (token == "setup") {
-			std::string fen;
-			std::cin >> fen;
-			current_position = Position(fen);
+		std::getline(std::cin, input_line);
+		input.str(input_line);
+
+		// tokenize
+		while (input.good()) {
+			std::getline(input, token, ' ');
+			if (!token.empty()) {
+				tokens.push_back(token);
+			}
 		}
-		else if (token == "display") {
+		cmd = tokens[0];
+
+		if (cmd == "setup") {
+			std::string arg;
+			std::for_each(
+				tokens.begin() + 1,
+				tokens.end(),
+				[&arg](std::string token) {arg.append(token).append(" ");}
+			);
+			arg.pop_back(); // get rid of the extra space that was appended
+			current_position.setup_position(arg);
+		}
+		else if (cmd == "display") {
+			current_position.disp();
+		}
+		else if (cmd == "move") {
 
 		}
-		else if (token == "move") {
+		else if (cmd == "undo") {
 
 		}
-		else if (token == "undo") {
-
+		else if (cmd == "perft") {
+			std::string depth = tokens[1];
+			Perft perft = Perft(current_position, std::stoi(depth));
+			perft.run();
+			std::cout << std::endl << perft << std::endl;
 		}
-		else if (token == "perft") {
-
+		else if (cmd == "quit") {
+			running = false;
 		}
-		else if (token == "quit") {
-
+		else if (cmd == "help") {
+			std::cout << std::endl;
+			std::cout << "Usage:" << std::endl;
+			std::cout << std::endl;
+			std::cout << "setup <FEN>\t\t- creates a position based on the FEN string provided." << std::endl;
+			std::cout << "display\t\t\t- shows the current position." << std::endl;
+			std::cout << "move <LAN>...\t\t- makes a move. if multiple moves are provided, will make the moves in the sequence given. moves must be in long algebraic notation." << std::endl;
+			std::cout << "undo [<count>]\t\t- reverses a number of moves. If count is omitted, reverses 1 move." << std::endl;
+			std::cout << "perft <depth>\t\t- finds all moves to the depth given, and outputs aggregate information about the search." << std::endl;
+			std::cout << "help\t\t\t- I think you already figured out what this does." << std::endl;
+			std::cout << "quit\t\t\t- exit the program." << std::endl;
+			std::cout << std::endl;
 		}
 		else {
-
+			std::cout << std::endl;
+			std::cout << "unknown command. try \'help\' for the proper usage." << std::endl;
+			std::cout << std::endl;
 		}
-	}	
+	}
+	std::cout << std::endl << "v8 X " << std::endl;
 }
-//	//Position P = Position("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"); //Starting position
-//	Position P = Position("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"); //Kiwipete position
-//	//Position P = Position("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1"); // Position 3 from CPW
-//	
-//	// P.mirror_position();
-//
-//	P.disp();
-//	perft_moves counts = { 0, 0, 0, 0, 0, 0 };
-//
-//	//int depth = 2;
-//	for (int depth = 2; depth <= 2; ++depth) {
-//		P.RUN_PERFT(depth, counts);
-//	}
-// }
