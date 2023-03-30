@@ -91,8 +91,9 @@ Bitboard Bitboard::operator~() { return Bitboard(~(this->bitboard)); };
 Square::Square(uint64_t sq) : bitboard(sq) { if (sq != 0) { ASSERT_ONE_SQUARE(*this); } };
 Square::Square(Bitboard bb) : Square(bb.get_u64()) {};
 Square::Square(int sq) : Square((uint64_t) sq) {};
-Square::Square(unsigned int index) : Square((uint64_t)(1ULL << index)) {};
+Square::Square(unsigned int index) : Square(index > 63 ? (0ULL) : (1ULL << index)) {};
 Square::Square(unsigned int rank, unsigned int file) : Square((unsigned int)((7 - rank) * 8 + file)) {};
+Square::Square(std::string an) : Square(an2idx(an).value_or(64)) {};
 Square::Square() : Square((uint64_t) 0) {};
 
 // Square Operator overloads

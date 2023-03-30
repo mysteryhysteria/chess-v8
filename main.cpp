@@ -23,7 +23,7 @@ int main() {
 
 	while (running) {
 		std::stringstream input;
-		std::string input_line, token, cmd, arg;
+		std::string input_line, cmd, arg;
 		std::vector<std::string> tokens;
 		
 		std::cout << "V8 > ";
@@ -34,6 +34,7 @@ int main() {
 
 		// tokenize
 		while (input.good()) {
+			std::string token;
 			std::getline(input, token, ' ');
 			if (!token.empty()) {
 				tokens.push_back(token);
@@ -42,20 +43,68 @@ int main() {
 		cmd = tokens[0];
 
 		if (cmd == "setup") {
+			// a normal FEN string has lots of spaces in it, so instead of forcing the CLI user to put quotations around the FEN, 
+			// this code instead just appends all the tokens together into one string before passing it to the position constructor.
 			std::string arg;
 			std::for_each(
 				tokens.begin() + 1,
 				tokens.end(),
 				[&arg](std::string token) {arg.append(token).append(" ");}
 			);
-			arg.pop_back(); // get rid of the extra space that was appended
-			current_position.setup_position(arg);
+			arg.pop_back(); // get rid of the extra " " that was appended
+
+			current_position = Position::setup_position(arg);
 		}
 		else if (cmd == "display") {
 			current_position.disp();
 		}
 		else if (cmd == "move") {
+			bool valid = true;
+			std::string token;
 
+			auto fail = [&](std::string msg) {
+					valid = false;
+					std::cout << std::endl;
+					std::cout << msg << std::endl;
+					std::cout << "parsed move: \"" << token << "\"" << std::endl;
+					std::cout << "moves must be in the Long Algebraic Notation format (i.e. \"a1h1\")." << std::endl << std::endl;
+			};
+
+			// copy the current position in case we need to revert.
+			auto start_pos = current_position;
+
+			for (auto token_it = tokens.begin() + 1; token_it != tokens.end(); token_it++) {
+				token = *token_it;
+				if (token.length() != 4) {
+					fail("move must be exactly 4 characters long.");
+					break;
+				}
+				auto from_sq = Square(token.substr(0, 2)); // grab the first two characters and make a square from them.
+				if (from_sq.is_empty()) {
+					fail("move could not be parsed to a valid set of squares.");
+					break;
+				}
+				auto to_sq = Square(token.substr(2, 2)); // grab the last two characters and make a square from them.
+				if (to_sq.is_empty()) {
+					fail("move could not be parsed to a valid set of squares.");
+					break;
+				}
+
+				auto legal_moves = current_position.BASIC_move_gen();
+				bool move_found = false;
+				for (auto legal_move : legal_moves) {
+					if (legal_move.get_from() == from_sq && legal_move.get_to() == to_sq) {
+						current_position.make_move(legal_move);
+						move_found = true;
+						break; //end search
+					}
+				}
+				if (!move_found) {
+					fail("move is not valid in this position.");
+					break;
+				}
+			}
+			if (!valid) { current_position = start_pos; }; // revert the position if the inputs were not valid.
 		}
 		else if (cmd == "undo") {
 

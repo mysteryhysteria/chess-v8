@@ -8,8 +8,8 @@
 #include "Colors.h"
 #include "Utils.h"
 
-inline std::optional<int> an2idx(std::string an) {
-	auto idx = std::optional<int>(std::nullopt);
+inline std::optional<unsigned int> an2idx(std::string an) {
+	auto idx = std::optional<unsigned int>(std::nullopt);
 	if (an.size() != 2) { return idx; };
 	an[0] = std::tolower(an[0]); // allows the function to accept uppercase letters for the file.
 	if (an[0] < 'a' || an[0] > 'h') { return idx; };
@@ -23,10 +23,10 @@ inline std::optional<int> an2idx(std::string an) {
 	return idx;
 }
 
-inline std::optional<std::string> idx2an(int i) {
+inline std::optional<std::string> idx2an(unsigned int i) {
 	if (i < 0 || i >= 64) { return std::optional<std::string>(std::nullopt); };
-	int file = i % 8;
-	int rank = 7 - ((i - file) / 8);
+	unsigned int file = i % 8;
+	unsigned int rank = 7 - ((i - file) / 8);
 
 	std::string an = std::string();
 	an.push_back('a' + file);
@@ -83,8 +83,7 @@ public:
 
 	// TODO: change implementation so that rank and file arent 0 indexed. Or just rely on the string based constructor and delete this or make it private
 	explicit Square(unsigned int rank, unsigned int file); 
-	
-	// TODO: add constructor to build squares from strings
+	explicit Square(std::string an);
 	
 	explicit Square();
 
