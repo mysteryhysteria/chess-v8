@@ -15,6 +15,7 @@ enum class MoveResults {NONE = -1, CHECKMATE, STALEMATE, DISCOVERY, DOUBLE_CHECK
 
 int main() {
 	Position current_position = Position::setup_position();
+	std::vector<Position> history = { current_position }; // initialize the history
 	
 	bool running = true;
 
@@ -42,7 +43,7 @@ int main() {
 		}
 		cmd = tokens[0];
 
-		if (cmd == "setup") {
+		if (cmd == "setup" || cmd == "s") {
 			// a normal FEN string has lots of spaces in it, so instead of forcing the CLI user to put quotations around the FEN, 
 			// this code instead just appends all the tokens together into one string before passing it to the position constructor.
 			std::string arg;
@@ -54,11 +55,13 @@ int main() {
 			arg.pop_back(); // get rid of the extra " " that was appended
 
 			current_position = Position::setup_position(arg);
+			history.clear();
+			history.push_back(current_position);
 		}
-		else if (cmd == "display") {
+		else if (cmd == "display" || cmd == "d") {
 			current_position.disp();
 		}
-		else if (cmd == "move") {
+		else if (cmd == "move" || cmd == "m") {
 			bool valid = true;
 			std::string token;
 
@@ -70,8 +73,15 @@ int main() {
 					std::cout << "moves must be in the Long Algebraic Notation format (i.e. \"a1h1\")." << std::endl << std::endl;
 			};
 
+			if (tokens.size() == 1) {
+				std::cout << std::endl;
+				std::cout << "no moves were given." << std::endl << std::endl;
+			}
+
 			// copy the current position in case we need to revert.
 			auto start_pos = current_position;
+			// create a vector for the new positions we will make.
+			std::vector<Position> temp_history;
 
 			for (auto token_it = tokens.begin() + 1; token_it != tokens.end(); token_it++) {
 				token = *token_it;
@@ -95,6 +105,7 @@ int main() {
 				for (auto legal_move : legal_moves) {
 					if (legal_move.get_from() == from_sq && legal_move.get_to() == to_sq) {
 						current_position.make_move(legal_move);
+						temp_history.push_back(current_position);
 						move_found = true;
 						break; //end search
 					}
@@ -104,31 +115,72 @@ int main() {
 					break;
 				}
 			}
-			if (!valid) { current_position = start_pos; }; // revert the position if the inputs were not valid.
+			if (!valid) { // revert the position if the inputs were not valid.
+				current_position = start_pos;
+			}
+			else { // otherwise add the moves to the history
+				history.insert(history.end(), temp_history.begin(), temp_history.end());
+			}
 		}
-		else if (cmd == "undo") {
-
+		else if (cmd == "undo" || cmd == "u") {
+			if (tokens.size() == 1) {
+				history.pop_back();
+				current_position = history.back();
+			}
+			else if (tokens.size() == 2) {
+				try {
+					size_t parse_len;
+					int undo_len = std::stoi(tokens[1], &parse_len);
+					if (parse_len != tokens[1].size()) {
+						std::cout << std::endl;
+						std::cout << "the \"count\" parameter was not an integer." << std::endl << std::endl;
+					}
+					else if (undo_len > history.size() - 1) {
+						std::cout << std::endl;
+						std::cout << "cannot undo more moves than have been played." << std::endl; 
+						std::cout << "number of moves played: " << history.size() - 1 << std::endl << std::endl;
+					}
+					else {
+						for (int i = 0; i < undo_len; i++) {
+							history.pop_back();
+						}
+						current_position = history.back();
+					}
+				}
+				catch (std::invalid_argument&) {
+					std::cout << std::endl;
+					std::cout << "the \"count\" parameter was not an integer." << std::endl << std::endl;
+				}
+				catch (std::out_of_range&) {
+					std::cout << std::endl;
+					std::cout << "the \"count\" parameter was too large to fit in an integer." << std::endl << std::endl;
+				}
+			}
+			else {
+				std::cout << std::endl;
+				std::cout << "too many arguments were provided." << std::endl << std::endl;
+			}
 		}
-		else if (cmd == "perft") {
+		else if (cmd == "perft" || cmd == "p") {
 			std::string depth = tokens[1];
 			Perft perft = Perft(current_position, std::stoi(depth));
 			perft.run();
 			std::cout << std::endl << perft << std::endl;
 		}
-		else if (cmd == "quit") {
+		else if (cmd == "quit" || cmd == "q") {
 			running = false;
 		}
-		else if (cmd == "help") {
+		else if (cmd == "help" || cmd == "?") {
 			std::cout << std::endl;
 			std::cout << "Usage:" << std::endl;
 			std::cout << std::endl;
-			std::cout << "setup <FEN>\t\t- creates a position based on the FEN string provided." << std::endl;
-			std::cout << "display\t\t\t- shows the current position." << std::endl;
-			std::cout << "move <LAN>...\t\t- makes a move. if multiple moves are provided, will make the moves in the sequence given. moves must be in long algebraic notation." << std::endl;
-			std::cout << "undo [<count>]\t\t- reverses a number of moves. If count is omitted, reverses 1 move." << std::endl;
-			std::cout << "perft <depth>\t\t- finds all moves to the depth given, and outputs aggregate information about the search." << std::endl;
-			std::cout << "help\t\t\t- I think you already figured out what this does." << std::endl;
-			std::cout << "quit\t\t\t- exit the program." << std::endl;
+			std::cout << "s[etup] <FEN>\t\t- creates a position based on the FEN string provided." << std::endl;
+			std::cout << "d[isplay]\t\t- shows the current position." << std::endl;
+			std::cout << "m[ove] <LAN>...\t\t- makes a move. if multiple moves are provided, will make the moves in the sequence given. moves must be in long algebraic notation." << std::endl;
+			std::cout << "u[ndo] [<count>]\t- reverses a number of moves. If count is omitted, reverses 1 move." << std::endl;
+			std::cout << "p[erft] <depth>\t\t- finds all moves to the depth given, and outputs aggregate information about the search." << std::endl;
+			std::cout << "? | help\t\t- I think you already figured out what this does." << std::endl;
+			std::cout << "q[uit]\t\t\t- exit the program." << std::endl;
 			std::cout << std::endl;
 		}
 		else {
